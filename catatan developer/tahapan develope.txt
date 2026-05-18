@@ -1,0 +1,8 @@
+buat :
+db users --- done
+db opd
+db master kode
+db arsip
+db rak_arsip
+db log_arsip
+db log_box_arsip
