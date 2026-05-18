@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Opd extends Model
 {
-    use HasFactory;
+    protected $table = 'opds';
 
-    protected $table = 'opds'; // sesuaikan nama tabel
-    protected $primaryKey = 'id';
+    protected $fillable = [
+        'kode_instansi',
+        'unit_kerja',
+        'singkatan_uk',
+        'instansi',
+        'singkatan_instansi' 
+    ]; 
+
+    public function arsips()
+    {
+        return $this->hasMany(Arsip::class, 'opd_id');
+    }
 }

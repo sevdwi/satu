@@ -1,7 +1,21 @@
+##CRUD
+#migration
+php artisan make:model MasterKode -mcr
+php artisan migrate
+php artisan migrate:fresh //hapus ulang tabel
+
+php artisan make:model Arsip
+
+composer require maatwebsite/excel
+php artisan make:import MasterKodeImport
+php artisan make:controller MasterKodeImportController
+
+php artisan make:migration create_arsips_table
+
 buat :
 db users --- done
 db opd
-db master kode
+db master kode --done
 db arsip
 db rak_arsip
 db log_arsip

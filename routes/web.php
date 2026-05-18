@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\MasterKodeController;
+use App\Http\Controllers\MasterKodeImportController;
+use App\Http\Controllers\OpdController;
+use App\Http\Controllers\ArsipController; 
 
 
 // Route::get('/', function () {
@@ -32,3 +35,14 @@ Route::middleware(['auth:admin'])->prefix('app')->group(function () {
         require $routeFile;
     }
 });
+Route::get('/master-kodes/search', [MasterKodeController::class, 'search'])
+    ->name('master-kodes.search');
+Route::get('/master-kodes/import', [MasterKodeImportController::class, 'index']);
+Route::post('/master-kodes/import', [MasterKodeImportController::class, 'store']);
+
+Route::get('/master-kodes/search', [MasterKodeController::class, 'search2']);
+Route::get('/opd/search', [OpdController::class, 'search2']);
+
+Route::resource('master-kodes', MasterKodeController::class);
+Route::resource('opd', OpdController::class);
+Route::resource('arsip', ArsipController::class);
