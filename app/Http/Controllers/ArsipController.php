@@ -12,6 +12,64 @@ class ArsipController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function dashbord(){
+
+        // contoh data dari database
+        $dataKategori = MasterKode::get();
+
+        // warna bootstrap
+        $warna = [
+            '#0d6efd',
+            '#198754',
+            '#ffc107',
+            '#dc3545',
+            '#6f42c1',
+            '#20c997',
+            '#fd7e14',
+            '#6610f2'
+        ];
+
+        // icon bootstrap
+        $icons = [
+            'bi-folder-fill',
+            'bi-file-earmark-text-fill',
+            'bi-archive-fill',
+            'bi-journal-bookmark-fill',
+            'bi-file-earmark-bar-graph-fill',
+            'bi-collection-fill',
+            'bi-folder2-open',
+            'bi-files'
+        ];
+
+        $kategori = [];
+        $chartLabels = [];
+        $chartData = [];
+        $chartColors = [];
+
+        foreach ($dataKategori as $index => $item) {
+
+            $color = $warna[$index % count($warna)];
+            $icon = $icons[$index % count($icons)];
+
+            $kategori[] = [
+                'nama' => $item->nama,
+                'total' => $item->arsip_count,
+                'color' => $color,
+                'icon' => $icon
+            ];
+
+            $chartLabels[] = $item->nama_kategori;
+            $chartData[] = $item->arsip_count;
+            $chartColors[] = $color;
+        }
+
+        return view('dashbord', compact(
+            'kategori',
+            'chartLabels',
+            'chartData',
+            'chartColors'
+        ));
+    } 
     public function index()
     {
         $data = Arsip::all();

@@ -123,13 +123,7 @@ $(document).ready(function () {
                 };
             }
         }
-    }); 
-    // $(document).ready(function() {
-    // $('.select2').select2({
-    //     placeholder: "Pilih Parent",
-    //     allowClear: true,
-    //     width: '100%'
-    // });
+    });  
 });
 </script>
 @endsection

@@ -43,6 +43,7 @@ Route::post('/master-kodes/import', [MasterKodeImportController::class, 'store']
 Route::get('/master-kodes/search', [MasterKodeController::class, 'search2']);
 Route::get('/opd/search', [OpdController::class, 'search2']);
 
+Route::get('/dashbord', [ArsipController::class, 'dashbord']); 
 Route::resource('master-kodes', MasterKodeController::class);
 Route::resource('opd', OpdController::class);
 Route::resource('arsip', ArsipController::class);
