@@ -1,8 +1,7 @@
-{{-- resources/views/dashboard.blade.php --}}
-
 @extends('layouts.administrator')
 
 @section('content')
+
 
 <div class="container py-4">
 
@@ -208,4 +207,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 
-<!-- @endsection -->
+@endsection
