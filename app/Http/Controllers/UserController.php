@@ -19,7 +19,7 @@ class UserController extends Controller
     // form create dan show daftar opd saat register
     public function create()
     {
-        $opds = Opd::orderBy('name_opd')->get(); // sesuaikan nama kolom
+        $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
         return view('users.create', compact('opds'));
     }
 
@@ -112,7 +112,7 @@ class UserController extends Controller
         return back()
             ->withInput()
             ->withErrors([
-                'login' => 'Nomor atau password salah.'
+                'login' => 'Nomor atau password salah!!!'
             ]);
     }
 

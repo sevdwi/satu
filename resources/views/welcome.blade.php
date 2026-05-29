@@ -4,12 +4,11 @@
             <!-- Navigation-->
             <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
                 <div class="container px-5">
-                    <a class="navbar-brand" href="index.html"><span class="fw-bolder text-primary">SATU (Sistem Informasi Kearsipan Terpadu)</span></a> <span> </span> <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
-
+                    <a class="navbar-brand" href="{{route('welcome')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                            <li class="nav-item"><a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="{{route('login')}}">Login</a></li>
+                            <li class="nav-item"><a class="btn btn-primary btn-lg px-3 py-2 me-sm-3 fs-6 fw-bolder" href="{{route('login')}}">Login</a></li>
                             <!-- <li class="nav-item"><a class="nav-link" href="resume.html">Resume</a></li> -->
                         </ul>
                     </div>
@@ -18,8 +17,8 @@
 
             <!-- Header-->
             <header class="py-5">
-                <div class="container px-5 pb-5">
-                    <div class="min-h-screen flex items-center justify-center px-6">
+                <div class="container d-flex justify-content-center px-5 pb-5">
+                    <div class="min-h-screen">
                         <div>
                             <!-- Header text content-->
                             <div class="text-center text-xxl-start">

@@ -204,11 +204,13 @@ class MasterKodeController extends Controller
             'is_parent' => $isParent, // ✔️ penting biar konsisten
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil diupdate',
-            'data' => $masterKode
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Data berhasil diupdate',
+        //     'data' => $masterKode
+        // ]);
+        return redirect()->route('master-kodes.index');
+
     }
 
     /**

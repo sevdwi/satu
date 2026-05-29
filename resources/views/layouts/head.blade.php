@@ -24,13 +24,13 @@
         <!-- Google Font: Source Sans Pro -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <!-- Font Awesome Icons -->
-        <link rel="stylesheet" href="{{ asset('adminlte/plugins/plugins/fontawesome-free/css/all.min.css') }}"> 
+        <!-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/plugins/fontawesome-free/css/all.min.css') }}">  -->
         <!-- overlayScrollbars -->
-        <link rel="stylesheet" href="{{ asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}"> 
+        <!-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">  -->
         <!-- Theme style -->
-        <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}"> 
+        <!-- <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">  -->
         <!-- ... -->
-
+        
 
 
     </head>
@@ -42,7 +42,7 @@
         <footer class="bg-white py-4 mt-auto">
             <div class="container px-5">
                 <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                    <div class="col-auto"><div class="small m-0">Copyright &copy; Dinas Komunikasi dan Informatika 2026</div></div>
+                    <div class="col-auto"><div class="small m-0">Copyright &copy; Dinas Komunikasi dan Informatika 2026 </div></div>
                     <div class="col-auto">
                         <a class="small" href="#!">Privacy</a>
                         <span class="mx-1">&middot;</span>
@@ -59,31 +59,31 @@
         <script src="js/scripts.js"></script>
 
         <!-- REQUIRED SCRIPTS ADMIN LTE -->
-        <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script> 
+        <!-- <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>  -->
 
         <!-- jQuery -->
-        <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script> -->
         <!-- Bootstrap -->
-        <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
         <!-- overlayScrollbars -->
-        <script src="{{ asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script> -->
 
         <!-- AdminLTE App -->
-        <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script> -->
 
         <!-- PAGE PLUGINS -->
         <!-- jQuery Mapael -->
-        <script src="{{ asset('adminlte/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
-        <script src="{{ asset('adminlte/plugins/raphael/raphael.min.js') }}"></script>
-        <script src="{{ asset('adminlte/plugins/jquery-mapael/jquery.mapael.min.js') }}"></script>
-        <script src="{{ asset('adminlte/plugins/jquery-mapael/maps/usa_states.min.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script> -->
+        <!-- <script src="{{ asset('adminlte/plugins/raphael/raphael.min.js') }}"></script> -->
+        <!-- <script src="{{ asset('adminlte/plugins/jquery-mapael/jquery.mapael.min.js') }}"></script> -->
+        <!-- <script src="{{ asset('adminlte/plugins/jquery-mapael/maps/usa_states.min.js') }}"></script> -->
         <!-- ChartJS -->
-        <script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script> -->
 
         <!-- AdminLTE for demo purposes -->
-        <script src="{{ asset('adminlte/dist/js/demo.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/dist/js/demo.js') }}"></script> -->
         <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-        <script src="{{ asset('adminlte/dist/js/pages/dashboard2.js') }}"></script>
+        <!-- <script src="{{ asset('adminlte/dist/js/pages/dashboard2.js') }}"></script> -->
 
     </body>
 </html>

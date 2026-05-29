@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Form Registrasi</title>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+@extends('layouts.head')
+<title>Form Registrasi</title>
+@section('content')
 
   <style>
     :root {
@@ -373,12 +366,12 @@
 </head>
 <body>
 
-<div class="register-card">
+<div class="register-card" style="overflow: auto;">
 
   <!-- ── HEADER ── -->
   <div class="card-header-strip">
     <span class="hex-deco">⬡</span>
-    <span class="badge-pill"><i class="bi bi-shield-lock-fill"></i> Sistem Informasi</span>
+    <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #ffffff;">SATU</span></a> <span> </span> <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
     <h1>Buat Akun Baru</h1>
     <p>Lengkapi data diri Anda untuk mendaftar ke sistem</p>
   </div>
@@ -411,8 +404,8 @@
                     style="color:#1E1033 !important; background-color:#fff !important; color-scheme:light;">
               <option value="" disabled selected style="color:#7C6FA0;">-- Pilih OPD --</option>
                @foreach($opds as $opd)
-                <option value="{{ $opd->name_opd }}" {{ old('opd') == $opd->name_opd ? 'selected' : '' }}>
-                    {{ $opd->name_opd }}
+                <option value="{{ $opd->instansi }}" {{ old('opd') == $opd->instansi ? 'selected' : '' }}>
+                    {{ $opd->instansi }}
                 </option>
                @endforeach
             </select>
@@ -516,7 +509,7 @@
       </button>
 
       <div class="login-link mt-3">
-        Sudah punya akun? <a href="#">Masuk di sini</a>
+        <a href="{{route('dashboard')}}">Kembali</a>
       </div>
 
     </form>
@@ -560,5 +553,4 @@
     confEl.setCustomValidity(confEl.value && confEl.value !== passEl.value ? 'Password tidak cocok' : '');
   });
 </script>
-</body>
-</html>
+@endsection

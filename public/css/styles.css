@@ -11732,3 +11732,142 @@ html {
     left: -2vw;
   }
 }
+
+/* css custom sendiri */
+/* purple */
+.btn-logout-purple {
+    color: #534AB7;
+    border: 1.5px solid #AFA9EC;
+    border-radius: 8px;
+    font-size: 13px;
+    background: transparent;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-logout-purple:hover {
+    background: #534AB7;
+    color: #fff;
+    border-color: #534AB7;
+}
+
+.btn-logout-purple:active {
+    background: #3C3489;
+    border-color: #3C3489;
+    color: #fff;
+    transform: scale(0.97);
+}
+
+/* red */
+.btn-logout-red {
+    color: #dc3545;
+    border: 1.5px solid #f1aeb5;
+    border-radius: 8px;
+    font-size: 13px;
+    background: transparent;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-logout-red:hover {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+.btn-logout-red:active {
+    background: #b02a37;
+    border-color: #b02a37;
+    color: #fff;
+    transform: scale(0.97);
+}
+
+/* gold */
+.btn-logout-gold {
+  color: #FFD700;
+  border: 1.5px solid ;
+  border-radius: 8px;
+  font-size: 13px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-logout-gold:hover {
+  background: #FFD700;
+  color: #fff;
+  border-color: ##FFD700;
+}
+
+.btn-logout-gold:active {
+  background: #b02a37;
+  border-color: #b02a37;
+  color: #fff;
+  transform: scale(0.97);
+}
+
+/* blue */
+.btn-logout-blue {
+  color: #4169E1;
+  border: 1.5px solid #4169E1;
+  border-radius: 8px;
+  font-size: 13px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-logout-blue:hover {
+  background: #4169E1;
+  color: #fff;
+  border-color: #4169E1;
+}
+
+.btn-logout-blue:active {
+  background: #b02a37;
+  border-color: #b02a37;
+  color: #fff;
+  transform: scale(0.97);
+}
+
+/* green */
+.btn-logout-green {
+  color: #2E8B57;
+  border: 1.5px solid #2E8B57;
+  border-radius: 8px;
+  font-size: 13px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-logout-green:hover {
+  background: #2E8B57;
+  color: #fff;
+  border-color: #2E8B57;
+}
+
+.btn-logout-green:active {
+  background: #2E8B57;
+  border-color: #2E8B57;
+  color: #fff;
+  transform: scale(0.97);
+}
+
+/* blue */
+.btn-logout-blue {
+  color: #4169E1;
+  border: 1.5px solid #4169E1;
+  border-radius: 8px;
+  font-size: 13px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-logout-blue:hover {
+  background: #4169E1;
+  color: #fff;
+  border-color: #4169E1
+}
+
+.btn-logout-blue:active {
+  background: #4169E1;
+  border-color: #4169E1;
+  color: #fff;
+  transform: scale(0.97);
+}
