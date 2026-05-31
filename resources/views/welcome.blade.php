@@ -9,6 +9,8 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
                             <li class="nav-item"><a class="btn btn-primary btn-lg px-3 py-2 me-sm-3 fs-6 fw-bolder" href="{{route('login')}}">Login</a></li>
+                            <li class="nav-item"><a class="btn btn-warning btn-lg px-3 py-2 me-sm-3 fs-6 fw-bolder" href="{{route('login-admin')}}">Login Admin</a></li>
+
                             <!-- <li class="nav-item"><a class="nav-link" href="resume.html">Resume</a></li> -->
                         </ul>
                     </div>
