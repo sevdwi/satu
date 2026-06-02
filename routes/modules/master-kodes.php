@@ -7,10 +7,11 @@ use App\Http\Controllers\MasterKodeImportController;
 
 Route::prefix('master-kodes')->name('master-kodes.')->group(function () {
 
-Route::get('/search', [MasterKodeController::class, 'search']) ->name('master-kodes.search');
-Route::get('/import', [MasterKodeImportController::class, 'index']);
+Route::get('/search', [MasterKodeController::class, 'search']) ->name('search');
+Route::get('/import', [MasterKodeImportController::class, 'index'])->name('import');
+
 Route::post('/import', [MasterKodeImportController::class, 'store']);
-Route::get('/search', [MasterKodeController::class, 'search2']);
+// Route::get('/search', [MasterKodeController::class, 'search2']);
 // Route::resource('/', MasterKodeController::class);
 
 // 1. Menampilkan semua data (Halaman Utama)

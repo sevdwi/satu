@@ -1,26 +1,17 @@
 @extends('layouts.administrator')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<form action="{{ route('arsip.update', $data->id) }}"
+      method="POST"
+      enctype="multipart/form-data">
 
-</head>
-<body>
-
-<div class="container mt-4">
-
-    <h3>Tambah Arsip</h3>
-
-    <form action="{{ route('arsip.store') }}"
-          method="POST"
-          enctype="multipart/form-data">
-
-        @csrf
-
+    @csrf
+    @method('PUT')   
         <div class="mb-3">
             <label>Kode Arsip</label>
 
-            <select name="master_kode_id" class="form-control  select-master-kode">
+            <select name="master_kode_id" class="form-control select-master-kode">
 
                 <option value="">-- Pilih Kode --</option>
 
@@ -40,21 +31,21 @@
         <div class="mb-3">
             <label>OPD</label>
 
-            <select name="opd_id" class="form-control  select-opd">
+            <select name="opd_id" class="form-control select-opd">
 
-                <option value="0">-- Pilih OPD --</option>
+                <option value="">-- Pilih OPD --</option>
 
-                
+                @foreach($opds as $opd)
+
+                    <option value="{{ $opd->id }}">
+
+                        {{ $opd->nama }}
+
+                    </option>
+
+                @endforeach
 
             </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Korektor</label>
-
-            <input type="text"
-                   name="korektor"
-                   class="form-control">
         </div>
 
         <div class="mb-3">
@@ -82,23 +73,11 @@
         </div>
 
         <div class="mb-3">
-            <label>Retensi Aktif</label>
-            <select name="retensi" class="form-control">
-                <option value="0">pilih data</option>
-                @for($a=1;$a<=10;$a++)
-                <option value="{{$a}}">{{$a}} Tahun</option>
-                @endfor
-            </select>
-        </div>
+            <label>Retensi</label>
 
-        <div class="mb-3">
-            <label>Retensi Inaktif</label>
-            <select name="retensiinaktif" class="form-control">
-                <option value="0">pilih data</option>
-                @for($a=1;$a<=10;$a++)
-                <option value="{{$a}}">{{$a}} Tahun</option>
-                @endfor
-            </select>
+            <input type="text"
+                   name="retensi"
+                   class="form-control">
         </div>
 
         <div class="mb-3">
@@ -125,7 +104,15 @@
 
             <textarea name="deskripsi"
                       class="form-control"></textarea>
-        </div> 
+        </div>
+
+        <div class="mb-3">
+            <label>File</label>
+
+            <input type="file"
+                   name="file"
+                   class="form-control">
+        </div>
 
         <button class="btn btn-primary">
             Simpan
@@ -149,6 +136,7 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
 $(document).ready(function () {
 
@@ -165,7 +153,8 @@ $(document).ready(function () {
         minimumInputLength: 3,
 
         ajax: {
-            url: "{{ route('master-kodes.search') }}", 
+
+            url: '/master-kodes/search',
 
             dataType: 'json',
 
@@ -205,46 +194,42 @@ $(document).ready(function () {
 
     $('.select-opd').select2({
 
-    placeholder: 'Cari OPD...',
-    allowClear: true,
-    minimumInputLength: 3,
+        placeholder: 'Cari OPD...',
+        allowClear: true,
+        minimumInputLength: 3,
 
-    ajax: {
+        ajax: {
 
-        url: "{{ route('opd.search') }}",
+            url: '/opd/search',
 
-        type: 'GET',
+            dataType: 'json',
 
-        dataType: 'json',
+            delay: 250,
 
-        delay: 250,
+            data: function (params) {
 
-        data: function (params) {
+                console.log('OPD diketik:', params.term);
 
-            return {
-                q: params.term,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            };
-        },
+                return {
+                    q: params.term
+                };
+            },
 
-        processResults: function (data) {
+            processResults: function (data) {
 
-            return {
-                results: $.map(data, function(item) {
+                return {
+                    results: data.map(function (item) {
 
-                    return {
-                        id: item.id,
-                        text: item.unit_kerja + ' - ' + item.instansi
-                    }
+                        return {
+                            id: item.id,
+                            text: item.nama
+                        }
 
-                })
-            };
-        },
-
-        cache: true
-    }
-
-});
+                    })
+                };
+            }
+        }
+    });
 
 });
 </script>

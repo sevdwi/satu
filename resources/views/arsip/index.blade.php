@@ -1,7 +1,12 @@
 @extends('layouts.administrator')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between mb-3">
@@ -18,14 +23,16 @@
         </div>
     @endif
 
-    <table class="table table-bordered table-striped">
+    <table id="arsipTable" class="table table-bordered table-striped">
 
         <thead>
             <tr>
                 <th>No</th>
                 <th>Kode</th>
                 <th>Judul</th>
+                <th>Deskripsi</th>
                 <th>OPD</th>
+                <th>Korektor</th>
                 <th>Status</th>
                 <th>File</th>
                 <th width="180">Aksi</th>
@@ -40,8 +47,8 @@
 
                     <td>{{ $loop->iteration }}</td>
 
-                    <td>
-                        {{ $item->masterKode->kode ?? '-' }}
+                    <td> 
+                        {{ $item->masterKode->kode.'-'.$item->masterKode->nama?? '-' }}
                     </td>
 
                     <td>
@@ -49,7 +56,15 @@
                     </td>
 
                     <td>
-                        {{ $item->opd->nama ?? '-' }}
+                        {{ $item->deskripsi }}
+                    </td>
+
+                    <td>
+                        {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ $item->korektor }}
                     </td>
 
                     <td>
@@ -59,16 +74,23 @@
                     </td>
 
                     <td>
-                        @if($item->file)
+                        <?php 
+                        if($item->file){
+                            if($item->file!=''){?>
+                                <a href="{{ asset('arsip/'.$item->file) }}"
+                                   target="_blank">
 
-                            <a href="{{ asset('arsip/'.$item->file) }}"
-                               target="_blank">
+                                    Lihat File
 
-                                Lihat File
+                                </a>
+                            <?php }else{?>
+                                <button class="btn btn-primary" title="Upload dokumen"><i class="fa fa-upload"></i></button> 
+                            <?php }?>
 
-                            </a>
-
-                        @endif
+                        <?php }else{?>
+                            <button class="btn btn-primary" title="Upload dokumen"><i class="fa fa-upload"></i></button>
+                        <?php }
+                        ?> 
                     </td>
 
                     <td>
@@ -115,4 +137,30 @@
     </table>
 
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#arsipTable').DataTable({
+            responsive: true,
+            pageLength: 10,
+            ordering: true,
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Data tidak ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                infoEmpty: "Tidak ada data",
+                paginate: {
+                    first: "Awal",
+                    last: "Akhir",
+                    next: "→",
+                    previous: "←"
+                }
+            }
+        });
+    });
+</script>
 @endsection

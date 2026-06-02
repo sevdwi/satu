@@ -1,25 +1,35 @@
 @extends('layouts.administrator')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<form action="{{ route('arsip.update', $data->id) }}"
-      method="POST"
-      enctype="multipart/form-data">
 
-    @csrf
-    @method('PUT')   
+</head>
+<body>
+
+<div class="container mt-4">
+
+    <h3>Tambah Arsip</h3>
+
+    <form action="{{ route('arsip.update',$id) }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        @csrf
+
         <div class="mb-3">
             <label>Kode Arsip</label>
+            <input type="hidden" name="id" value="{{$id}}">
 
-            <select name="master_kode_id" class="form-control select-master-kode">
+            <select name="master_kode_id" class="form-control  select-master-kode">
 
                 <option value="">-- Pilih Kode --</option>
 
                 @foreach($masterKodes as $kode)
 
-                    <option value="{{ $kode->id }}">
+                    <option value="{{ $kode->id }}" <?php if($kode->id==$data->master_kode_id){?>selected<?php }?>>
 
-                        {{ $kode->kode }} - {{ $kode->nama }}
+                        {{ $data->masterKode->kode }} - {{ $data->masterKode->nama }}
 
                     </option>
 
@@ -31,21 +41,22 @@
         <div class="mb-3">
             <label>OPD</label>
 
-            <select name="opd_id" class="form-control select-opd">
+            <select name="opd_id" class="form-control  select-opd">
 
-                <option value="">-- Pilih OPD --</option>
-
-                @foreach($opds as $opd)
-
-                    <option value="{{ $opd->id }}">
-
-                        {{ $opd->nama }}
-
-                    </option>
-
-                @endforeach
-
+                <option value="0">-- Pilih OPD --</option>
+                <option value="{{ $data->opd_id }}" selected> 
+                        {{ $data->opd->singkatan_uk }} - {{ $data->opd->singkatan_instansi }}
+                </option>  
             </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Korektor</label>
+
+            <input type="text"
+                   name="korektor"
+                   class="form-control"
+                   value="{{$data->korektor}}">
         </div>
 
         <div class="mb-3">
@@ -53,7 +64,8 @@
 
             <input type="text"
                    name="judul"
-                   class="form-control">
+                   class="form-control"
+                   value="{{$data->judul}}">
         </div>
 
         <div class="mb-3">
@@ -61,7 +73,8 @@
 
             <input type="text"
                    name="nomor"
-                   class="form-control">
+                   class="form-control"
+                   value="{{$data->nomor}}">
         </div>
 
         <div class="mb-3">
@@ -69,24 +82,36 @@
 
             <input type="date"
                    name="tanggal"
-                   class="form-control">
+                   class="form-control"
+                   value="{{$data->tanggal}}">
         </div>
 
         <div class="mb-3">
-            <label>Retensi</label>
+            <label>Retensi Aktif</label>
+            <select name="retensi" class="form-control">
+                <option value="0">pilih data</option>
+                @for($a=1;$a<=10;$a++)
+                <option value="{{$a}}" <?php if($a==$data->retensi){?>selected<?php }?>>{{$a}} Tahun</option>
+                @endfor
+            </select>
+        </div>
 
-            <input type="text"
-                   name="retensi"
-                   class="form-control">
+        <div class="mb-3">
+            <label>Retensi Inaktif</label>
+            <select name="retensiinaktif" class="form-control">
+                <option value="0">pilih data</option>
+                @for($a=1;$a<=10;$a++)
+                <option value="{{$a}}"  <?php if($a==$data->retensiinaktif){?>selected<?php }?>>{{$a}} Tahun</option>
+                @endfor
+            </select>
         </div>
 
         <div class="mb-3">
             <label>Status</label>
 
-            <select name="status" class="form-control">
-
-                <option value="aktif">Aktif</option>
-                <option value="nonaktif">Nonaktif</option>
+            <select name="status" class="form-control"> 
+                <option value="aktif" <?php if($data->status=='aktif'){?> selected<?php }?>>Aktif</option>
+                <option value="nonaktif" <?php if($data->status=='nonaktif'){?> selected<?php }?>>Nonaktif</option>
 
             </select>
         </div>
@@ -96,23 +121,16 @@
 
             <input type="date"
                    name="pemusnahan"
-                   class="form-control">
+                   class="form-control"
+                   value="{{$data->pemusnahan}}">
         </div>
 
         <div class="mb-3">
             <label>Deskripsi</label>
 
             <textarea name="deskripsi"
-                      class="form-control"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label>File</label>
-
-            <input type="file"
-                   name="file"
-                   class="form-control">
-        </div>
+                      class="form-control">{{$data->deskripsi}}</textarea>
+        </div> 
 
         <button class="btn btn-primary">
             Simpan
@@ -136,7 +154,6 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
 $(document).ready(function () {
 
@@ -153,8 +170,7 @@ $(document).ready(function () {
         minimumInputLength: 3,
 
         ajax: {
-
-            url: '/master-kodes/search',
+            url: "{{ route('master-kodes.search') }}", 
 
             dataType: 'json',
 
@@ -194,42 +210,46 @@ $(document).ready(function () {
 
     $('.select-opd').select2({
 
-        placeholder: 'Cari OPD...',
-        allowClear: true,
-        minimumInputLength: 3,
+    placeholder: 'Cari OPD...',
+    allowClear: true,
+    minimumInputLength: 3,
 
-        ajax: {
+    ajax: {
 
-            url: '/opd/search',
+        url: "{{ route('opd.search') }}",
 
-            dataType: 'json',
+        type: 'GET',
 
-            delay: 250,
+        dataType: 'json',
 
-            data: function (params) {
+        delay: 250,
 
-                console.log('OPD diketik:', params.term);
+        data: function (params) {
 
-                return {
-                    q: params.term
-                };
-            },
+            return {
+                q: params.term,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            };
+        },
 
-            processResults: function (data) {
+        processResults: function (data) {
 
-                return {
-                    results: data.map(function (item) {
+            return {
+                results: $.map(data, function(item) {
 
-                        return {
-                            id: item.id,
-                            text: item.nama
-                        }
+                    return {
+                        id: item.id,
+                        text: item.unit_kerja + ' - ' + item.instansi
+                    }
 
-                    })
-                };
-            }
-        }
-    });
+                })
+            };
+        },
+
+        cache: true
+    }
+
+});
 
 });
 </script>

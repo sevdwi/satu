@@ -48,6 +48,10 @@ return new class extends Migration
 
             $table->string('status')->nullable();
 
+            $table->string('korektor')->nullable();
+
+            $table->string('retensiinaktif')->nullable();
+
             $table->date('pemusnahan')->nullable();
 
             $table->timestamps();

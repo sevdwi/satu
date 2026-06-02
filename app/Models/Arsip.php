@@ -19,7 +19,9 @@ class Arsip extends Model
         'retensi',
         'nomor',
         'status',
+        'retensiinaktif',
         'pemusnahan',
+        'korektor',
     ];
 
     /*
