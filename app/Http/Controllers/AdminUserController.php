@@ -7,9 +7,9 @@ use App\Models\Opd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class AdminUserController extends Controller
 {
-    // list semua user
+    // list semua admin
     public function index()
     {
         $users = User::all();
@@ -23,7 +23,7 @@ class UserController extends Controller
         return view('users.create', compact('opds'));
     }
 
-    // simpan user
+    // simpan admin
     public function store(Request $request)
     {
         $request->validate([
@@ -40,7 +40,7 @@ class UserController extends Controller
             'password' => $request->password, // auto hash oleh model
         ]);
 
-        return redirect()->route('login');
+        return redirect()->route('login-admin');
     }
 
     // form edit
@@ -74,13 +74,13 @@ class UserController extends Controller
     }
 
     // ------------------------------------------------------------------
-    // AUTH user
+    // AUTH ADMIN
     // ------------------------------------------------------------------
 
     // login form
     public function loginForm()
     {
-        return view('auth.login');
+        return view('auth.login-admin');
     }
 
     // proses login
@@ -99,31 +99,59 @@ class UserController extends Controller
         $credentials = [
             // 'name' => $request->name,
             'phone_number' => $request->phone_number,
-            'password' => $request->password
+            'password' => $request->password,
+            'role' => 'admin'
         ];
 
-        if (Auth::guard('web')->attempt($credentials, $request->remember)) {
+        if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
 
             $request->session()->regenerate();
 
-            return redirect()->intended('/app/dashboard');
+            return redirect()->intended('/app/dashboard-admin');
         }
 
+        // Cari user di database
+        $user = User::where(
+            'phone_number',
+            $request->phone_number
+        )->first();
+
+        // Jika user ada tetapi bukan admin
+        if (
+            $user != null
+            &&
+            $user->role != 'admin'
+        )
+        {
+            return back()
+                ->withInput()
+                ->withErrors([
+
+                    'login' =>
+                    'Bukan admin!!!'
+
+                ]);
+        }
+
+        // Login gagal biasa
         return back()
             ->withInput()
             ->withErrors([
-                'login' => 'Nomor atau password salah!!!'
-            ]);
+
+                'login' =>
+                'Nomor atau password salah!!!'
+
+            ]);        
     }
 
     // logout
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/user');
+        return redirect('/administrator');
     }
 }

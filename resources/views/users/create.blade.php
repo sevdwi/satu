@@ -509,7 +509,7 @@
       </button>
 
       <div class="login-link mt-3">
-        <a href="{{route('dashboard')}}">Kembali</a>
+        <a href="{{route('dashboard-admin')}}">Kembali</a>
       </div>
 
     </form>
