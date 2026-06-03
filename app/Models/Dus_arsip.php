@@ -26,5 +26,11 @@ class Dus_arsip extends Model
     {
         return $this->belongsTo(Opd::class, 'opd_id');
     }
+
+    // OPD
+    public function rak_arsip()
+    {
+        return $this->belongsTo(Rak_arsip::class, 'nomor_rak');
+    }
     //
 }

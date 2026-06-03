@@ -32,6 +32,8 @@
                 <th>Judul</th>
                 <th>Deskripsi</th>
                 <th>OPD</th>
+                <th>Nomor RAK</th>
+                <th>Nomor Dus</th>
                 <th>Korektor</th>
                 <th>Status</th>
                 <th>File</th>
@@ -61,6 +63,14 @@
 
                     <td>
                         {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ $item->rak_arsip->nomor_rak }}
+                    </td>
+
+                    <td>
+                        {{ $item->dus_arsip->nomor_dus }}
                     </td>
 
                     <td>

@@ -5,7 +5,12 @@ use App\Http\Controllers\ArsipController;
 
 
 Route::prefix('arsip')->name('arsip.')->group(function () {
+Route::get('/data', [ArsipController::class, 'index'])
+    ->name('home');
 
+Route::get('/{id}/edit/', [ArsipController::class, 'edit']);
+    
+Route::post('/{id}', [ArsipController::class, 'update']);
 Route::get('/dashbord', [ArsipController::class, 'dashbord'])->name('index');; 
 Route::resource('/', ArsipController::class);
 

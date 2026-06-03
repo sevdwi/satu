@@ -76,7 +76,9 @@ class ArsipController extends Controller
         $data = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
-            'user:id,name,email'
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
         ])->latest()->get(); 
 
         return view('arsip.index', compact('data'
@@ -107,9 +109,17 @@ class ArsipController extends Controller
     public function create()
     {
         $opds = Opd::all();
+        $data = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])->latest()->get();  
         $masterKodes = MasterKode::all();
 
         return view('arsip.create', compact(
+            'data',
             'opds',
             'masterKodes'
         ));
@@ -136,8 +146,10 @@ class ArsipController extends Controller
                 'pemusnahan' => $request->pemusnahan,
                 'created_by' => auth()->id(),
                 'file' => $filePath,
+                'nomor_dus' => $request->nomor_dus,
+                'nomor_rak' => $request->nomor_rak, 
             ]);
-            return redirect()->route('arsip.index')
+            return redirect()->route('arsip.home')
                 ->with('success', 'Data berhasil ditambahkan!');  
         } catch (\Throwable $e) {
             dd($e->getMessage());
@@ -189,7 +201,9 @@ class ArsipController extends Controller
         $data = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
-            'user:id,name,email'
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
         ])->findOrFail($id);
 
         $opds = Opd::all();
@@ -207,16 +221,7 @@ class ArsipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $arsip = Arsip::findOrFail($id);
-        // dd($request->all());
-
-        // $fileName = $arsip->file;
-
-        // if ($request->file('file')) {
-        //     $fileName = time().'_'.$request->file('file')->getClientOriginalName();
-        //     $request->file('file')->move(public_path('arsip'), $fileName);
-        // }
-
+        $arsip = Arsip::findOrFail($id); 
         $arsip->update([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
@@ -227,9 +232,11 @@ class ArsipController extends Controller
             'nomor' => $request->nomor,
             'status' => $request->status,
             'pemusnahan' => $request->pemusnahan, 
+            'nomor_dus' => $request->nomor_dus,
+            'nomor_rak' => $request->nomor_rak, 
         ]);
 
-        return redirect()->route('arsip.index')
+        return redirect()->route('arsip.home')
             ->with('success', 'Data berhasil diupdate');
     }
 

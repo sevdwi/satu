@@ -22,6 +22,9 @@ class Arsip extends Model
         'retensiinaktif',
         'pemusnahan',
         'korektor',
+        'nomor_sementara',
+        'nomor_dus',
+        'nomor_rak'
     ];
 
     /*
@@ -29,6 +32,16 @@ class Arsip extends Model
     | RELASI
     |--------------------------------------------------------------------------
     */
+
+    // OPD
+    public function dus_arsip()
+    {
+        return $this->belongsTo(Dus_arsip::class, 'nomor_dus');
+    }
+    public function rak_arsip()
+    {
+        return $this->belongsTo(Rak_arsip::class, 'nomor_rak');
+    }
 
     // OPD
     public function opd()

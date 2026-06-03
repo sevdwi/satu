@@ -7,6 +7,9 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
 
     Route::get('/dashbord', [ArsipController::class, 'dashbord'])
         ->name('dashboard');
+
+    Route::get('/data', [ArsipController::class, 'index'])
+        ->name('home');
         
 	Route::get('/{id}/edit/', [ArsipController::class, 'edit']);
         

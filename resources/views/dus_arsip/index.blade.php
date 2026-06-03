@@ -10,10 +10,10 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between mb-3">
-        <h3>Data Arsip</h3>
+        <h3>Data Dus Arsip</h3>
 
-        <a href="{{ route('arsip.create') }}" class="btn btn-primary">
-            Tambah Arsip
+        <a href="{{ route('dus_arsip.create') }}" class="btn btn-primary">
+            Tambah Data
         </a>
     </div>
 
@@ -36,63 +36,34 @@
         </thead>
 
         <tbody>
-
-            @forelse($data as $item)
-
+            @if($data)
+                @foreach($data as $item)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>
+                            {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
+                        </td> 
+                        <td>
+                            {{ $item->nomor_rak ?? '-' }}
+                        </td> 
+                        <td>
+                            {{ $item->nomor_dus ?? '-' }}
+                        </td> 
+                        <td>
+                            <a href="{{ route('dus_arsip.edit', $item->id) }}" title="Ubah Data"
+                               class="btn btn-warning btn-sm"> 
+                                <i class="fa fa-edit"></i> 
+                            </a> 
+                        </td> 
+                    </tr>
+                @endforeach
+            @else
                 <tr>
-
-                    <td>{{ $loop->iteration }}</td>
-
-                    <td>
-                        {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
-                    </td> 
-
-                    <td>
-                        {{ $item->nomor_rak }}
-                    </td> 
-
-                    <td>
-                        {{ $item->nomor_dus }}
-                    </td> 
-
-                    <td>
-
-                        <a href="{{ route('arsip.edit', $item->id) }}"
-                           class="btn btn-warning btn-sm">
-
-                            Edit
-
-                        </a>
-
-                        <form action="{{ route('arsip.destroy', $item->id) }}"
-                              method="POST"
-                              class="d-inline">
-
-                            @csrf
-                            @method('DELETE')
-
-                            <button class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Hapus data?')">
-
-                                Hapus
-
-                            </button>
-
-                        </form>
-
-                    </td>
-
-                </tr>
-
-            @empty
-
-                <tr>
-                    <td colspan="7" class="text-center">
+                    <td colspan="4" class="text-center">
                         Data kosong
                     </td>
                 </tr>
-
-            @endforelse
+            @endif
 
         </tbody>
 
