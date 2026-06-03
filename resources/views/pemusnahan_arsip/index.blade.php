@@ -38,7 +38,7 @@
                 <th width="180">Aksi</th>
             </tr>
         </thead>
-
+@if($data)
         <tbody>
 
             @forelse($data as $item)
@@ -136,8 +136,9 @@
             @endforelse
 
         </tbody>
-
+@endif
     </table>
+@if($data)
     <div class="modal fade" id="pdfModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -189,6 +190,8 @@
             </form>
         </div>
     </div>
+    
+@endif
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>

@@ -86,6 +86,24 @@ class ArsipController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function upload(Request $request, $id)
+    {
+        $request->validate([
+            'file' => 'required|file|max:50120'//+-50Mb
+        ]);
+
+        $file = $request->file('file');
+        $filename = time().'_'.$file->getClientOriginalName();
+        // dd($filename);
+
+        $file->move(public_path('arsip'), $filename);
+
+        $arsip = Arsip::findOrFail($id);
+        $arsip->file = $filename;
+        $arsip->save();
+
+        return back()->with('success', 'File berhasil diupload');
+    }
     public function create()
     {
         $opds = Opd::all();
@@ -125,7 +143,7 @@ class ArsipController extends Controller
             dd($e->getMessage());
         } 
     } 
-    public function upload(Request $request){
+    public function uploads(Request $request){
         try{ 
             if ($request->hasFile('file')) {
 

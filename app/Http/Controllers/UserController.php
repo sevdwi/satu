@@ -101,8 +101,10 @@ class UserController extends Controller
             'phone_number' => $request->phone_number,
             'password' => $request->password
         ];
+        // dd($credentials);
+        // dd($request->remember);
 
-        if (Auth::guard('web')->attempt($credentials, $request->remember)) {
+        if (Auth::guard('web')->attempt($credentials)) {
 
             $request->session()->regenerate();
 

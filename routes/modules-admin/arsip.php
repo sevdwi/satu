@@ -12,5 +12,8 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
         
 	Route::post('/{id}', [ArsipController::class, 'update']);
 
+    Route::post('/upload/{id}', [ArsipController::class, 'upload'])
+    ->name('upload');
+
     Route::resource('', ArsipController::class);
 });
