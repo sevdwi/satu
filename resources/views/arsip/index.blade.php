@@ -84,27 +84,32 @@
                     </td>
                     <td>
                         @if($item->file)
-                             <button class="btn btn-info btn-sm form-control"
+
+                            <button class="btn btn-info btn-sm form-control btn-view-pdf"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#pdfModal{{ $item->id }}"> <i class="fa fa-book"></i>
-                                Lihat File
+                                    data-bs-target="#pdfModal"
+                                    data-file="{{ asset('arsip/'.$item->file) }}">
+                                <i class="fa fa-book"></i> Lihat File
                             </button>
-                            <!-- <a href="{{ asset('arsip/'.$item->file) }}" target="_blank">
-                                Lihat File
-                            </a> -->
-                            <button class="btn btn-primary btn-sm form-control" 
+
+                            <button class="btn btn-primary btn-sm form-control btn-upload"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#uploadModal{{ $item->id }}">
+                                    data-bs-target="#uploadModal"
+                                    data-id="{{ $item->id }}">
                                 <i class="fa fa-upload"></i>
                             </button>
+
                         @else
-                            <button class="btn btn-primary btn-sm form-control"
+
+                            <button class="btn btn-primary btn-sm form-control btn-upload"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#uploadModal{{ $item->id }}">
+                                    data-bs-target="#uploadModal"
+                                    data-id="{{ $item->id }}">
                                 <i class="fa fa-upload"></i>
                             </button>
+
                         @endif
-                    </td>
+                    </td> 
 
                     <td>
 
@@ -137,64 +142,60 @@
 
             @empty
 
-                <tr>
-                    <td colspan="7" class="text-center">
+                <!-- <tr>
+                    <td colspan="11" class="text-center">
                         Data kosong
                     </td>
-                </tr>
+                </tr> -->
 
             @endforelse
 
         </tbody>
 
-    </table>
-    <div class="modal fade" id="pdfModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    </table> 
+    <div class="modal fade" id="pdfModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Preview PDF</h5>
+                    <h5 class="modal-title">Preview File</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body p-0" style="height: 80vh;">
-                    <!-- <iframe
-                        src="https://docs.google.com/gview?url={{ asset('arsip/'.$item->file) }}&embedded=true"
-                        width="100%"
-                        height="100%"
-                        style="border: none;">
-                    </iframe> -->
-                    <iframe
-                        src="{{ asset('arsip/'.$item->file) }}#toolbar=0&navpanes=0&scrollbar=0" 
-                        width="100%"
-                        height="100%"
-                        style="border: none;">
+                    <iframe id="pdfFrame"
+                            src=""
+                            width="100%"
+                            height="100%"
+                            style="border:none;">
                     </iframe>
                 </div>
 
             </div>
         </div>
     </div>
-    <div class="modal fade" id="uploadModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="uploadModal" tabindex="-1">
         <div class="modal-dialog">
-            <form action="{{ route('arsip.upload', $item->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('arsip.uploads') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
+                <input type="hidden" name="id" id="upload_id">
+
                 <div class="modal-content">
+
                     <div class="modal-header">
                         <h5 class="modal-title">Upload Dokumen</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-                        <label class="form-label">Pilih File</label>
                         <input type="file" name="file" class="form-control" required>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Upload</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button class="btn btn-success">Upload</button>
                     </div>
+
                 </div>
             </form>
         </div>
@@ -225,5 +226,38 @@
             }
         });
     });
+    document.addEventListener('DOMContentLoaded', function () {
+
+    // OPEN PDF
+    document.querySelectorAll('.btn-view-pdf').forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            let file = this.dataset.file;
+
+            document.getElementById('pdfFrame').src = file;
+
+        });
+    });
+
+    // OPEN UPLOAD
+    document.querySelectorAll('.btn-upload').forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            let id = this.dataset.id;
+
+            document.getElementById('upload_id').value = id;
+
+        });
+    });
+
+    // CLEAN IFRAME
+    document.getElementById('pdfModal')
+        .addEventListener('hidden.bs.modal', function () {
+
+            document.getElementById('pdfFrame').src = '';
+
+        });
+
+});
 </script>
 @endsection

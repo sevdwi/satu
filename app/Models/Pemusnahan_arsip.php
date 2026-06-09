@@ -24,6 +24,7 @@ class Pemusnahan_arsip extends Model
         'pemusnahan',
         'korektor',
         'no_ba',
+        'file_ba'
     ];
 
     /*

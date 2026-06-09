@@ -79,7 +79,9 @@ class ArsipController extends Controller
             'user:id,name,email',
             'dus_arsip:id,nomor_dus,nomor_rak',
             'rak_arsip:id,nomor_rak'
-        ])->latest()->get(); 
+        ])
+        ->where('status', '!=', 'inaktif')
+        ->latest()->get(); 
 
         return view('arsip.index', compact('data'
         ));
@@ -90,6 +92,25 @@ class ArsipController extends Controller
      */
     public function upload(Request $request, $id)
     {
+        $request->validate([
+            'file' => 'required|file|max:50120'//+-50Mb
+        ]);
+
+        $file = $request->file('file');
+        $filename = time().'_'.$file->getClientOriginalName();
+        // dd($filename);
+
+        $file->move(public_path('arsip'), $filename);
+
+        $arsip = Arsip::findOrFail($id);
+        $arsip->file = $filename;
+        $arsip->save();
+
+        return back()->with('success', 'File berhasil diupload');
+    }
+    public function uploads_post(Request $request)
+    {
+        $id=$request->input('id');
         $request->validate([
             'file' => 'required|file|max:50120'//+-50Mb
         ]);
@@ -198,7 +219,7 @@ class ArsipController extends Controller
                 // $file->move(public_path('arsip'), $fileName);
                 $filePath = $request->file('file')
                 ->store('arsip', 'public');
-                dd($filePath);
+                // dd($filePath);
             }
         }
         catch (\Throwable $e) {

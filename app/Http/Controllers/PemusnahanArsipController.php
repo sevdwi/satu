@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Pemusnahan_arsip;
 use App\Models\Opd;
 use App\Models\Arsip;
+use App\Models\MasterKode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PemusnahanArsipController extends Controller
 {
@@ -23,6 +25,82 @@ class PemusnahanArsipController extends Controller
         return view('pemusnahan_arsip.index', compact('data'
         ));
         //
+    }
+    public function uploadBA(Request $request)
+    {
+        try {
+            // dd($request->all());
+
+            $request->validate([
+                'id' => 'required|exists:pemusnahan_arsips,id',
+                'file_ba' => 'required|mimes:pdf|max:51200', // 50 MB
+            ]);
+
+            $data = Pemusnahan_arsip::findOrFail($request->id);
+
+            $file = $request->file('file_ba');
+
+            $originalName = pathinfo(
+                $file->getClientOriginalName(),
+                PATHINFO_FILENAME
+            );
+
+            $safeName = Str::slug($originalName);
+
+            $extension = $file->getClientOriginalExtension();
+
+            $fileName = time().'_'.$safeName.'.'.$extension;
+
+            // simpan ke storage/app/public/ba_pemusnahan
+            $filePath = $file->storeAs(
+                'ba_pemusnahan',
+                $fileName,
+                'public'
+            );
+
+            // update database
+            $data->update([
+                'file_ba' => $filePath
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('success', 'File BA berhasil diupload');
+
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
+        }
+    }
+    public function uploadBAa(Request $request){ 
+        try{ 
+            if ($request->hasFile('file_ba')) {
+
+                $file = $request->file('file_ba');
+
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+                // Bersihkan nama file
+                $safeName = Str::slug($originalName);
+
+                // Ambil ekstensi asli
+                $extension = $file->getClientOriginalExtension();
+
+                // Nama final
+                $fileName = time() . '_' . $safeName . '.' . $extension;
+                // echo $fileName;die();
+
+                // $file->move(public_path('arsip'), $fileName);
+                $filePath = $request->file('file_ba')
+                ->store('ba_pemusnahan', 'public');
+                // dd($filePath);
+            }
+        }
+        catch (\Throwable $e) {
+            dd($e->getMessage());
+        }
     }
 
     /**
@@ -51,7 +129,8 @@ class PemusnahanArsipController extends Controller
      */
     public function store(Request $request)
     {
-        try { 
+        try {  
+            DB::beginTransaction();
             $id_arsip=$request->input('id_arsip');  
             $data = Arsip::with([
                 'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -66,7 +145,7 @@ class PemusnahanArsipController extends Controller
                 return redirect()->route('pemusnahan_arsip.create')
                 ->with('error', 'wajib ada nomoor arsip!'); 
             }
-            dd($request->all()); 
+            // dd($request->all()); 
             $dataa = Pemusnahan_arsip::create([
                 'id_arsip'  => $data->id,
                 'pemusnahan'=> $request->tanggal_pemusnahan,
@@ -83,21 +162,44 @@ class PemusnahanArsipController extends Controller
                 'status'    => 'inaktif', 
                 'korektor'  => $data->korektor, 
             ]);
+
+            // hapus arsip asli
+            // $arsip->delete();
+            $data->update([
+                'status'    => 'inaktif',
+                'pemusnahan'=> now()
+            ]);
+
+            DB::commit();
             return redirect()->route('pemusnahan_arsip.home')
                 ->with('success', 'Data berhasil ditambahkan!');  
         } catch (\Throwable $e) {
-            return redirect()->route('pemusnahan_arsip.create')
-            ->with('error', 'wajib ada nomoor arsip!'); 
-            // dd($e->getMessage());
+            DB::rollBack();
+            // return redirect()->route('pemusnahan_arsip.create')
+            // ->with('error', 'wajib ada nomoor arsip!'); 
+            dd($e->getMessage());
         } 
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Pemusnahan_arsip $pemusnahan_arsip)
-    {
-        //
+    public function show($id)
+    {  
+        $data = Pemusnahan_arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email'
+        ])->findOrFail($id); 
+
+        $opds = Opd::all();
+        $masterKodes = MasterKode::all();
+
+        return view('pemusnahan_arsip.detil', compact('id',
+            'data',
+            'opds',
+            'masterKodes'
+        ));
     }
 
     /**
