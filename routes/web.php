@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\AdminUserController;
+
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController; 
+use App\Http\Controllers\WelcomeController;
+
 use App\Http\Controllers\UserController; 
 use App\Http\Controllers\DepanController;
 
@@ -38,11 +43,7 @@ Route::get('/user', [UserController::class,'loginForm'])->name('login');
 Route::post('/login', [UserController::class,'login']); 
 Route::post('/logout', [UserController::class,'logout'])->name('logout'); 
 
-Route::get('/app/dashboard', function () {
-    // dd(session()->all());
-    // dd(auth()->user());
-    return view('dashboard');
-})->middleware('auth:web')->name('dashboard');
+Route::get('/app/dashboard', [CustomerController::class,'index'])->middleware('auth:web')->name('dashboard');
 
 Route::middleware(['auth:web'])->prefix('app')->group(function () {
     foreach (glob(__DIR__.'/modules-user/*.php') as $routeFile) {

@@ -23,6 +23,48 @@
                 </ul>
             </div>
         </div>
- </nav>
+</nav>
+
+<div style="background: #6495ED; min-height: 100vh; padding: 2rem;">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div class="card shadow-sm" style="border-radius: 16px; border: 1px solid #e0dbff;">
+            <div class="card-body p-4">
+                <div class="justify-between">
+                {{-- Header --}}
+                <h4 class="fw-semibold mb-4" style="color: #3C3489;">
+                    <i class="bi bi-people-fill me-2" style="color: #6495ED;"></i>
+                    Beranda
+                </h4>
+
+                <h4 class="fw-semibold mb-4" style="color: #3C3489;">
+                    <i class="bi bi-people-fill me-2" style="color: #6495ED;"></i>
+                    {{ auth()->guard('web')->user()->name }}
+                </h4>
+                </div>
+                {{-- Tombol Tambah --}}
+                <a href="{{ route('users.create') }}"
+                   class="btn mb-4 px-4"
+                   style="background: #6495ED; color: #fff; border-radius: 8px; font-size: 14px;">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah User
+                </a>
+
+                {{-- Tabel --}}
+                <table class="table align-middle" style="font-size: 14px;">
+                    <thead style="background: #6495ED;">
+                        <tr>
+                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">ID</th>
+                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Name</th>
+                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">OPD</th>
+                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Email</th>
+                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Number</th>
+                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Aksi</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
