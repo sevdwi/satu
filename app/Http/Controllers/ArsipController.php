@@ -106,6 +106,28 @@ class ArsipController extends Controller
 
         return back()->with('success', 'File berhasil diupload');
     }
+
+    public function search(Request $request)
+    {
+        $q = $request->q;
+ 
+        $data = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
+        ])
+        ->where('judul', 'like', "%{$q}%")
+        ->orWhere('nomor', 'like', "%{$q}%")
+        ->orWhere('tanggal', 'like', "%{$q}%")
+        ->orWhereHas('opd', function ($query) use ($q) {
+            $query->where('instansi', 'like', "%{$q}%")
+                  ->orWhere('singkatan_instansi', 'like', "%{$q}%")
+                  ->orWhere('unit_kerja', 'like', "%{$q}%")
+                  ->orWhere('singkatan_uk', 'like', "%{$q}%");
+        })
+        ->limit(20)
+        ->get();
+
+        return response()->json($data);
+    }
     public function create()
     {
         $opds = Opd::all();

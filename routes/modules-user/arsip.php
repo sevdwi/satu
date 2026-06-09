@@ -9,6 +9,7 @@ Route::get('/data', [ArsipController::class, 'index'])
     ->name('home');
 
 Route::get('/{id}/edit/', [ArsipController::class, 'edit']);
+Route::get('/search', [ArsipController::class, 'search'])->name('search');
     
 Route::post('/{id}', [ArsipController::class, 'update']);
 Route::get('/dashbord', [ArsipController::class, 'dashbord'])->name('index');; 

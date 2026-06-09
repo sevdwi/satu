@@ -12,7 +12,7 @@
     <div class="d-flex justify-content-between mb-3">
         <h3>Data Arsip</h3>
 
-        <a href="{{ route('arsip.create') }}" class="btn btn-primary">
+        <a href="{{ route('pemusnahan_arsip.create') }}" class="btn btn-primary">
             Tambah Arsip
         </a>
     </div>
@@ -127,71 +127,11 @@
 
             @empty
 
-                <tr>
-                    <td colspan="7" class="text-center">
-                        Data kosong
-                    </td>
-                </tr>
-
             @endforelse
 
         </tbody>
 @endif
-    </table>
-@if($data)
-    <div class="modal fade" id="pdfModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Preview PDF</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body p-0" style="height: 80vh;">
-                    <!-- <iframe
-                        src="https://docs.google.com/gview?url={{ asset('arsip/'.$item->file) }}&embedded=true"
-                        width="100%"
-                        height="100%"
-                        style="border: none;">
-                    </iframe> -->
-                    <iframe
-                        src="{{ asset('arsip/'.$item->file) }}#toolbar=0&navpanes=0&scrollbar=0" 
-                        width="100%"
-                        height="100%"
-                        style="border: none;">
-                    </iframe>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="uploadModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <form action="{{ route('arsip.upload', $item->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Upload Dokumen</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <label class="form-label">Pilih File</label>
-                        <input type="file" name="file" class="form-control" required>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Upload</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-@endif
+    </table> 
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>

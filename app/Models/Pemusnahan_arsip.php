@@ -11,6 +11,7 @@ class Pemusnahan_arsip extends Model
 
     protected $fillable = [     
         'judul',
+        'id_arsip',
         'deskripsi',
         'file',
         'tanggal',
@@ -22,6 +23,7 @@ class Pemusnahan_arsip extends Model
         'status', 
         'pemusnahan',
         'korektor',
+        'no_ba',
     ];
 
     /*

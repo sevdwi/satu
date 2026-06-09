@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemusnahan_arsip;
+use App\Models\Opd;
+use App\Models\Arsip;
 use Illuminate\Http\Request;
 
 class PemusnahanArsipController extends Controller
@@ -25,10 +27,23 @@ class PemusnahanArsipController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     */
+     */ 
     public function create()
     {
-        //
+        // $opds = Opd::all();
+        $arsip = Arsip::all();
+        $data = Pemusnahan_arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])->latest()->get();  
+        // $masterKodes = MasterKode::all();
+
+        return view('pemusnahan_arsip.create', compact(
+            'data','arsip'
+        ));
     }
 
     /**
@@ -36,7 +51,45 @@ class PemusnahanArsipController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try { 
+            $id_arsip=$request->input('id_arsip');  
+            $data = Arsip::with([
+                'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+                'masterKode:id,kode,nama',
+                'user:id,name,email',
+                'dus_arsip:id,nomor_dus,nomor_rak',
+                'rak_arsip:id,nomor_rak'
+            ])->findOrFail($id_arsip);
+            if($data){
+
+            }else{
+                return redirect()->route('pemusnahan_arsip.create')
+                ->with('error', 'wajib ada nomoor arsip!'); 
+            }
+            dd($request->all()); 
+            $dataa = Pemusnahan_arsip::create([
+                'id_arsip'  => $data->id,
+                'pemusnahan'=> $request->tanggal_pemusnahan,
+                'no_ba'     => $request->no_ba,
+                'judul'     => $data->judul, 
+                'deskripsi' => $data->deskripsi,
+                'file'      => $data->file,
+                'tanggal'   => $data->tanggal,
+                'master_kode_id'=> $data->master_kode_id,
+                'created_by'=> auth()->id(),
+                'opd_id'    => $data->opd_id,
+                'retensi'   => $data->retensi,
+                'nomor'     => $data->nomor,
+                'status'    => 'inaktif', 
+                'korektor'  => $data->korektor, 
+            ]);
+            return redirect()->route('pemusnahan_arsip.home')
+                ->with('success', 'Data berhasil ditambahkan!');  
+        } catch (\Throwable $e) {
+            return redirect()->route('pemusnahan_arsip.create')
+            ->with('error', 'wajib ada nomoor arsip!'); 
+            // dd($e->getMessage());
+        } 
     }
 
     /**
