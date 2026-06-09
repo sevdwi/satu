@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController; 
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DepanController;
 use App\Http\Controllers\MasterKodeController;
@@ -40,11 +41,7 @@ Route::get('/privacy', [WelcomeController::class,'privacy'])->name('privacy');
 Route::get('/request-deletion', [WelcomeController::class,'requestDeletion'])->name('request-deletion');
 Route::post('/request-deletion-action', [WelcomeController::class,'requestDeletionAction'])->name('account.deletion.submit');
 
-Route::get('/app/dashboard', function () {
-    // dd(session()->all());
-    // dd(auth()->user());
-    return view('dashboard');
-})->middleware('auth:web')->name('dashboard');
+Route::get('/app/dashboard', [CustomerController::class,'index'])->middleware('auth:web')->name('dashboard');
 
 Route::middleware(['auth:web'])->prefix('app')->group(function () {
     foreach (glob(__DIR__.'/modules-user/*.php') as $routeFile) {
