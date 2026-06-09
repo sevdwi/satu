@@ -365,192 +365,90 @@
   </style>
 </head>
 <body>
-
 <div class="register-card" style="overflow: auto;">
 
-  <!-- ── HEADER ── -->
-  <div class="card-header-strip">
-    <span class="hex-deco">⬡</span>
-    <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #ffffff;">SATU</span></a> <span> </span> <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
-    <h1>Buat Akun Baru</h1>
-    <p>Lengkapi data diri Anda untuk mendaftar ke sistem</p>
-  </div>
+    <h1 class="mt-2 mb-2">Tambah Akun</h1>
 
-  <!-- ── FORM ── -->
-  <div class="card-body-form">
-    <form  action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-      <!-- ── INFORMASI PRIBADI ── -->
-      <div class="section-label">Informasi Pribadi</div>
-
-      <!-- Nama Lengkap -->
-      <div class="mb-3">
-        <label class="form-label" for="name">Nama Lengkap <span class="req">*</span></label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-          <input type="text" class="form-control" id="name" name="name"
-                 placeholder="Masukkan nama lengkap Anda" required maxlength="255"/>
-          <div class="invalid-feedback">Nama lengkap wajib diisi.</div>
-        </div>
-      </div>
-
-      <!-- OPD & Nomor HP -->
-      <div class="row g-3 mb-3">
-        <div class="col-md-7">
-          <label class="form-label" for="opd">OPD / Instansi <span class="req">*</span></label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-building-fill"></i></span>
-            <select class="form-select" id="opd" name="opd" required
-                    style="color:#1E1033 !important; background-color:#fff !important; color-scheme:light;">
-              <option value="" disabled selected style="color:#7C6FA0;">-- Pilih OPD --</option>
-               @foreach($opds as $opd)
-                <option value="{{ $opd->instansi }}" {{ old('opd') == $opd->instansi ? 'selected' : '' }}>
-                    {{ $opd->instansi }}
-                </option>
-               @endforeach
-            </select>
-            <div class="invalid-feedback">OPD wajib dipilih.</div>
+    <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+      @csrf
+          <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control"  name="name" required autofocus >
+              
           </div>
-        </div>
-        <div class="col-md-5">
-          <label class="form-label" for="phone_number">Nomor HP <span class="req">*</span></label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
-            <input type="tel" class="form-control" id="phone_number" name="phone_number"
-                   placeholder="08xxxxxxxxxx" required maxlength="15"
-                   pattern="^[0-9\+\-\s]{7,15}$"/>
-            <div class="invalid-feedback">Nomor HP tidak valid.</div>
+          <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required  >
           </div>
-        </div>
-      </div>
-
-      <!-- ── AKUN & KEAMANAN ── -->
-      <div class="section-label">Akun &amp; Keamanan</div>
-
-      <!-- Email -->
-      <div class="mb-3">
-        <label class="form-label" for="email">Alamat Email <span class="req">*</span></label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
-          <input type="email" class="form-control" id="email" name="email"
-                 placeholder="contoh@email.com" required maxlength="255"/>
-          <div class="invalid-feedback">Masukkan alamat email yang valid.</div>
-        </div>
-        <div class="form-text"><i class="bi bi-info-circle me-1"></i>Email harus unik dan belum pernah digunakan.</div>
-      </div>
-
-      <!-- Password -->
-      <div class="row g-3 mb-3">
-        <div class="col-md-6">
-          <label class="form-label" for="password">Password <span class="req">*</span></label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-            <input type="password" class="form-control" id="password" name="password"
-                   placeholder="Min. 8 karakter" required minlength="8" maxlength="255"/>
-            <button type="button" class="btn-eye" onclick="togglePass('password','eyeIcon1')">
-              <i class="bi bi-eye-fill" id="eyeIcon1"></i>
-            </button>
-            <div class="invalid-feedback">Password minimal 8 karakter.</div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-7">
+              <label class="form-label" for="opd">OPD / Instansi <span class="req">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-building-fill"></i></span>
+                <select class="form-select" id="opd" name="opd" required
+                        style="color:#1E1033 !important; background-color:#fff !important; color-scheme:light;">
+                  <option value="" disabled selected style="color:#7C6FA0;">-- Pilih OPD --</option>
+                  @foreach($opds as $opd)
+                    <option value="{{ $opd->instansi }}" {{ old('opd') == $opd->instansi ? 'selected' : '' }}>
+                        {{ $opd->instansi }}
+                    </option>
+                  @endforeach
+                </select>
+                <div class="invalid-feedback">OPD wajib dipilih.</div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <label class="form-label" for="phone_number">Nomor HP <span class="req">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+                <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                      placeholder="08xxxxxxxxxx" required maxlength="15"
+                      pattern="^[0-9\+\-\s]{7,15}$"/>
+                <div class="invalid-feedback">Nomor HP tidak valid.</div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label" for="password_confirmation">Konfirmasi Password <span class="req">*</span></label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-            <input type="password" class="form-control" id="password_confirmation"
-                   placeholder="Ulangi password" required minlength="8" maxlength="255"/>
-            <button type="button" class="btn-eye" onclick="togglePass('password_confirmation','eyeIcon2')">
-              <i class="bi bi-eye-fill" id="eyeIcon2"></i>
-            </button>
-            <div class="invalid-feedback" id="confirmFeedback">Password tidak cocok.</div>
+          <div class="role-grid mb-3">
+            <div class="role-card">
+              <input type="radio" name="role" id="roleAdmin" value="admin"/>
+              <label for="roleAdmin"><span class="role-icon">🛡️</span>Admin</label>
+            </div>
+            <div class="role-card">
+              <input type="radio" name="role" id="roleStaff" value="staff" checked/>
+              <label for="roleStaff"><span class="role-icon">👷</span>Staff</label>
+            </div>
+            <div class="role-card">
+              <input type="radio" name="role" id="roleCustomer" value="customer"/>
+              <label for="roleCustomer"><span class="role-icon">👤</span>Customer</label>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <!-- ── ROLE ── -->
-      <div class="section-label">Role Pengguna</div>
+          <div class="status-grid mb-4">
+            <div class="status-opt verify">
+              <input type="radio" name="status" id="statusVerify" value="verify" checked/>
+              <label for="statusVerify"><i class="bi bi-hourglass-split"></i> Verify</label>
+            </div>
+            <div class="status-opt active">
+              <input type="radio" name="status" id="statusActive" value="active"/>
+              <label for="statusActive"><i class="bi bi-check-circle-fill"></i> Active</label>
+            </div>
+            <div class="status-opt banned">
+              <input type="radio" name="status" id="statusBanned" value="banned"/>
+              <label for="statusBanned"><i class="bi bi-slash-circle-fill"></i> Banned</label>
+            </div>
+          </div>
 
-      <div class="role-grid mb-3">
-        <div class="role-card">
-          <input type="radio" name="role" id="roleAdmin" value="admin"/>
-          <label for="roleAdmin"><span class="role-icon">🛡️</span>Admin</label>
-        </div>
-        <div class="role-card">
-          <input type="radio" name="role" id="roleStaff" value="staff" checked/>
-          <label for="roleStaff"><span class="role-icon">👷</span>Staff</label>
-        </div>
-        <div class="role-card">
-          <input type="radio" name="role" id="roleCustomer" value="customer"/>
-          <label for="roleCustomer"><span class="role-icon">👤</span>Customer</label>
-        </div>
-      </div>
 
-      <!-- ── STATUS ── -->
-      <div class="section-label">Status Akun</div>
 
-      <div class="status-grid mb-4">
-        <div class="status-opt verify">
-          <input type="radio" name="status" id="statusVerify" value="verify" checked/>
-          <label for="statusVerify"><i class="bi bi-hourglass-split"></i> Verify</label>
-        </div>
-        <div class="status-opt active">
-          <input type="radio" name="status" id="statusActive" value="active"/>
-          <label for="statusActive"><i class="bi bi-check-circle-fill"></i> Active</label>
-        </div>
-        <div class="status-opt banned">
-          <input type="radio" name="status" id="statusBanned" value="banned"/>
-          <label for="statusBanned"><i class="bi bi-slash-circle-fill"></i> Banned</label>
-        </div>
-      </div>
+          <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required  >
+              <div id="emailHelp" class="form-text">We'll never share your password with anyone else.</div>
+          </div>
 
-      <!-- ── SUBMIT ── -->
-      <button type="submit" class="btn-register">
-        <i class="bi bi-person-plus-fill me-2"></i>Daftar Sekarang
-      </button>
-
-      <div class="login-link mt-3">
-        <a href="{{route('dashboard-admin')}}">Kembali</a>
-      </div>
+          <button type="submit" class="btn btn-primary">Daftar</button>
+          <button type="submit" class="btn btn-success"><a href="{{route('users.index')}}"style="color: #fff;">Back to Login</a></button>
 
     </form>
-  </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  function togglePass(inputId, iconId) {
-    const inp  = document.getElementById(inputId);
-    const icon = document.getElementById(iconId);
-    inp.type   = inp.type === 'password' ? 'text' : 'password';
-    icon.className = inp.type === 'text' ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill';
-  }
-
-  const form     = document.getElementById('registerForm');
-  const passEl   = document.getElementById('password');
-  const confEl   = document.getElementById('password_confirmation');
-  const confFeed = document.getElementById('confirmFeedback');
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    confEl.setCustomValidity(passEl.value !== confEl.value ? 'Password tidak cocok' : '');
-    if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
-
-    const payload = {
-      name:         document.getElementById('name').value.trim(),
-      opd:          document.getElementById('opd').value.trim(),
-      email:        document.getElementById('email').value.trim(),
-      phone_number: document.getElementById('phone_number').value.trim(),
-      password:     passEl.value,
-      role:         document.querySelector('input[name="role"]:checked').value,
-      status:       document.querySelector('input[name="status"]:checked').value,
-    };
-
-    console.log('Payload:', payload);
-    alert('✅ Registrasi berhasil!\n\nNama: ' + payload.name + '\nOPD: ' + payload.opd);
-  });
-
-  confEl.addEventListener('input', () => {
-    confEl.setCustomValidity(confEl.value && confEl.value !== passEl.value ? 'Password tidak cocok' : '');
-  });
-</script>
 @endsection

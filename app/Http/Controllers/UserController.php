@@ -37,6 +37,9 @@ class UserController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'phone_number'   => $request->phone_number,
+            'opd'     => $request->opd,
+            'role' => $request->role,
+            'status' => $request->status,
             'password' => $request->password, // auto hash oleh model
         ]);
 

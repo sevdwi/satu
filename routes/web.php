@@ -8,8 +8,6 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController; 
 use App\Http\Controllers\WelcomeController;
-
-use App\Http\Controllers\UserController; 
 use App\Http\Controllers\DepanController;
 
 use App\Http\Controllers\MasterKodeController;

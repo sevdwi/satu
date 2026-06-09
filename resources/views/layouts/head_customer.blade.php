@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>SATU (Sistem Informasi Kearsipan Terpadu)</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="icon" href="{{ asset('images/arsip.png') }}" type="image/png">
+
+        <!-- Custom Google font-->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <!-- <link href="css/styles.css" rel="stylesheet" /> -->
+        <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+        <!-- ADMIN LTE -->
+        <!-- Google Font: Source Sans Pro -->
+        <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> -->
+
+        <!-- Font Awesome Icons -->
+        <!-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/plugins/fontawesome-free/css/all.min.css') }}">  -->
+        <!-- overlayScrollbars -->
+        <!-- <link rel="stylesheet" href="{{ asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">  -->
+        <!-- Theme style -->
+        <!-- <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">  -->
+        <!-- ... -->
+        
+
+
+    </head>
+
+    <body class="d-flex flex-column h-100">
+    @yield('content')
+
+<!-- Footer-->
+<footer>
+  <p>
+    &copy; 2026 <strong>SIMARS</strong> — Sistem Informasi Manajemen Arsip Daerah.
+    Dikembangkan oleh <strong>Diskominfo</strong>.
+  </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Mobile menu toggle
+  const mobileToggle = document.querySelector('.nav-mobile-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', () => {
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      navLinks.style.flexDirection = 'column';
+      navLinks.style.position = 'absolute';
+      navLinks.style.top = '68px';
+      navLinks.style.left = '0';
+      navLinks.style.right = '0';
+      navLinks.style.background = '#fff';
+      navLinks.style.padding = '1rem';
+      navLinks.style.borderBottom = '1px solid var(--border)';
+      navLinks.style.boxShadow = '0 8px 24px rgba(0,0,0,.08)';
+    });
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href="#modul"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('modul').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Active nav highlight
+  document.querySelectorAll('.nav-links > li > a').forEach(a => {
+    a.addEventListener('click', function() {
+      document.querySelectorAll('.nav-links > li > a').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
