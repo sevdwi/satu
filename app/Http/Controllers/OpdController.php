@@ -17,7 +17,7 @@ class OpdController extends Controller
     {
         return view('opd.create');
     }
-    public function search2(Request $request)
+    public function search(Request $request)
     {
         $q = $request->q;
  

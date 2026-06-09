@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Opd;
 use App\Models\Arsip;
 use App\Models\MasterKode;
+use Illuminate\Support\Str;
 
 class ArsipController extends Controller
 {
@@ -72,25 +73,53 @@ class ArsipController extends Controller
     } 
     public function index()
     {
-        $data = Arsip::all();
-        $opds = Opd::all();
-        $masterKodes = MasterKode::all();
+        $data = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])->latest()->get(); 
 
-        return view('arsip.index', compact(
-            'opds',
-            'masterKodes','data'
+        return view('arsip.index', compact('data'
         ));
     }
 
     /**
      * Show the form for creating a new resource.
      */
+    public function upload(Request $request, $id)
+    {
+        $request->validate([
+            'file' => 'required|file|max:50120'//+-50Mb
+        ]);
+
+        $file = $request->file('file');
+        $filename = time().'_'.$file->getClientOriginalName();
+        // dd($filename);
+
+        $file->move(public_path('arsip'), $filename);
+
+        $arsip = Arsip::findOrFail($id);
+        $arsip->file = $filename;
+        $arsip->save();
+
+        return back()->with('success', 'File berhasil diupload');
+    }
     public function create()
     {
         $opds = Opd::all();
+        $data = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])->latest()->get();  
         $masterKodes = MasterKode::all();
 
         return view('arsip.create', compact(
+            'data',
             'opds',
             'masterKodes'
         ));
@@ -100,42 +129,67 @@ class ArsipController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'kode' => 'required',
-            'judul' => 'required',
-        ]);
-
-        $fileName = null;
-
-        if ($request->file('file')) {
-            $fileName = time().'_'.$request->file('file')->getClientOriginalName();
-            $request->file('file')->move(public_path('arsip'), $fileName);
-        }
-
-        Arsip::create([
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-            'tanggal' => $request->tanggal,
-            'master_kode_id' => $request->master_kode_id,
-            'opd_id' => $request->opd_id,
-            'retensi' => $request->retensi,
-            'nomor' => $request->nomor,
-            'status' => $request->status ?? 'aktif',
-            'pemusnahan' => $request->pemusnahan,
-            'created_by' => auth()->id(),
-            'file' => $fileName,
-        ]);
-
-        return redirect()->route('arsip.index')
-            ->with('success', 'Data berhasil disimpan');
+    { 
+        $filePath = null;
+        try { 
+            $data = Arsip::create([
+                'korektor' => $request->korektor,
+                'judul' => $request->judul,
+                'deskripsi' => $request->deskripsi,
+                'tanggal' => $request->tanggal,
+                'master_kode_id' => $request->master_kode_id,
+                'opd_id' => $request->opd_id,
+                'retensi' => $request->retensi,
+                'retensiinaktif' => $request->retensiinaktif,
+                'nomor' => $request->nomor,
+                'status' => $request->status ?? 'aktif',
+                'pemusnahan' => $request->pemusnahan,
+                'created_by' => auth()->id(),
+                'file' => $filePath,
+                'nomor_dus' => $request->nomor_dus,
+                'nomor_rak' => $request->nomor_rak, 
+            ]);
+            return redirect()->route('arsip.home')
+                ->with('success', 'Data berhasil ditambahkan!');  
+        } catch (\Throwable $e) {
+            dd($e->getMessage());
+        } 
     } 
+    public function uploads(Request $request){
+        try{ 
+            if ($request->hasFile('file')) {
+
+                $file = $request->file('file');
+
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+                // Bersihkan nama file
+                $safeName = Str::slug($originalName);
+
+                // Ambil ekstensi asli
+                $extension = $file->getClientOriginalExtension();
+
+                // Nama final
+                $fileName = time() . '_' . $safeName . '.' . $extension;
+                // echo $fileName;die();
+
+                // $file->move(public_path('arsip'), $fileName);
+                $filePath = $request->file('file')
+                ->store('arsip', 'public');
+                dd($filePath);
+            }
+        }
+        catch (\Throwable $e) {
+            dd($e->getMessage());
+        }
+    }
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
+        dd($id);
         //
     }
 
@@ -143,13 +197,19 @@ class ArsipController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-    {
-        $data = Arsip::findOrFail($id);
+    { 
+        $data = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])->findOrFail($id);
 
         $opds = Opd::all();
         $masterKodes = MasterKode::all();
 
-        return view('arsip.edit', compact(
+        return view('arsip.edit', compact('id',
             'data',
             'opds',
             'masterKodes'
@@ -161,15 +221,7 @@ class ArsipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $arsip = Arsip::findOrFail($id);
-
-        $fileName = $arsip->file;
-
-        if ($request->file('file')) {
-            $fileName = time().'_'.$request->file('file')->getClientOriginalName();
-            $request->file('file')->move(public_path('arsip'), $fileName);
-        }
-
+        $arsip = Arsip::findOrFail($id); 
         $arsip->update([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
@@ -179,11 +231,12 @@ class ArsipController extends Controller
             'retensi' => $request->retensi,
             'nomor' => $request->nomor,
             'status' => $request->status,
-            'pemusnahan' => $request->pemusnahan,
-            'file' => $fileName,
+            'pemusnahan' => $request->pemusnahan, 
+            'nomor_dus' => $request->nomor_dus,
+            'nomor_rak' => $request->nomor_rak, 
         ]);
 
-        return redirect()->route('arsip.index')
+        return redirect()->route('arsip.home')
             ->with('success', 'Data berhasil diupdate');
     }
 

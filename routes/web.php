@@ -1,11 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Route;  
+use App\Http\Controllers\DashboardController;
+
 use App\Http\Controllers\AdminUserController;
+
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController; 
 use App\Http\Controllers\WelcomeController;
+
+use App\Http\Controllers\UserController; 
 use App\Http\Controllers\DepanController;
+
 use App\Http\Controllers\MasterKodeController;
 use App\Http\Controllers\MasterKodeImportController;
 use App\Http\Controllers\OpdController;
@@ -34,12 +40,8 @@ Route::middleware(['auth:admin'])->prefix('app')->group(function () {
 
 //auth user
 Route::get('/user', [UserController::class,'loginForm'])->name('login');
-Route::post('/login', [UserController::class,'login']);
-Route::post('/logout', [UserController::class,'logout'])->name('logout');
-
-Route::get('/privacy', [WelcomeController::class,'privacy'])->name('privacy');
-Route::get('/request-deletion', [WelcomeController::class,'requestDeletion'])->name('request-deletion');
-Route::post('/request-deletion-action', [WelcomeController::class,'requestDeletionAction'])->name('account.deletion.submit');
+Route::post('/login', [UserController::class,'login']); 
+Route::post('/logout', [UserController::class,'logout'])->name('logout'); 
 
 Route::get('/app/dashboard', [CustomerController::class,'index'])->middleware('auth:web')->name('dashboard');
 

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     { 
-        Schema::create('arsips', function (Blueprint $table) {
+        Schema::create('pemusnahan_arsips', function (Blueprint $table) {
             $table->id();
 
             $table->string('judul');
@@ -24,33 +24,20 @@ return new class extends Migration
             // RELASI BENAR
             // =========================
 
-            $table->foreignId('master_kode_id')
-                ->nullable()
-                ->constrained('master_kodes')
-                ->nullOnDelete();
+            $table->string('master_kode_id')->nullable(); 
 
-            $table->foreignId('created_by')
-                ->nullable()
-                ->constrained('users')
-                ->nullOnDelete();
+            $table->string('created_by')->nullable(); 
 
-            $table->foreignId('opd_id')
-                ->nullable()
-                ->constrained('opds')
-                ->nullOnDelete();
+            $table->string('opd_id')->nullable();   
 
             // =========================
             // FIELD LAIN
-            // =========================
-
-            $table->string('retensi')->nullable();
+            // ========================= 
             $table->string('nomor')->nullable();
 
             $table->string('status')->nullable();
 
-            $table->string('korektor')->nullable();
-
-            $table->string('retensiinaktif')->nullable();
+            $table->string('korektor')->nullable(); 
 
             $table->date('pemusnahan')->nullable();
 
@@ -63,6 +50,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('arsips');
+        Schema::dropIfExists('pemusnahan_arsips');
+        //
     }
 };

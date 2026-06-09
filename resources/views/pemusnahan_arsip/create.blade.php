@@ -16,8 +16,8 @@
           enctype="multipart/form-data">
 
         @csrf
-<div class="row">
-        <div class="col-md-6">
+
+        <div class="mb-3">
             <label>Kode Arsip</label>
 
             <select name="master_kode_id" class="form-control  select-master-kode">
@@ -37,7 +37,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>OPD</label>
 
             <select name="opd_id" class="form-control  select-opd">
@@ -49,7 +49,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Korektor</label>
 
             <input type="text"
@@ -57,7 +57,7 @@
                    class="form-control">
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Judul</label>
 
             <input type="text"
@@ -65,7 +65,7 @@
                    class="form-control">
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Nomor</label>
 
             <input type="text"
@@ -73,7 +73,7 @@
                    class="form-control">
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Tanggal</label>
 
             <input type="date"
@@ -81,7 +81,7 @@
                    class="form-control">
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Retensi Aktif</label>
             <select name="retensi" class="form-control">
                 <option value="0">pilih data</option>
@@ -91,7 +91,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Retensi Inaktif</label>
             <select name="retensiinaktif" class="form-control">
                 <option value="0">pilih data</option>
@@ -101,7 +101,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Status</label>
 
             <select name="status" class="form-control">
@@ -112,7 +112,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Pemusnahan</label>
 
             <input type="date"
@@ -120,38 +120,18 @@
                    class="form-control">
         </div>
 
-        <div class="col-md-6">
+        <div class="mb-3">
             <label>Deskripsi</label>
 
             <textarea name="deskripsi"
                       class="form-control"></textarea>
         </div> 
-    </div>
-
-    <div class="row"> 
-        <div class="col-md-6">
-            <label>Nomor RAK</label>
-
-            <select name="nomor_rak" class="form-control  select-rak_arsip">
-
-                <option value="0">-- Pilih Rak --</option> 
-            </select>
-        </div> 
-        <div class="col-md-6">
-            <label>Nomor Dus</label>
-
-            <select name="nomor_dus" class="form-control  select-dus_arsip">
-
-                <option value="0">-- Pilih Dus --</option> 
-            </select>
-        </div> 
-    </div>
 
         <button class="btn btn-primary">
             Simpan
         </button>
 
-        <a href="{{ route('arsip.home') }}"
+        <a href="{{ route('arsip.index') }}"
            class="btn btn-secondary">
 
             Kembali
@@ -210,86 +190,6 @@ $(document).ready(function () {
                             text: item.kode + ' - ' + item.nama
                         }
 
-                    })
-                };
-            }
-        }
-    });
-
-    /*
-    select dus arsip
-    */
-    $('.select-dus_arsip').select2({
-
-        placeholder: 'Cari kode arsip...',
-        allowClear: true,
-        minimumInputLength: 3,
-
-        ajax: { 
-            url: "{{ route('dus_arsip.search') }}", 
-
-            dataType: 'json',
-
-            delay: 250,
-
-            data: function (params) {
-
-                console.log('Kode diketik:', params.term);
-
-                return {
-                    q: params.term
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data.map(function (item) {
-                        return {
-                            id: item.id,
-                            text: item.nomor_dus + ' - ' +
-                                  (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
-                                    : '-')
-                        };
-                    })
-                };
-            }
-        }
-    });
-    /*---
-    select rak arsip
-    ---*/ 
-
-    $('.select-rak_arsip').select2({
-
-        placeholder: 'Cari kode arsip...',
-        allowClear: true,
-        minimumInputLength: 3,
-
-        ajax: { 
-            url: "{{ route('rak_arsip.search') }}", 
-
-            dataType: 'json',
-
-            delay: 250,
-
-            data: function (params) {
-
-                console.log('Kode diketik:', params.term);
-
-                return {
-                    q: params.term
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data.map(function (item) {
-                        return {
-                            id: item.id,
-                            text: item.nomor_rak + ' - ' +
-                                  (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
-                                    : '-')
-                        };
                     })
                 };
             }

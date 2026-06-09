@@ -32,15 +32,13 @@
                 <th>Judul</th>
                 <th>Deskripsi</th>
                 <th>OPD</th>
-                <th>Nomor RAK</th>
-                <th>Nomor Dus</th>
                 <th>Korektor</th>
                 <th>Status</th>
                 <th>File</th>
                 <th width="180">Aksi</th>
             </tr>
         </thead>
-
+@if($data)
         <tbody>
 
             @forelse($data as $item)
@@ -63,14 +61,6 @@
 
                     <td>
                         {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
-                    </td>
-
-                    <td>
-                        {{ $item->rak_arsip->nomor_rak }}
-                    </td>
-
-                    <td>
-                        {{ $item->dus_arsip->nomor_dus }}
                     </td>
 
                     <td>
@@ -146,8 +136,9 @@
             @endforelse
 
         </tbody>
-
+@endif
     </table>
+@if($data)
     <div class="modal fade" id="pdfModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -199,6 +190,8 @@
             </form>
         </div>
     </div>
+    
+@endif
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
