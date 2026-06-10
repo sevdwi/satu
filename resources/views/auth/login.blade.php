@@ -1,124 +1,236 @@
-@extends('layouts.head')
+@extends('layouts.head_depan')
 @section('content')
-<main class="flex-shrink-0">
-            <!-- Navigation-->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-                <div class="container px-5">
-                <a class="navbar-brand" href="{{route('login')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                            <li class="nav-item"><a class="nav-link fs-4" style="color: #6f42c1;" href="{{route('welcome')}}">Home</a></li>
-                            <!-- <li class="nav-item"><a class="nav-link" href="resume.html">Resume</a></li>
-                            <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
-                            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li> -->
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+<!-- ═══════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════════ -->
+<nav class="navbar-custom">
+  <div class="navbar-inner">
+    <a href="{{route('welcome')}}" class="nav-brand">
+      <div class="nav-brand-mark">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      </div>
+      <div>
+        <div class="nav-brand-wordmark">SATU</div>
+        <span class="nav-brand-sub">Sistem Informasi Kearsipan Terpadu</span>
+      </div>
+    </a>
+ 
+    <div class="nav-actions" id="navActions">
+      <a href="{{route('login')}}" class="btn-nav-login">
+        <i class="bi bi-person"></i> Login
+      </a>
+      <a href="{{route('login-admin')}}" class="btn-nav-admin">
+        <i class="bi bi-shield-lock"></i> Login Admin
+      </a>
+    </div>
+ 
+    <button class="nav-mobile-toggle" id="mobileToggle">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+</nav>
+ 
+ 
+<!-- ═══════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+ 
+    <!-- Text Column -->
+    <div class="col-5">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Efisien &nbsp;·&nbsp; Simple &nbsp;·&nbsp; Mudah
+      </div>
+      <div class="hero-system-name">Sistem Informasi Kearsipan Terpadu</div>
+      <h1 class="hero-wordmark">SA<span class="wordmark-thin">TU</span></h1>
+      <p class="hero-desc">
+        Platform digital terpadu untuk pengelolaan arsip inaktif, musnah, dan statis
+        di lingkungan Dinas Arsip dan Perpustakaan Kabupaten Cilacap.
+      </p>
+      <!-- <div class="hero-cta">
+        <a href="#" class="btn-hero-solid">
+          <i class="bi bi-person-circle"></i> Masuk sebagai User
+        </a>
+        <a href="#" class="btn-hero-glass">
+          <i class="bi bi-shield-lock"></i> Masuk sebagai Admin
+        </a>
+      </div> -->
+      <div class="hero-note">
+        <i class="bi bi-lock"></i>
+        Akses terbatas untuk pegawai yang telah terdaftar.
+      </div>
+    </div>
+ 
+    <!-- Visual Column -->
+    <div class="col-7">
+      <!-- batas atas card -->
+      <div class="login-wrapper">
+  <div class="login-card">
+ 
+    <!-- Top accent band -->
+    <div class="card-band"></div>
+ 
+    <!-- Card Header / Branding -->
+    <div class="card-head">
+      <div class="brand-mark">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      </div>
+      <span class="card-wordmark">SATU</span>
+      <p class="card-greeting">Selamat datang kembali</p>
+    </div>
+ 
+    <!-- Form -->
+    <div class="card-form">
+        {{-- Ganti action dengan route Laravel --}}
+        <form action="/login" method="POST" id="loginForm">
+        @csrf
+  
+          <!-- Nomor HP -->
+          <div class="form-group">
+            <label class="form-label-custom">
+              <i class="bi bi-telephone"></i> Nomor HP
+            </label>
+            <div class="input-wrap">
+              <i class="bi bi-telephone i-icon"></i>
+              <input type="number" name="phone_number"
+                    class="form-input"
+                    placeholder="08xxxxxxxxxx" required />
+            </div>
+          </div>
+  
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label-custom">
+              <i class="bi bi-lock"></i> Password
+            </label>
+            <div class="input-wrap">
+              <i class="bi bi-lock i-icon"></i>
+              <input type="password" name="password" id="passwordInput"
+                    class="form-input has-toggle"
+                    placeholder="Masukkan password" required />
+              <button type="button" class="toggle-pw-btn" id="togglePw" title="Tampilkan password">
+                <i class="bi bi-eye" id="toggleIcon"></i>
+              </button>
+            </div>
+          </div>
+  
+          <hr class="form-divider" />
+  
+          <!-- Submit -->
+          <button type="submit" class="btn-submit">
+            <i class="bi bi-box-arrow-in-right"></i> Masuk
+          </button>
+  
+        </form>
+ 
+      {{-- Error block — tampilkan jika ada error dari Laravel --}}
+      @if ($errors->any())
+        <div class="error-box">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          <span>{{ $errors->first() }}</span>
+        </div>
+      @endif
 
-            <!-- Header-->
-            <header class="py-5">
-                <div class="container px-5 pb-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-5">
-                            <!-- Header text content-->
-                            <div class="text-center text-xxl-start">
-                                <div class="badge bg-gradient-primary-to-secondary text-white mb-4"><div class="text-uppercase">Efisien &middot; Simple &middot; Mudah</div></div>
-                                <div class="fs-3 fw-light text-muted">Sistem Informasi Kearsipan Terpadu</div>
-                                <h1 class="display-3 fw-bolder mb-5"><span class="text-gradient d-inline">SATU</span></h1>
-                                <!-- <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-                                    <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="{{route('welcome')}}">Home</a>
-                                </div> -->
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <!-- Header profile picture-->
-                            <div class="d-flex justify-content-center mt-5 mt-xxl-0">
-                            <!-- batas atas card -->
-                            <div class="align-self-center" style="width:420px;">
+ 
+      <!-- Back to Home -->
+      <a href="#" class="back-link">
+        <i class="bi bi-arrow-left"></i> Kembali ke Halaman Utama
+      </a>
+ 
+    </div>
+  </div>
+</div>
+        <!-- batas bawah card -->
+    </div>
+ 
+  </div>
+</section>
+ 
+ 
+<!-- ═══════════════════════════════════════════════
+     FEATURES
+════════════════════════════════════════════════ -->
+<section class="features-section">
+  <div class="features-inner">
+    <div class="features-header">
+      <div class="section-eyebrow">Mengapa SATU?</div>
+      <h2 class="section-heading">Dirancang untuk Kemudahan</h2>
+      <p class="section-sub">Satu sistem, tiga modul utama, semua kebutuhan arsip terpenuhi.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card feat-c1">
+        <div class="feat-icon feat-icon-blue"><i class="bi bi-lightning-charge-fill"></i></div>
+        <div class="feat-title">Efisien</div>
+        <p class="feat-desc">Pencatatan dan pengelolaan arsip yang cepat. Tidak perlu formulir kertas — semua dilakukan digital dari satu dasbor.</p>
+      </div>
+      <div class="feat-card feat-c2">
+        <div class="feat-icon feat-icon-green"><i class="bi bi-layout-text-window-reverse"></i></div>
+        <div class="feat-title">Simple</div>
+        <p class="feat-desc">Antarmuka bersih dan navigasi yang intuitif. Staf dapat langsung bekerja tanpa perlu pelatihan teknis panjang.</p>
+      </div>
+      <div class="feat-card feat-c3">
+        <div class="feat-icon feat-icon-amber"><i class="bi bi-diagram-3-fill"></i></div>
+        <div class="feat-title">Terpadu</div>
+        <p class="feat-desc">Arsip inaktif, musnah, dan statis dikelola dalam satu platform dengan alur kerja yang terintegrasi dan konsisten.</p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+ 
+<!-- ═══════════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════════════ -->
+<section class="about-section" id="about">
+  <div class="about-inner">
+ 
+    <!-- Text -->
+    <div class="about-text">
+      <div class="section-eyebrow">Tentang Kami</div>
+      <h2 class="section-heading">ARPUS Cilacap</h2>
+      <div class="about-body">
+        <p>
+          Perpustakaan di Kabupaten Cilacap merupakan perpustakaan yang berada di
+          lingkungan Sekretariat Daerah Kabupaten Cilacap. Sesuai PERDA No. 2 tahun 1998
+          tepatnya tanggal 28 Oktober 1998, Kantor Perpustakaan Daerah Cilacap
+          beralamatkan di Jl. Jend. Sudirman No. 12 Cilacap.
+        </p>
+        <p>
+          Sesuai PERDA No. 31 tahun 2004 berganti menjadi Kantor Arsip dan Perpusda
+          Cilacap. Dalam sejarahnya telah terjadi dinamika pengorganisasian, namun tidak
+          merubah fungsi perpustakaan dan kearsipan itu sendiri.
+        </p>
+        <p>
+          Aplikasi SATU dikembangkan sebagai bagian dari transformasi digital layanan
+          kearsipan untuk mendukung tata kelola pemerintahan yang lebih transparan,
+          terstruktur, dan akuntabel.
+        </p>
+      </div>
+      <div class="about-socials">
+        <a href="#" class="social-btn"><i class="bi bi-twitter-x"></i> Twitter</a>
+        <a href="#" class="social-btn"><i class="bi bi-linkedin"></i> LinkedIn</a>
+        <a href="#" class="social-btn"><i class="bi bi-github"></i> GitHub</a>
+        <a href="#" class="social-btn"><i class="bi bi-globe2"></i> Website</a>
+      </div>
+    </div>
+ 
+ 
+  </div>
+</section>
 
-                                <div class="card login-card shadow-lg">
-                                    <div class="card-body text-center p-4">
-
-                                        <div class="login-title text-purple mb-4">
-                                            Selamat Datang 👋
-                                        </div>
-
-                                        <form action="/login" method="POST">
-                                            @csrf
-                                            <!-- <div class="mb-3 text-start">
-                                                <label class="form-label text-purple">Nama</label>
-                                                <input type="text" class="form-control"
-                                                    name="name" required>
-                                            </div> -->
-
-                                            <div class="mb-3 text-start">
-                                                <label class="form-label text-purple">Nomor HP</label>
-                                                <input type="number" class="form-control"
-                                                    name="phone_number" required>
-                                            </div>
-
-                                            <div class="mb-2 text-start">
-                                                <label class="form-label text-purple">Password</label>
-                                                <input type="password" class="form-control"
-                                                    id="password" name="password" required>
-                                            </div>
-
-                                            <div class="form-check text-start mb-3">
-                                                <input class="form-check-input" type="checkbox" id="showPassword">
-                                                <label class="form-check-label text-purple">
-                                                    Tampilkan Password
-                                                </label>
-                                            </div>
-
-                                            <button type="submit" class="btn btn-primary w-100">
-                                                🚀 Masuk
-                                            </button>
-                                        </form>
-
-                                        {{-- Error --}}
-                                        @if ($errors->any())
-                                            <div style="color: red; font-size: 16px;">
-                                                {{ $errors->first() }}
-                                            </div>
-                                        @endif
-
-                                    </div>
-                                </div>
-                            </div>
-                             <!-- batas bawah card -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <!-- About Section-->
-            <section class="bg-light py-5">
-                <div class="container px-5">
-                    <div class="row gx-5 justify-content-center">
-                        <div class="col-xxl-8">
-                            <div class="text-center my-5">
-                                <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">About Me</span></h2>
-                                <p class="lead fw-light mb-4">Selamat datang di Aplikasi SATU ARPUS Cilacap</p>
-                                <p class="text-muted">Perpustakaan di Kabupaten Cilacap merupakan perpustakaan yang berada di lingkungan Sekretariat Daerah Kabupaten Cilacap, sesuai PERDA No. 2 tahun 1998 tepatnya tanggal 28 Oktober 1998 Kantor Perpustakaan Daerah Cilacap beralamatkan di jl. Jend. Sudirman No 12 Cilacap. Sesuai PERDA No. 31 tahun 2004  menjadi Kantor Arsip dan Perpusda Cilacap, dalam sejarahnya terjadi dinamika pengorganisasian tetapi tidak merubah fungsi perpustakaan itu sendiri.</p>
-                                <div class="d-flex justify-content-center fs-2 gap-4">
-                                    <a class="text-gradient" href="#!"><i class="bi bi-twitter"></i></a>
-                                    <a class="text-gradient" href="#!"><i class="bi bi-linkedin"></i></a>
-                                    <a class="text-gradient" href="#!"><i class="bi bi-github"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-        {{-- Show Password --}}
-        <script>
-        document.getElementById("showPassword").addEventListener("change", function () {
-            document.getElementById("password").type =
-                this.checked ? "text" : "password";
-        });
-        </script>
-
+<script>
+  // Toggle show/hide password
+  const pwInput  = document.getElementById('passwordInput');
+  const toggleBtn = document.getElementById('togglePw');
+  const toggleIcon = document.getElementById('toggleIcon');
+ 
+  toggleBtn.addEventListener('click', () => {
+    const isHidden = pwInput.type === 'password';
+    pwInput.type = isHidden ? 'text' : 'password';
+    toggleIcon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+    toggleBtn.title = isHidden ? 'Sembunyikan password' : 'Tampilkan password';
+  });
+</script>
 @endsection
