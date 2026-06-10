@@ -8,10 +8,6 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController; 
 use App\Http\Controllers\WelcomeController;
-<<<<<<< HEAD
-=======
-
->>>>>>> 62ba17705992a9bc34e857993b33ac83b4691f0f
 use App\Http\Controllers\DepanController;
 
 use App\Http\Controllers\MasterKodeController;
@@ -28,11 +24,10 @@ Route::get('/administrator', [AdminUserController::class,'loginForm'])->name('lo
 Route::post('admin/login', [AdminUserController::class,'login']);
 Route::post('admin/logout', [AdminUserController::class,'logout'])->name('logout-admin');
 
-Route::get('/app/dashboard-admin', function () {
+Route::get('/app/dashboard-admin', [AdminUserController::class,'index'])
     // dd(session()->all());
     // dd(auth()->user());
-    return view('dashboard-admin');
-})->middleware('auth:admin')->name('dashboard-admin');
+->middleware('auth:admin')->name('dashboard-admin');
 
 Route::middleware(['auth:admin'])->prefix('app')->group(function () {
     foreach (glob(__DIR__.'/modules-admin/*.php') as $routeFile) {

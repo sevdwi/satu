@@ -56,52 +56,157 @@
 }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-        <div class="container px-5">
-            <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
+<nav class="navbar-custom">
+  <div class="navbar-inner">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                    <li class="nav-item"><a class="btn px-4 btn-logout-green me-3" href="{{route('users.index')}}">Kembali</a></li>
-                </ul>
-            </div>
-        </div>
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('dashboard-admin')}}" class="active">
+          <i class="bi bi-house"></i> Beranda
+        </a>
+      </li>
+      <li>
+        <a class="btn px-4 btn-logout-green me-3" href="{{route('users.index')}}">
+          <i class="bi bi-building-lock"></i> Kembali
+        </a>
+      </li>
+
+    </ul>
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('admin')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <form action="{{ route('logout-admin') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
 </nav>
 
-<div style="background: #6495ED; min-height: 100vh; padding: 2rem;">
-    <div style="max-width: 900px; margin: 0 auto;">
-        <div class="card shadow-sm card-edit-user">
-            <div class="card-body p-4">
-
-                <h1>
-                    <i class="bi bi-pencil-square me-2"></i>
-                    Edit User
-                </h1>
-
-                <form action="{{ route('users.update', $user) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-
-                    <input type="text" name="name" value="{{ $user->name }}"
-                        class="form-control mb-3"
-                        placeholder="Nama">
-
-                    <input type="email" name="email" value="{{ $user->email }}"
-                        class="form-control mb-3"
-                        placeholder="Email">
-
-                    <input type="text" name="phone_number" value="{{ $user->phone_number }}"
-                        class="form-control mb-4"
-                        placeholder="Nomor Telepon">
-
-                    <button type="submit" class="btn px-4 btn-update-yellow">
-                        <i class="bi bi-check-lg me-1"></i> Update
-                    </button>
-
-                </form>
-            </div>
-        </div>
+<div class="page-wrap">
+ 
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-custom">
+    <a href="#"><i class="bi bi-house"></i></a>
+    <i class="bi bi-chevron-right"></i>
+    <a href="#">Data Pengguna</a>
+    <i class="bi bi-chevron-right"></i>
+    <span class="current">Edit User</span>
+  </div>
+ 
+  <div class="card-custom">
+ 
+    <!-- Card Header -->
+    <div class="card-top">
+      <div class="card-icon"><i class="bi bi-pencil-square"></i></div>
+      <div>
+        <div class="card-title">Edit User</div>
+        <div class="card-subtitle">Perbarui data pengguna yang dipilih</div>
+      </div>
     </div>
+ 
+    <!-- User Identity Strip -->
+    <div class="user-strip">
+      <div class="user-avatar-lg">AD</div>
+      <div>
+        <div class="user-strip-name">{{ $user->role }}</div>
+        <div class="user-strip-label">ID <span>{{ $user->id }}</span>---<span>{{ $user->opd }}</span></div>
+      </div>
+      <span class="user-strip-badge">
+        <i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aktif
+      </span>
+    </div>
+ 
+    <!-- Form -->
+    <div class="card-body-form">
+ 
+      {{-- Ganti action="{{ route('users.update', $user) }}" dan value="{{ $user->xxx }}" sesuai Blade --}}
+      <form action="{{ route('users.update', $user) }}" method="POST">
+        @csrf
+        @method('PUT')
+ 
+        <div class="section-label">Informasi Pengguna</div>
+ 
+        <!-- Nama -->
+        <div class="form-group">
+          <label class="form-label-custom">
+            <i class="bi bi-person"></i> Nama Pengguna <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-person input-icon"></i>
+            <input type="text" name="name" class="form-input"
+                   value="{{ $user->name }}"
+                   placeholder="Nama pengguna" />
+          </div>
+        </div>
+ 
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label-custom">
+            <i class="bi bi-envelope"></i> Alamat Email <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope input-icon"></i>
+            <input type="email" name="email" class="form-input"
+                   value="{{ $user->email }}"
+                   placeholder="contoh@email.com" />
+          </div>
+        </div>
+ 
+        <!-- Nomor Telepon -->
+        <div class="form-group">
+          <label class="form-label-custom">
+            <i class="bi bi-telephone"></i> Nomor Telepon <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-telephone input-icon"></i>
+            <input type="text" name="phone_number" class="form-input"
+                   value="{{ $user->phone_number}}"
+                   placeholder="08xxxxxxxxxx" />
+          </div>
+          <div class="form-hint">
+            <i class="bi bi-info-circle"></i>
+            Format: diawali 08, tanpa tanda hubung.
+          </div>
+        </div>
+ 
+        <hr class="form-divider" />
+ 
+        <!-- Action Buttons -->
+        <div class="action-row">
+          <a href="{{route('users.index')}}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Kembali
+          </a>
+          <button type="submit" class="btn-update">
+            <i class="bi bi-check-lg"></i> Simpan Perubahan
+          </button>
+        </div>
+ 
+      </form>
+    </div>
+ 
+  </div>
 </div>
 @endsection

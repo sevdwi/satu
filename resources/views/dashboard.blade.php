@@ -19,7 +19,7 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="#" class="active">
+        <a href="{{route('dashboard')}}" class="active">
           <i class="bi bi-house"></i> Beranda
         </a>
       </li>

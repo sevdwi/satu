@@ -18,7 +18,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <!-- <link href="css/styles.css" rel="stylesheet" /> -->
-        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
 
         <!-- ADMIN LTE -->
         <!-- Google Font: Source Sans Pro -->
@@ -39,51 +39,52 @@
     @yield('content')
 
         <!-- Footer-->
-        <footer class="bg-white py-4 mt-auto">
-            <div class="container px-5">
-                <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                    <div class="col-auto"><div class="small m-0">Copyright &copy; Dinas Komunikasi dan Informatika 2026 </div></div>
-                    <div class="col-auto">
-                        <a class="small" href="#!">Privacy</a>
-                        <span class="mx-1">&middot;</span>
-                        <a class="small" href="#!">Terms</a>
-                        <span class="mx-1">&middot;</span>
-                        <a class="small" href="#!">Contact</a>
-                    </div>
-                </div>
-            </div>
+        <footer>
+            <p class="">
+                &copy; 2026 <strong>SATU</strong> — Sistem Informasi Kearsipan Terpadu.
+                Dikembangkan oleh <strong>Diskominfo</strong>.
+            </p>
         </footer>
+
         <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+<script>
+  // Mobile menu toggle
+  const mobileToggle = document.querySelector('.nav-mobile-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', () => {
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      navLinks.style.flexDirection = 'column';
+      navLinks.style.position = 'absolute';
+      navLinks.style.top = '68px';
+      navLinks.style.left = '0';
+      navLinks.style.right = '0';
+      navLinks.style.background = '#fff';
+      navLinks.style.padding = '1rem';
+      navLinks.style.borderBottom = '1px solid var(--border)';
+      navLinks.style.boxShadow = '0 8px 24px rgba(0,0,0,.08)';
+    });
+  }
 
-        <!-- REQUIRED SCRIPTS ADMIN LTE -->
-        <!-- <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>  -->
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href="#modul"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('modul').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 
-        <!-- jQuery -->
-        <!-- <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script> -->
-        <!-- Bootstrap -->
-        <!-- <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
-        <!-- overlayScrollbars -->
-        <!-- <script src="{{ asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script> -->
-
-        <!-- AdminLTE App -->
-        <!-- <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script> -->
-
-        <!-- PAGE PLUGINS -->
-        <!-- jQuery Mapael -->
-        <!-- <script src="{{ asset('adminlte/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script> -->
-        <!-- <script src="{{ asset('adminlte/plugins/raphael/raphael.min.js') }}"></script> -->
-        <!-- <script src="{{ asset('adminlte/plugins/jquery-mapael/jquery.mapael.min.js') }}"></script> -->
-        <!-- <script src="{{ asset('adminlte/plugins/jquery-mapael/maps/usa_states.min.js') }}"></script> -->
-        <!-- ChartJS -->
-        <!-- <script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script> -->
-
-        <!-- AdminLTE for demo purposes -->
-        <!-- <script src="{{ asset('adminlte/dist/js/demo.js') }}"></script> -->
-        <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-        <!-- <script src="{{ asset('adminlte/dist/js/pages/dashboard2.js') }}"></script> -->
+  // Active nav highlight
+  document.querySelectorAll('.nav-links > li > a').forEach(a => {
+    a.addEventListener('click', function() {
+      document.querySelectorAll('.nav-links > li > a').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
 
     </body>
 </html>

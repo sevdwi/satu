@@ -12,8 +12,8 @@ class AdminUserController extends Controller
     // list semua admin
     public function index()
     {
-        $users = User::all();
-        return view('users.index', compact('users'));
+        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+        return view('dashboard-admin', compact('user'));
     }
 
     // form create dan show daftar opd saat register

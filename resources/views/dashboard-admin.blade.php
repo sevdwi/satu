@@ -1,7 +1,7 @@
 @extends('layouts.head')
 @section('content')
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
+<!-- <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
         <div class="container px-5">
             <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
 
@@ -23,6 +23,94 @@
                 </ul>
             </div>
         </div>
- </nav>
+ </nav> -->
+ <nav class="navbar-custom">
+  <div class="navbar-inner">
 
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('dashboard-admin')}}" class="active">
+          <i class="bi bi-house"></i> Beranda
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bi bi-archive"></i> Arsip Inaktif
+          <i class="bi bi-chevron-down nav-caret"></i>
+        </a>
+        <div class="dropdown-menu-custom">
+          <a href="#"><i class="bi bi-plus-square"></i> Input Unit Pengolah Yg Ditata</a>
+          <a href="#"><i class="bi bi-pencil-square"></i> Input Deskripsi Arsip</a>
+          <div class="dropdown-divider-custom"></div>
+          <a href="#"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
+        </div>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bi bi-trash3"></i> Arsip Musnah
+          <i class="bi bi-chevron-down nav-caret"></i>
+        </a>
+        <div class="dropdown-menu-custom">
+          <a href="#"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
+          <div class="dropdown-divider-custom"></div>
+          <a href="#"><i class="bi bi-list-check"></i> Daftar Musnah</a>
+        </div>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bi bi-building-lock"></i> Arsip Statis
+          <i class="bi bi-chevron-down nav-caret"></i>
+        </a>
+        <div class="dropdown-menu-custom">
+          <a href="#"><i class="bi bi-send"></i> Daftar Usul Serah</a>
+          <div class="dropdown-divider-custom"></div>
+          <a href="#"><i class="bi bi-archive-fill"></i> Daftar Arsip Statis</a>
+        </div>
+      </li>
+      <li>
+        <a href="{{route('master-kodes.index')}}">
+          <i class="bi bi-building-lock"></i> Data Klasifikasi
+        </a>
+      </li>
+      <li>
+        <a href="{{route('users.index')}}">
+          <i class="bi bi-building-lock"></i> Kelola User
+        </a>
+      </li>
+
+    </ul>
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('admin')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
+        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a>
+        <form action="{{ route('logout-admin') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
+</nav>
 @endsection
