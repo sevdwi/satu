@@ -27,7 +27,7 @@
 
     <!-- Brand -->
     <a href="#" class="nav-brand">
-      <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
       <div class="nav-brand-text">
         <strong>SATU</strong>
         <small>Sistem Informasi Kearsipan Terpadu</small>
@@ -41,12 +41,11 @@
           <i class="bi bi-house"></i> Beranda
         </a>
       </li>
-      <li>
+      <!-- <li>
         <a class="btn px-4 btn-logout-green me-3" href="{{route('dashboard-admin')}}">
           <i class="bi bi-building-lock"></i> Kembali
         </a>
-      </li>
-
+      </li> -->
     </ul>
 
     <!-- Account -->
@@ -216,7 +215,7 @@
         <tbody id="tableBody">
         @foreach($users as $u)
  
-          <tr data-name="admin" data-role="admin">
+          <tr data-name="{{ $u->name }}" data-role="{{ $u->role }}">
             <td><span class="id-badge">#{{ $u->id }}</span></td>
             <td>
               <div class="user-cell">

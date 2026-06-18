@@ -1,165 +1,238 @@
-@extends('layouts.administrator')
+@extends('layouts.head_customer')
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-</head>
-<body>
+<nav class="navbar-custom">
+  <div class="navbar-inner">
 
-<div class="container mt-4">
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
 
-    <h3>Tambah Arsip</h3>
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('arsip.home')}}" class="active">
+          <i class="bi bi-house"></i> Kembali
+        </a>
+
+      </li>
+      <!-- <li>
+      <a href="{{route('dashboard')}}" class="active">
+          <i class="bi bi-house"></i> Beranda
+        </a>
+      </li> -->
+    </ul>
+    
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <i class="bi">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+        </i>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+<div class="mt-4 mb-4 card-custom">
+
+    <!-- <h3 class="mt-2">Tambah Arsip</h3> -->
+        <!-- Card Header -->
+    <div class="card-top mt-1">
+      <div class="card-top-left">
+        <div class="card-icon"><i class="bi bi-archive"></i></div>
+        <div>
+          <div class="card-title">Tambah Arsip</div>
+          <div class="card-subtitle">Kelola seluruh akun pengguna sistem</div>
+        </div>
+      </div>
+      <!-- <a href="{{ route('users.create') }}" class="btn-add">
+        <i class="bi bi-plus-lg"></i> Tambah User
+      </a> -->
+    </div>
 
     <form action="{{ route('arsip.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf
-<div class="row">
-        <div class="col-md-6">
-            <label>Kode Arsip</label>
+    <div class="row mt-3 ms-2 me-2">
+            <div class="col-md-6">
+                <label>Kode Arsip</label>
+                <!-- @dump($masterKodes) -->
+                <select name="master_kode_id" class="form-select form-select-sm" aria-label="Large select example">
 
-            <select name="master_kode_id" class="form-control  select-master-kode">
+                    <option value="">-- Pilih Kode --</option>
 
-                <option value="">-- Pilih Kode --</option>
+                    @foreach($masterKodes as $kode)
 
-                @foreach($masterKodes as $kode)
+                        <option value="{{ $kode->id }}">
 
-                    <option value="{{ $kode->id }}">
+                            {{ $kode->kode }} - {{ $kode->nama }}
 
-                        {{ $kode->kode }} - {{ $kode->nama }}
+                        </option>
+
+                    @endforeach
+
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label>OPD</label>
+
+                <select name="opd_id" class="form-select form-select-sm" aria-label="Large select example">
+
+                    <option value="0">-- Pilih OPD --</option>
+                    @foreach($opds as $opd)
+
+                    <option value="{{ $opd->id }}">
+
+                    {{ $opd->kode_instansi }} - {{ $opd->unit_kerja }} - {{ $opd->singkatan_instansi }}
 
                     </option>
 
-                @endforeach
+                    @endforeach
 
-            </select>
+                    
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label>Korektor</label>
+
+                <input type="text"
+                    name="korektor"
+                    class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label>Judul</label>
+
+                <input type="text"
+                    name="judul"
+                    class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label>Nomor</label>
+
+                <input type="text"
+                    name="nomor"
+                    class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label>Tanggal</label>
+
+                <input type="date"
+                    name="tanggal"
+                    class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label>Retensi Aktif</label>
+                <select name="retensi" class="form-control">
+                    <option value="0">pilih data</option>
+                    @for($a=1;$a<=10;$a++)
+                    <option value="{{$a}}">{{$a}} Tahun</option>
+                    @endfor
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label>Retensi Inaktif</label>
+                <select name="retensiinaktif" class="form-control">
+                    <option value="0">pilih data</option>
+                    @for($a=1;$a<=10;$a++)
+                    <option value="{{$a}}">{{$a}} Tahun</option>
+                    @endfor
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label>Status</label>
+
+                <select name="status" class="form-control">
+
+                    <option value="aktif">Aktif</option>
+                    <option value="nonaktif">Nonaktif</option>
+
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label>Pemusnahan</label>
+
+                <input type="date"
+                    name="pemusnahan"
+                    class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label>Deskripsi</label>
+
+                <textarea name="deskripsi"
+                        class="form-control"></textarea>
+            </div> 
         </div>
 
-        <div class="col-md-6">
-            <label>OPD</label>
+        <div class="row ms-2 me-2"> 
+            <div class="col-md-6">
+                <label>Nomor RAK</label>
 
-            <select name="opd_id" class="form-control  select-opd">
+                <select name="nomor_rak" class="form-control  select-rak_arsip">
 
-                <option value="0">-- Pilih OPD --</option>
+                    <option value="0">-- Pilih Rak --</option> 
+                </select>
+            </div> 
+            <div class="col-md-6">
+                <label>Nomor Dus</label>
 
-                
+                <select name="nomor_dus" class="form-control  select-dus_arsip">
 
-            </select>
+                    <option value="0">-- Pilih Dus --</option> 
+                </select>
+            </div> 
         </div>
 
-        <div class="col-md-6">
-            <label>Korektor</label>
+        <div class="mt-5 mb-5 ms-4">
 
-            <input type="text"
-                   name="korektor"
-                   class="form-control">
+            <button class="btn btn-primary">
+                Simpan
+            </button>
+
+            <!-- <a href="{{ route('arsip.home') }}"
+            class="btn btn-secondary">
+                Kembali
+            </a> -->
         </div>
+        </form>
 
-        <div class="col-md-6">
-            <label>Judul</label>
-
-            <input type="text"
-                   name="judul"
-                   class="form-control">
-        </div>
-
-        <div class="col-md-6">
-            <label>Nomor</label>
-
-            <input type="text"
-                   name="nomor"
-                   class="form-control">
-        </div>
-
-        <div class="col-md-6">
-            <label>Tanggal</label>
-
-            <input type="date"
-                   name="tanggal"
-                   class="form-control">
-        </div>
-
-        <div class="col-md-6">
-            <label>Retensi Aktif</label>
-            <select name="retensi" class="form-control">
-                <option value="0">pilih data</option>
-                @for($a=1;$a<=10;$a++)
-                <option value="{{$a}}">{{$a}} Tahun</option>
-                @endfor
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label>Retensi Inaktif</label>
-            <select name="retensiinaktif" class="form-control">
-                <option value="0">pilih data</option>
-                @for($a=1;$a<=10;$a++)
-                <option value="{{$a}}">{{$a}} Tahun</option>
-                @endfor
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label>Status</label>
-
-            <select name="status" class="form-control">
-
-                <option value="aktif">Aktif</option>
-                <option value="nonaktif">Nonaktif</option>
-
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label>Pemusnahan</label>
-
-            <input type="date"
-                   name="pemusnahan"
-                   class="form-control">
-        </div>
-
-        <div class="col-md-6">
-            <label>Deskripsi</label>
-
-            <textarea name="deskripsi"
-                      class="form-control"></textarea>
-        </div> 
     </div>
-
-    <div class="row"> 
-        <div class="col-md-6">
-            <label>Nomor RAK</label>
-
-            <select name="nomor_rak" class="form-control  select-rak_arsip">
-
-                <option value="0">-- Pilih Rak --</option> 
-            </select>
-        </div> 
-        <div class="col-md-6">
-            <label>Nomor Dus</label>
-
-            <select name="nomor_dus" class="form-control  select-dus_arsip">
-
-                <option value="0">-- Pilih Dus --</option> 
-            </select>
-        </div> 
-    </div>
-
-        <button class="btn btn-primary">
-            Simpan
-        </button>
-
-        <a href="{{ route('arsip.home') }}"
-           class="btn btn-secondary">
-
-            Kembali
-
-        </a>
-
-    </form>
-
+</div>
 </div>
 <!-- jQuery (WAJIB paling atas) -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

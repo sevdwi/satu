@@ -29,7 +29,7 @@
 
     <!-- Brand -->
     <a href="#" class="nav-brand">
-      <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
       <div class="nav-brand-text">
         <strong>SATU</strong>
         <small>Sistem Informasi Kearsipan Terpadu</small>

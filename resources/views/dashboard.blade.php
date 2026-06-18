@@ -9,7 +9,7 @@
 
     <!-- Brand -->
     <a href="#" class="nav-brand">
-      <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
       <div class="nav-brand-text">
         <strong>SATU</strong>
         <small>Sistem Informasi Kearsipan Terpadu</small>
@@ -29,10 +29,10 @@
           <i class="bi bi-chevron-down nav-caret"></i>
         </a>
         <div class="dropdown-menu-custom">
+          <a href="{{route('arsip.home')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
           <a href="#"><i class="bi bi-plus-square"></i> Input Unit Pengolah Yg Ditata</a>
           <a href="#"><i class="bi bi-pencil-square"></i> Input Deskripsi Arsip</a>
-          <div class="dropdown-divider-custom"></div>
-          <a href="#"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
+          <!-- <div class="dropdown-divider-custom"></div> -->
         </div>
       </li>
       <li>
@@ -42,7 +42,7 @@
         </a>
         <div class="dropdown-menu-custom">
           <a href="#"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
-          <div class="dropdown-divider-custom"></div>
+          <!-- <div class="dropdown-divider-custom"></div> -->
           <a href="#"><i class="bi bi-list-check"></i> Daftar Musnah</a>
         </div>
       </li>
@@ -53,7 +53,7 @@
         </a>
         <div class="dropdown-menu-custom">
           <a href="#"><i class="bi bi-send"></i> Daftar Usul Serah</a>
-          <div class="dropdown-divider-custom"></div>
+          <!-- <div class="dropdown-divider-custom"></div> -->
           <a href="#"><i class="bi bi-archive-fill"></i> Daftar Arsip Statis</a>
         </div>
       </li>
@@ -68,14 +68,16 @@
       </div>
       <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
       <div class="account-dropdown">
-        <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
-        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a>
+        <!-- <a href="#"><i class="bi bi-person"></i> Profil Saya</a> -->
+        <!-- <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a> -->
+        <i class="bi">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit" class="logout btn px-4 btn-logout-red">
                 <i class="bi bi-box-arrow-right"></i> Logout
             </button>
         </form>
+        </i>
       </div>
     </div>
 

@@ -36,7 +36,7 @@ Route::middleware(['auth:admin'])->prefix('app')->group(function () {
 });
 
 //auth user
-Route::get('/user', [UserController::class,'loginForm'])->name('login');
+Route::get('/pengolah', [UserController::class,'loginForm'])->name('login');
 Route::post('/login', [UserController::class,'login']); 
 Route::post('/logout', [UserController::class,'logout'])->name('logout'); 
 

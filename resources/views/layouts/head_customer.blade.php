@@ -8,7 +8,7 @@
         <title>SATU (Sistem Informasi Kearsipan Terpadu)</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <link rel="icon" href="{{ asset('images/arsip.png') }}" type="image/png">
+        <link rel="icon" href="{{ asset('images/arsip2.png') }}" type="image/png">
 
         <!-- Custom Google font-->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,7 +45,7 @@
 <!-- Footer-->
 <footer>
   <p>
-    &copy; 2026 <strong>SIMARS</strong> — Sistem Informasi Manajemen Arsip Daerah.
+    &copy; 2026 <strong>SATU</strong> — Sistem Informasi Kearsipan Terpadu.
     Dikembangkan oleh <strong>Diskominfo</strong>.
   </p>
 </footer>
