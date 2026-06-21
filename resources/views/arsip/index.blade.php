@@ -65,9 +65,9 @@
         <!-- Card Header -->
         <div class="card-top">
             <div class="card-top-left">
-                <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+                <div class="card-icon"><i class="bi bi-archive"></i></div>
                 <div>
-                <div class="card-title">Data Arsip</div>
+                <div class="card-title">Data Arsip  {{ auth()->guard('web')->user()->opd }}</div>
                 <div class="card-subtitle">Kelola seluruh data arsip</div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
         @endif
     
         <!-- Table -->
-        <div class="table-wrap mt-2 ">
+        <div class="table-wrap mt-2 p-2 ">
         <table id="arsipTable" class="tbl table table-bordered table-striped">
 
             <thead>
