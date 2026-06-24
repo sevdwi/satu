@@ -77,14 +77,6 @@
         </div>
 
 
-        <!-- <div class="d-flex justify-content-between mb-3">
-            <h3>Data Arsip</h3>
-
-            <a href="{{ route('arsip.create') }}" class="btn btn-primary">
-                Tambah Arsip
-            </a>
-        </div> -->
-
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -184,10 +176,8 @@
                         <td>
 
                             <a href="{{ route('arsip.edit', $item->id) }}"
-                            class="btn btn-warning btn-sm">
-
+                            class="btn btn-warning btn-sm mb-2">
                                 Edit
-
                             </a>
 
                             <form action="{{ route('arsip.destroy', $item->id) }}"
@@ -197,7 +187,7 @@
                                 @csrf
                                 @method('DELETE')
 
-                                <button class="btn btn-danger btn-sm"
+                                <button class="btn btn-danger btn-sm mb-2"
                                         onclick="return confirm('Hapus data?')">
 
                                     Hapus

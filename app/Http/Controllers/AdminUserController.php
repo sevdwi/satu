@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Opd;
+use App\Models\Arsip;
+use App\Models\MasterKode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +15,18 @@ class AdminUserController extends Controller
     public function index()
     {
         $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
-        return view('dashboard-admin', compact('user'));
+
+        $data = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('status', '!=', 'inaktif')
+        ->latest()->get(); 
+
+        return view('dashboard-admin', compact('user', 'data'));
     }
 
     // form create dan show daftar opd saat register

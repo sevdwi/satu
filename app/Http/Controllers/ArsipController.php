@@ -87,6 +87,27 @@ class ArsipController extends Controller
         ));
     }
 
+    public function index-admin()
+    {
+        $data = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('status', '!=', 'inaktif')
+
+            // JIKA ada parameter id_opd dikirim, lakukan filter arsip berdasarkan OPD tersebut
+        if ($opd_id) {
+            $query->where('opd_id', $opd_id); // Pastikan 'opd_id' adalah nama kolom foreign key di tabel arsip Anda
+        }
+        ->latest()->get(); 
+
+        return view('arsip.index', compact('data'
+        ));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

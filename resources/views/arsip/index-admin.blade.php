@@ -7,30 +7,6 @@
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
-<!-- Navigation-->
-<!-- <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-        <div class="container px-5">
-            <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                    <li class="nav-item"><a class="btn px-4 btn-logout-purple me-3" href="{{route('master-kodes.index')}}">Data Klasifikasi</a></li>
-                    <li class="nav-item"><a class="btn px-4 btn-logout-blue me-3" href="{{route('users.index')}}">Kelola Users</a></li>
-                    <li class="nav-item">
-                        <form action="{{ route('logout-admin') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn px-4 btn-logout-red">
-                                <i class="bi bi-box-arrow-right me-1"></i> Logout
-                            </button>
-                        </form>
-                    </li>
-
-
-                </ul>
-            </div>
-        </div>
- </nav> -->
  <nav class="navbar-custom">
   <div class="navbar-inner">
 
@@ -150,9 +126,14 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Unit</th>
+                    <th>Kode</th>
+                    <th>Judul</th>
+                    <th>Deskripsi</th>
+                    <th>OPD</th>
                     <th>OPD id</th>
-                    <th>instansi</th>
+                    <th>Nomor RAK</th>
+                    <th>Nomor Dus</th>
+                    <th>Korektor</th>
                     <th>Status</th>
                     <!-- <th>File</th> -->
                     <th width="180">Aksi</th>
@@ -167,6 +148,18 @@
 
                         <td>{{ $loop->iteration }}</td>
 
+                        <td> 
+                            {{ $item->masterKode->kode.'-'.$item->masterKode->nama?? '-' }}
+                        </td>
+
+                        <td>
+                            {{ $item->judul }}
+                        </td>
+
+                        <td>
+                            {{ $item->deskripsi }}
+                        </td>
+
                         <td>
                             {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
                         </td>
@@ -175,8 +168,17 @@
                             {{ $item->opd->id }}
                         </td>
 
+
                         <td>
-                            {{ $item->opd->instansi }}
+                            {{ $item->rak_arsip->nomor_rak }}
+                        </td>
+
+                        <td>
+                            {{ $item->dus_arsip->nomor_dus }}
+                        </td>
+
+                        <td>
+                            {{ $item->korektor }}
                         </td>
 
                         <td>
@@ -184,15 +186,43 @@
                                 {{ $item->status }}
                             </span>
                         </td>
+                        <!-- <td>
+                            @if($item->file)
+
+                                <button class="btn btn-info btn-sm form-control btn-view-pdf"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#pdfModal"
+                                        data-file="{{ asset('arsip/'.$item->file) }}">
+                                    <i class="fa fa-book"></i> Lihat File
+                                </button>
+
+                                <button class="btn btn-primary btn-sm form-control btn-upload"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#uploadModal"
+                                        data-id="{{ $item->id }}">
+                                    <i class="fa fa-upload"></i>
+                                </button>
+
+                            @else
+
+                                <button class="btn btn-primary btn-sm form-control btn-upload"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#uploadModal"
+                                        data-id="{{ $item->id }}">
+                                    <i class="fa fa-upload"></i>
+                                </button>
+
+                            @endif
+                        </td>  -->
 
                         <td>
 
-                            <a href="{{ route('arsip.data-admin', $item->id) }}"
+                            <a href="{{ route('arsip.edit', $item->id) }}"
                             class="btn btn-warning btn-sm mb-2">
-                                Daftar
+                                Edit
                             </a>
 
-                            <!-- <form action="{{ route('arsip.destroy', $item->id) }}"
+                            <form action="{{ route('arsip.destroy', $item->id) }}"
                                 method="POST"
                                 class="d-inline">
 
@@ -206,7 +236,7 @@
 
                                 </button>
 
-                            </form> -->
+                            </form>
 
                         </td>
 
