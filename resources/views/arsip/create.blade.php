@@ -74,13 +74,13 @@
       </a> -->
     </div>
 
-    <form action="{{ route('arsip.store') }}"
+<form action="{{ route('arsip.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf
     <div class="row mt-3 ms-2 me-2">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Kode Arsip</label>
                 <!-- @dump($masterKodes) -->
                 <select name="master_kode_id" class="form-select form-select-sm" aria-label="Large select example">
@@ -100,7 +100,7 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>OPD</label>
 
                 <select name="opd_id" class="form-select form-select-sm" aria-label="Large select example">
@@ -120,7 +120,7 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Korektor</label>
 
                 <input type="text"
@@ -128,7 +128,7 @@
                     class="form-control">
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Judul</label>
 
                 <input type="text"
@@ -136,7 +136,7 @@
                     class="form-control">
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Nomor</label>
 
                 <input type="text"
@@ -144,7 +144,7 @@
                     class="form-control">
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Tanggal</label>
 
                 <input type="date"
@@ -152,7 +152,7 @@
                     class="form-control">
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Retensi Aktif</label>
                 <select name="retensi" class="form-control">
                     <option value="0">pilih data</option>
@@ -162,7 +162,7 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Retensi Inaktif</label>
                 <select name="retensiinaktif" class="form-control">
                     <option value="0">pilih data</option>
@@ -172,7 +172,7 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Status</label>
 
                 <select name="status" class="form-control">
@@ -183,7 +183,7 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Pemusnahan</label>
 
                 <input type="date"
@@ -191,7 +191,7 @@
                     class="form-control">
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Deskripsi</label>
 
                 <textarea name="deskripsi"
@@ -200,20 +200,35 @@
         </div>
 
         <div class="row ms-2 me-2"> 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Nomor RAK</label>
 
-                <select name="nomor_rak" class="form-control  select-rak_arsip">
+                <select name="rak_arsip_id" class="form-select form-select-sm" aria-label="Large select example">
 
                     <option value="0">-- Pilih Rak --</option> 
+                    @foreach($rak_arsips as $rak_arsip)
+
+                    <option value="{{ $rak_arsip->id }}">
+                    {{ $rak_arsip->nomor_rak }}
+                    </option>
+
+                    @endforeach
+
                 </select>
             </div> 
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
                 <label>Nomor Dus</label>
 
-                <select name="nomor_dus" class="form-control  select-dus_arsip">
+                <select name="dus_arsip_id" class="form-select form-select-sm" aria-label="Large select example">
 
                     <option value="0">-- Pilih Dus --</option> 
+                    @foreach($dus_arsips as $dus_arsip)
+
+                    <option value="{{ $dus_arsip->id }}">
+                    {{ $dus_arsip->nomor_dus }}
+                    </option>
+
+                    @endforeach
                 </select>
             </div> 
         </div>
@@ -224,12 +239,8 @@
                 Simpan
             </button>
 
-            <!-- <a href="{{ route('arsip.home') }}"
-            class="btn btn-secondary">
-                Kembali
-            </a> -->
         </div>
-        </form>
+</form>
 
     </div>
 </div>

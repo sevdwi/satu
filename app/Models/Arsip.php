@@ -36,11 +36,11 @@ class Arsip extends Model
     // OPD
     public function dus_arsip()
     {
-        return $this->belongsTo(Dus_arsip::class, 'nomor_dus');
+        return $this->belongsTo(Dus_arsip::class, 'dus_arsip_id');
     }
     public function rak_arsip()
     {
-        return $this->belongsTo(Rak_arsip::class, 'nomor_rak');
+        return $this->belongsTo(Rak_arsip::class, 'rak_arsip_id');
     }
 
     // OPD

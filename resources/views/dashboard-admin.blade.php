@@ -186,27 +186,14 @@
                         </td>
 
                         <td>
-
-                            <a href="{{ route('arsip.data-admin', $item->id) }}"
+                        @if(isset($item->opd->id))
+                            <a href="{{ route('arsip.data-admin', $item->opd->id) }}"
                             class="btn btn-warning btn-sm mb-2">
-                                Daftar
+                                Daftar Lengkap
                             </a>
-
-                            <!-- <form action="{{ route('arsip.destroy', $item->id) }}"
-                                method="POST"
-                                class="d-inline">
-
-                                @csrf
-                                @method('DELETE')
-
-                                <button class="btn btn-danger btn-sm mb-2"
-                                        onclick="return confirm('Hapus data?')">
-
-                                    Hapus
-
-                                </button>
-
-                            </form> -->
+                        @endif
+                            <button class="btn btn-secondary btn-sm mb-2" disabled>Tidak Ada OPD</button>
+                       
 
                         </td>
 

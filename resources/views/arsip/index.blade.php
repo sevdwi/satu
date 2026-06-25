@@ -98,7 +98,7 @@
                     <th>Nomor Dus</th>
                     <th>Korektor</th>
                     <th>Status</th>
-                    <th>File</th>
+                    <!-- <th>File</th> -->
                     <th width="180">Aksi</th>
                 </tr>
             </thead>
@@ -109,10 +109,13 @@
 
                     <tr>
 
-                        <td>{{ $loop->iteration }}</td>
+                        <td>
+                            {{ $loop->iteration }}
+                        </td>
 
-                        <td> 
-                            {{ $item->masterKode->kode.'-'.$item->masterKode->nama?? '-' }}
+                        <!-- Kode Master (Aman) -->
+                        <td>
+                            {{ $item->masterKode?->kode ?? '-' }} - {{ $item->masterKode?->nama ?? '-' }}
                         </td>
 
                         <td>
@@ -123,20 +126,27 @@
                             {{ $item->deskripsi }}
                         </td>
 
+                        <!-- OPD (Sudah Diperbaiki & Aman dari null) -->
                         <td>
-                            {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
+                            @if($item->opd)
+                                {{ $item->opd->singkatan_uk }} - {{ $item->opd->singkatan_instansi }}
+                            @else
+                                -
+                            @endif
+                        </td>
+
+                        <!-- Rak (Aman) -->
+                        <td>
+                            {{ $item->rak_arsip?->nomor_rak ?? '-' }}
+                        </td>
+
+                        <!-- Dus (Aman) -->
+                        <td>
+                            {{ $item->dus_arsip?->nomor_dus ?? '-' }}
                         </td>
 
                         <td>
-                            {{ $item->rak_arsip->nomor_rak }}
-                        </td>
-
-                        <td>
-                            {{ $item->dus_arsip->nomor_dus }}
-                        </td>
-
-                        <td>
-                            {{ $item->korektor }}
+                            {{ $item->korektor ?? '-' }}
                         </td>
 
                         <td>
@@ -144,7 +154,8 @@
                                 {{ $item->status }}
                             </span>
                         </td>
-                        <td>
+
+                        <!-- <td>
                             @if($item->file)
 
                                 <button class="btn btn-info btn-sm form-control btn-view-pdf"
@@ -171,7 +182,7 @@
                                 </button>
 
                             @endif
-                        </td> 
+                        </td>  -->
 
                         <td>
 
@@ -202,11 +213,11 @@
 
                 @empty
 
-                    <!-- <tr>
+                    <tr>
                         <td colspan="11" class="text-center">
                             Data kosong
                         </td>
-                    </tr> -->
+                    </tr>
 
                 @endforelse
 

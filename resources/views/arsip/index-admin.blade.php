@@ -23,10 +23,10 @@
     <ul class="nav-links">
       <li>
         <a href="{{route('dashboard-admin')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
+          <i class="bi bi-house"></i> Kembali
         </a>
       </li>
-      <li>
+      <!-- <li>
         <a href="#">
           <i class="bi bi-archive"></i> Arsip Inaktif
           <i class="bi bi-chevron-down nav-caret"></i>
@@ -69,7 +69,7 @@
         <a href="{{route('users.index')}}">
           <i class="bi bi-building-lock"></i> Kelola User
         </a>
-      </li>
+      </li> -->
 
     </ul>
 

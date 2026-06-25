@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Opd;
 use App\Models\Arsip;
 use App\Models\MasterKode;
+use App\Models\Rak_arsip;
+use App\Models\Dus_arsip;
 use Illuminate\Support\Str;
 
 class ArsipController extends Controller
@@ -87,25 +89,24 @@ class ArsipController extends Controller
         ));
     }
 
-    public function index-admin()
+    public function index_admin($opd_id = null)
     {
-        $data = Arsip::with([
+        $query= Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus,nomor_rak',
             'rak_arsip:id,nomor_rak'
         ])
-        ->where('status', '!=', 'inaktif')
+        ->where('status', '!=', 'inaktif');
 
             // JIKA ada parameter id_opd dikirim, lakukan filter arsip berdasarkan OPD tersebut
         if ($opd_id) {
             $query->where('opd_id', $opd_id); // Pastikan 'opd_id' adalah nama kolom foreign key di tabel arsip Anda
         }
-        ->latest()->get(); 
+        $data = $query->latest()->get(); 
 
-        return view('arsip.index', compact('data'
-        ));
+        return view('arsip.index-admin', compact('data'));
     }
 
     /**
@@ -181,17 +182,24 @@ class ArsipController extends Controller
             'rak_arsip:id,nomor_rak'
         ])->latest()->get();  
         $masterKodes = MasterKode::all();
+        $dus_arsips = Dus_arsip::all();
+        $rak_arsips = rak_arsip::all();
+
+
 
         return view('arsip.create', compact(
             'data',
             'opds',
-            'masterKodes'
+            'masterKodes',
+            'dus_arsips',
+            'rak_arsips'
         ));
     }
 
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     { 
         $filePath = null;
@@ -210,15 +218,19 @@ class ArsipController extends Controller
                 'pemusnahan' => $request->pemusnahan,
                 'created_by' => auth()->id(),
                 'file' => $filePath,
-                'nomor_dus' => $request->nomor_dus,
-                'nomor_rak' => $request->nomor_rak, 
+                
+                // PERBAIKAN: Arahkan ke kolom ID baru yang ada di tabel arsips
+                'dus_arsip_id' => $request->dus_arsip_id, // Pastikan nama input di HTML form Anda juga disesuaikan
+                'rak_arsip_id' => $request->rak_arsip_id, // Pastikan nama input di HTML form Anda juga disesuaikan
             ]);
+            
             return redirect()->route('arsip.home')
                 ->with('success', 'Data berhasil ditambahkan!');  
         } catch (\Throwable $e) {
             dd($e->getMessage());
         } 
     } 
+
     public function uploads(Request $request){
         try{ 
             if ($request->hasFile('file')) {

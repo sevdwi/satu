@@ -10,6 +10,8 @@ Route::get('/data', [ArsipController::class, 'index'])
 
 Route::get('/{id}/edit/', [ArsipController::class, 'edit']);
 Route::get('/search', [ArsipController::class, 'search'])->name('search');
+
+Route::post('/', [ArsipController::class, 'store'])->name('store');
 Route::post('/uploads',[ArsipController::class, 'uploads_post'])->name('uploads');
     
 Route::post('/{id}', [ArsipController::class, 'update']);
