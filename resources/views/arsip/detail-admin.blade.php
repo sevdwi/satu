@@ -82,9 +82,14 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Unit</th>
+                    <th>Kode</th>
+                    <th>Judul</th>
+                    <th>Deskripsi</th>
+                    <th>OPD</th>
                     <th>OPD id</th>
-                    <th>instansi</th>
+                    <th>Nomor RAK</th>
+                    <th>Nomor Dus</th>
+                    <th>Korektor</th>
                     <th>Status</th>
                     <!-- <th>File</th> -->
                     <th width="180">Aksi</th>
@@ -99,6 +104,18 @@
 
                         <td>{{ $loop->iteration }}</td>
 
+                        <td> 
+                            {{ $item->masterKode->kode.'-'.$item->masterKode->nama?? '-' }}
+                        </td>
+
+                        <td>
+                            {{ $item->judul }}
+                        </td>
+
+                        <td>
+                            {{ $item->deskripsi }}
+                        </td>
+
                         <td>
                             {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
                         </td>
@@ -107,8 +124,17 @@
                             {{ $item->opd->id }}
                         </td>
 
+
                         <td>
-                            {{ $item->opd->instansi }}
+                            {{ $item->rak_arsip->nomor_rak }}
+                        </td>
+
+                        <td>
+                            {{ $item->dus_arsip->nomor_dus }}
+                        </td>
+
+                        <td>
+                            {{ $item->korektor }}
                         </td>
 
                         <td>
@@ -116,27 +142,69 @@
                                 {{ $item->status }}
                             </span>
                         </td>
+                        <!-- <td>
+                            @if($item->file)
+
+                                <button class="btn btn-info btn-sm form-control btn-view-pdf"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#pdfModal"
+                                        data-file="{{ asset('arsip/'.$item->file) }}">
+                                    <i class="fa fa-book"></i> Lihat File
+                                </button>
+
+                                <button class="btn btn-primary btn-sm form-control btn-upload"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#uploadModal"
+                                        data-id="{{ $item->id }}">
+                                    <i class="fa fa-upload"></i>
+                                </button>
+
+                            @else
+
+                                <button class="btn btn-primary btn-sm form-control btn-upload"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#uploadModal"
+                                        data-id="{{ $item->id }}">
+                                    <i class="fa fa-upload"></i>
+                                </button>
+
+                            @endif
+                        </td>  -->
 
                         <td>
-                        @if(isset($item->opd->id))
-                            <a href="{{ route('arsip.detail-admin', $item->opd->id) }}"
+
+                            <a href="{{ route('arsip.edit', $item->id) }}"
                             class="btn btn-warning btn-sm mb-2">
-                                Daftar Lengkap
+                                Edit
                             </a>
-                        @endif
-                            <!-- <button class="btn btn-secondary btn-sm mb-2" disabled>Tidak Ada OPD</button> -->
-                       
+
+                            <form action="{{ route('arsip.destroy', $item->id) }}"
+                                method="POST"
+                                class="d-inline">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="btn btn-danger btn-sm mb-2"
+                                        onclick="return confirm('Hapus data?')">
+
+                                    Hapus
+
+                                </button>
+
+                            </form>
+
                         </td>
 
                     </tr>
 
                 @empty
 
-                    <tr>
+                    <!-- <tr>
                         <td colspan="11" class="text-center">
                             Data kosong
                         </td>
-                    </tr>
+                    </tr> -->
 
                 @endforelse
 

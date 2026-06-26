@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Opd;
 use App\Models\Arsip;
 use App\Models\MasterKode;
 use App\Models\Rak_arsip;
 use App\Models\Dus_arsip;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+
 
 class ArsipController extends Controller
 {
@@ -89,7 +92,28 @@ class ArsipController extends Controller
         ));
     }
 
-    public function index_admin($opd_id = null)
+    public function index_admin()
+    {
+        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+
+        // $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
+        // $opds = Opd::all();
+
+        $data = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus,nomor_rak',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('status', '!=', 'inaktif')
+        ->latest()->get(); 
+
+        return view('arsip.index-admin', compact('user', 'data'));
+    }
+
+
+    public function detail_admin($opd_id = null)
     {
         $query= Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -173,7 +197,16 @@ class ArsipController extends Controller
     }
     public function create()
     {
-        $opds = Opd::all();
+        // $opds = Opd::all();
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_id; 
+       
+        // Filter OPD agar HANYA menampilkan OPD si user saja
+        $opds = Opd::where('id', $userOpdId)->get();
+
         $data = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
@@ -181,9 +214,12 @@ class ArsipController extends Controller
             'dus_arsip:id,nomor_dus,nomor_rak',
             'rak_arsip:id,nomor_rak'
         ])->latest()->get();  
+
         $masterKodes = MasterKode::all();
-        $dus_arsips = Dus_arsip::all();
-        $rak_arsips = rak_arsip::all();
+
+        // Filter Rak dan Dus berdasarkan OPD si user (Asumsi tabel rak & dus punya kolom opd_id)
+        $dus_arsips = Dus_arsip::where('opd_id', $userOpdId)->get();
+        $rak_arsips = Rak_arsip::where('opd_id', $userOpdId)->get();
 
 
 
