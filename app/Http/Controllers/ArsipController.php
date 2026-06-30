@@ -197,7 +197,6 @@ class ArsipController extends Controller
     }
     public function create()
     {
-        // $opds = Opd::all();
         // Ambil data user yang sedang login beserta id OPD-nya
         $user = auth()->user(); 
 
@@ -255,9 +254,8 @@ class ArsipController extends Controller
                 'created_by' => auth()->id(),
                 'file' => $filePath,
                 
-                // PERBAIKAN: Arahkan ke kolom ID baru yang ada di tabel arsips
-                'dus_arsip_id' => $request->dus_arsip_id, // Pastikan nama input di HTML form Anda juga disesuaikan
-                'rak_arsip_id' => $request->rak_arsip_id, // Pastikan nama input di HTML form Anda juga disesuaikan
+                'dus_arsip_id' => $request->dus_arsip_id, 
+                'rak_arsip_id' => $request->rak_arsip_id, 
             ]);
             
             return redirect()->route('arsip.home')
@@ -357,6 +355,26 @@ class ArsipController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            // 1. Cari data arsip berdasarkan ID, jika tidak ada akan otomatis error/404
+            $arsip = Arsip::findOrFail($id);
+    
+            // 2. [Opsional] Hapus file PDF fisik dari storage jika filenya ada
+            if ($arsip->file && file_exists(public_path('arsip/' . $arsip->file))) {
+                unlink(public_path('arsip/' . $arsip->file));
+            }
+    
+            // 3. Hapus data dari database
+            $arsip->delete();
+    
+            // 4. Kembali ke halaman utama dengan pesan sukses
+            return redirect()->route('arsip.home')
+                ->with('success', 'Data arsip dan file terkait berhasil dihapus!');
+    
+        } catch (\Throwable $e) {
+            // Jika gagal, tangkap errornya dan kembalikan dengan pesan error
+            return redirect()->route('arsip.home')
+                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }

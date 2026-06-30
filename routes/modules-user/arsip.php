@@ -5,8 +5,9 @@ use App\Http\Controllers\ArsipController;
 
 
 Route::prefix('arsip')->name('arsip.')->group(function () {
-Route::get('/data', [ArsipController::class, 'index'])
-    ->name('home');
+Route::get('/data', [ArsipController::class, 'index'])->name('home');
+Route::get('/create', [ArsipController::class, 'create'])->name('create');
+
 
 Route::get('/{id}/edit/', [ArsipController::class, 'edit']);
 Route::get('/search', [ArsipController::class, 'search'])->name('search');
@@ -16,6 +17,9 @@ Route::post('/uploads',[ArsipController::class, 'uploads_post'])->name('uploads'
     
 Route::post('/{id}', [ArsipController::class, 'update']);
 Route::get('/dashbord', [ArsipController::class, 'dashbord'])->name('index');; 
-Route::resource('/', ArsipController::class);
+
+Route::delete('/{id}', [ArsipController::class, 'destroy'])->name('destroy');
+
+// Route::resource('/', ArsipController::class);
 
 });

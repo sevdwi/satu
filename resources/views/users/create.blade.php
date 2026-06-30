@@ -385,8 +385,8 @@
               <select class="form-select" id="opd" name="opd" required>
                 <option value="" disabled selected>-- Pilih OPD --</option>
                 @foreach($opds as $opd)
-                  <option value="{{ $opd->instansi }}" {{ old('opd') == $opd->instansi ? 'selected' : '' }}>
-                    {{ $opd->instansi }}
+                  <option value="{{ $opd->unit_kerja }}" {{ old('opd') == $opd->unit_kerja ? 'selected' : '' }}>
+                    {{ $opd->unit_kerja }}
                   </option>
                 @endforeach
               </select>
