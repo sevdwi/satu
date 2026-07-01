@@ -13,7 +13,8 @@ class UserController extends Controller
     // list semua user
     public function index()
     {
-        $users = User::all();
+        // $users = User::all();
+        $users = User::with('opd_induk')->get();
         return view('users.index', compact('users'));
     }
 
@@ -39,13 +40,15 @@ class UserController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'phone_number'   => $request->phone_number,
-            'opd'     => $request->opd,
+            // 'opd'     => $request->opd,
+            'opd_id'     => $request->opd_id,
+            'opd_induk_id'     => $request->opd_induk_id,
             'role' => $request->role,
             'status' => $request->status,
             'password' => $request->password, // auto hash oleh model
         ]);
 
-        return redirect()->route('login');
+        return redirect()->route('dashboard-admin');
     }
 
     // form edit

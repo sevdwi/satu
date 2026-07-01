@@ -104,11 +104,11 @@
                         </td>
 
                         <td>
-                            {{ $item->opd->id }}
+                            {{ $item->opd_induk->id }}
                         </td>
 
                         <td>
-                            {{ $item->opd->instansi }}
+                            {{ $item->opd_induk->instansi }}
                         </td>
 
                         <td>

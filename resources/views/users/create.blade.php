@@ -80,8 +80,8 @@
     }
     .header-brand-icon {
       width: 36px; height: 36px;
-      background: rgba(255,255,255,.15);
-      border: 1px solid rgba(255,255,255,.3);
+      /* background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3); */
       border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
     }
@@ -131,10 +131,11 @@
     .input-group {
       position: relative;
       display: block;
+      margin-bottom: 20px;
     }
     .input-group-text {
       position: absolute;
-      top: 50%; left: 1px;
+      top: 40%; left: 1px;
       transform: translateY(-50%);
       width: 38px;
       height: calc(100% - 4px);
@@ -212,6 +213,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: .75rem;
+      margin-left: 80px;
     }
     .role-card { position: relative; }
     .role-card input[type="radio"] {
@@ -260,6 +262,8 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: .65rem;
+      margin-left: 80px;
+
     }
     .status-opt { position: relative; }
     .status-opt input[type="radio"] {
@@ -366,7 +370,7 @@
         <div class="section-label">Informasi Pribadi</div>
  
         <!-- Nama Lengkap -->
-        <div class="mb-3">
+        <div class="mb-7">
           <label class="form-label" for="name">Nama Lengkap <span class="req">*</span></label>
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
@@ -382,17 +386,34 @@
             <label class="form-label" for="opd">OPD / Instansi <span class="req">*</span></label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-building-fill"></i></span>
-              <select class="form-select" id="opd" name="opd" required>
-                <option value="" disabled selected>-- Pilih OPD --</option>
+              <select class="form-select" id="opd" name="opd_induk_id" required>
+                <option value="" disabled selected>-- Pilih Unit Kerja --</option>
+                @foreach($opd_induks as $opd_induk)
+                  <option value="{{ $opd_induk->id }}" {{ old('opd_induk_id') == $opd_induk->id ? 'selected' : '' }}>
+                    {{ $opd_induk->instansi }}
+                  </option>
+                @endforeach
+              </select>
+              <div class="invalid-feedback">Unit Kerja wajib dipilih.</div>
+            </div>
+          </div>
+
+          <div class="col-md-7">
+            <label class="form-label" for="opd">Unit Kerja <span class="req">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-building-fill"></i></span>
+              <select class="form-select" id="opd" name="opd_id" required>
+                <option value="" disabled selected>-- Pilih Unit Kerja --</option>
                 @foreach($opds as $opd)
-                  <option value="{{ $opd->unit_kerja }}" {{ old('opd') == $opd->unit_kerja ? 'selected' : '' }}>
+                  <option value="{{ $opd->id }}" {{ old('opd_id') == $opd->id ? 'selected' : '' }}>
                     {{ $opd->unit_kerja }}
                   </option>
                 @endforeach
               </select>
-              <div class="invalid-feedback">OPD wajib dipilih.</div>
+              <div class="invalid-feedback">Unit Kerja wajib dipilih.</div>
             </div>
           </div>
+
           <div class="col-md-5">
             <label class="form-label" for="phone_number">Nomor HP <span class="req">*</span></label>
             <div class="input-group">
@@ -415,9 +436,9 @@
             <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
             <input type="email" class="form-control" id="email" name="email"
                    placeholder="contoh@email.com" required maxlength="255" />
-            <div class="invalid-feedback">Masukkan alamat email yang valid.</div>
+            <!-- <div class="invalid-feedback">Masukkan alamat email yang valid.</div> -->
+            <div class="form-text"><i class="bi bi-info-circle me-1"></i>Masukan Email yang valid dan harus unik dan belum pernah digunakan.</div>
           </div>
-          <div class="form-text"><i class="bi bi-info-circle me-1"></i>Email harus unik dan belum pernah digunakan.</div>
         </div>
  
         <!-- Password -->
@@ -444,7 +465,7 @@
               <button type="button" class="btn-eye" onclick="togglePass('password_confirmation','eyeIcon2')">
                 <i class="bi bi-eye-fill" id="eyeIcon2"></i>
               </button>
-              <div class="invalid-feedback" id="confirmFeedback">Password tidak cocok.</div>
+              <!-- <div class="invalid-feedback" id="confirmFeedback">Password tidak cocok.</div> -->
             </div>
           </div>
         </div>
@@ -457,10 +478,10 @@
             <input type="radio" name="role" id="roleAdmin" value="admin" />
             <label for="roleAdmin"><span class="role-icon">🛡️</span>Admin</label>
           </div>
-          <div class="role-card">
+          <!-- <div class="role-card">
             <input type="radio" name="role" id="roleStaff" value="staff" checked />
             <label for="roleStaff"><span class="role-icon">👷</span>Staff</label>
-          </div>
+          </div> -->
           <div class="role-card">
             <input type="radio" name="role" id="roleCustomer" value="customer" />
             <label for="roleCustomer"><span class="role-icon">👤</span>Customer</label>
@@ -471,10 +492,10 @@
         <div class="section-label">Status Akun</div>
  
         <div class="status-grid mb-2">
-          <div class="status-opt verify">
+          <!-- <div class="status-opt verify">
             <input type="radio" name="status" id="statusVerify" value="verify" checked />
             <label for="statusVerify"><i class="bi bi-hourglass-split"></i> Verify</label>
-          </div>
+          </div> -->
           <div class="status-opt active">
             <input type="radio" name="status" id="statusActive" value="active" />
             <label for="statusActive"><i class="bi bi-check-circle-fill"></i> Active</label>

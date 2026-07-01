@@ -38,7 +38,7 @@
     <ul class="nav-links">
       <li>
         <a href="{{route('dashboard-admin')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
+          <i class="bi bi-house"></i> Kembali
         </a>
       </li>
       <!-- <li>
@@ -69,83 +69,6 @@
     <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
   </div>
 </nav>
-
-
-<!-- <div style="background: #6495ED; min-height: 100vh; padding: 2rem;">
-    <div style="max-width: 900px; margin: 0 auto;">
-        <div class="card shadow-sm" style="border-radius: 16px; border: 1px solid #e0dbff;">
-            <div class="card-body p-4">
-
-                <h4 class="fw-semibold mb-4" style="color: #3C3489;">
-                    <i class="bi bi-people-fill me-2" style="color: #6495ED;"></i>
-                    List Users
-                </h4>
-
-                <a href="{{ route('users.create') }}"
-                   class="btn mb-4 px-4"
-                   style="background: #6495ED; color: #fff; border-radius: 8px; font-size: 14px;">
-                    <i class="bi bi-plus-lg me-1"></i> Tambah User
-                </a>
-
-                <table class="table align-middle" style="font-size: 14px;">
-                    <thead style="background: #6495ED;">
-                        <tr>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">ID</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Name</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">OPD</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Email</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Number</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($users as $u)
-                        <tr style="border-color: #f0eeff;">
-                            <td>
-                                <span class="badge rounded-pill px-3"
-                                      style="background: #EEEDFE; color: #534AB7; font-weight: 600;">
-                                    #{{ $u->id }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
-                                         style="width:32px; height:32px; background:#EEEDFE; color:#6495ED; font-size:11px; font-weight:700;">
-                                        {{ strtoupper(substr($u->name, 0, 2)) }}
-                                    </div>
-                                    {{ $u->name }}
-                                </div>
-                            </td>
-                            <td class="text-muted">{{ $u->opd }}</td>
-                            <td class="text-muted">{{ $u->email }}</td>
-                            <td class="text-muted">{{ $u->phone_number }}</td>
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <a href="{{ route('users.edit', $u) }}"
-                                       class="btn btn-sm px-3"
-                                       style="background: #FFD700; color: #534AB7; border-radius: 6px; font-size: 12px;">
-                                        <i class="bi bi-pencil me-1"></i> Edit
-                                    </a>
-                                    <form action="{{ route('users.destroy', $u) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="btn btn-sm px-3"
-                                                style="background: #fff0f3; color: #A32D2D; border-radius: 6px; font-size: 12px;">
-                                            <i class="bi bi-trash me-1"></i> Hapus
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-    </div>
-</div> -->
 
 <!-- newww -->
 
@@ -226,7 +149,7 @@
                 </div>
               </div>
             </td>
-            <td class="cell-muted">{{ $u->opd }}</td>
+            <td class="cell-muted">{{ $u->opd_induk->instansi ?? 'Tidak Ada OPD'}}</td>
             <td class="cell-muted">{{ $u->email }}</td>
             <td class="cell-muted">{{ $u->phone_number }}</td>
             <td><span class="role-badge role-admin"><i class="bi bi-shield-fill" style="font-size:.55rem;"></i>{{ $u->role }}</span></td>

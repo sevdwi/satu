@@ -101,6 +101,7 @@ class ArsipController extends Controller
 
         $data = Arsip::with([
             'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus,nomor_rak',

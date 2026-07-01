@@ -49,6 +49,13 @@ class Arsip extends Model
         return $this->belongsTo(Opd::class, 'opd_id');
     }
 
+    // OPD Induk
+    public function opd_induk()
+    {
+        return $this->belongsTo(Opd_Induk::class, 'opd_induk_id');
+    }
+    
+
     // Master Kode
     public function masterKode()
     {
