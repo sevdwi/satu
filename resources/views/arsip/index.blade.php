@@ -93,7 +93,7 @@
                     <th>Kode</th>
                     <th>Judul</th>
                     <th>Deskripsi</th>
-                    <th>OPD</th>
+                    <th>Unit</th>
                     <th>Nomor RAK</th>
                     <th>Nomor Dus</th>
                     <th>Korektor</th>

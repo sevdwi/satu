@@ -85,6 +85,7 @@ class ArsipController extends Controller
             'dus_arsip:id,nomor_dus,nomor_rak',
             'rak_arsip:id,nomor_rak'
         ])
+        ->where('created_by', auth()->id())
         ->where('status', '!=', 'inaktif')
         ->latest()->get(); 
 
@@ -131,7 +132,7 @@ class ArsipController extends Controller
         }
         $data = $query->latest()->get(); 
 
-        return view('arsip.index-admin', compact('data'));
+        return view('arsip.detail-admin', compact('data'));
     }
 
     /**
@@ -208,7 +209,7 @@ class ArsipController extends Controller
         $opds = Opd::where('id', $userOpdId)->get();
 
         $data = Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus,nomor_rak',
@@ -247,14 +248,14 @@ class ArsipController extends Controller
                 'tanggal' => $request->tanggal,
                 'master_kode_id' => $request->master_kode_id,
                 'opd_id' => $request->opd_id,
+                'opd_induk_id' => $request->opd_induk_id,
                 'retensi' => $request->retensi,
                 'retensiinaktif' => $request->retensiinaktif,
                 'nomor' => $request->nomor,
-                'status' => $request->status ?? 'aktif',
+                'status' => $request->status ?? 'input',
                 'pemusnahan' => $request->pemusnahan,
                 'created_by' => auth()->id(),
-                'file' => $filePath,
-                
+                'file' => $filePath,               
                 'dus_arsip_id' => $request->dus_arsip_id, 
                 'rak_arsip_id' => $request->rak_arsip_id, 
             ]);
@@ -310,7 +311,7 @@ class ArsipController extends Controller
     public function edit($id)
     { 
         $data = Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus,nomor_rak',
@@ -339,6 +340,7 @@ class ArsipController extends Controller
             'tanggal' => $request->tanggal,
             'master_kode_id' => $request->master_kode_id,
             'opd_id' => $request->opd_id,
+            'opd_induk_id' => $request->opd_induk_id,
             'retensi' => $request->retensi,
             'nomor' => $request->nomor,
             'status' => $request->status,

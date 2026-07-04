@@ -18,7 +18,7 @@
         @csrf
         <div class="row">
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Kode Arsip</label>
             <input type="hidden" name="id" value="{{$id}}">
 
@@ -39,19 +39,32 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>OPD</label>
+
+            <select name="opd_induk_id" class="form-control  select-opd">
+
+                <option value="0">-- Pilih OPD --</option>
+                <option value="{{ $data->opd_induk_id }}" selected> 
+                        {{ $data->opd->singkatan_instansi }}
+                </option>  
+            </select>
+        </div>
+
+
+        <div class="col-md-6 mt-3">
+            <label>Unit</label>
 
             <select name="opd_id" class="form-control  select-opd">
 
                 <option value="0">-- Pilih OPD --</option>
                 <option value="{{ $data->opd_id }}" selected> 
-                        {{ $data->opd->singkatan_uk }} - {{ $data->opd->singkatan_instansi }}
+                        {{ $data->opd->singkatan_uk }}
                 </option>  
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Korektor</label>
 
             <input type="text"
@@ -60,7 +73,7 @@
                    value="{{$data->korektor}}">
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Judul</label>
 
             <input type="text"
@@ -69,7 +82,7 @@
                    value="{{$data->judul}}">
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Nomor Sementara</label>
 
             <input type="text"
@@ -78,7 +91,7 @@
                    value="{{$data->nomor_sementara}}">
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Nomor</label>
 
             <input type="text"
@@ -87,7 +100,7 @@
                    value="{{$data->nomor}}">
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Tanggal</label>
 
             <input type="date"
@@ -96,7 +109,7 @@
                    value="{{$data->tanggal}}">
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Retensi Aktif</label>
             <select name="retensi" class="form-control">
                 <option value="0">pilih data</option>
@@ -106,7 +119,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Retensi Inaktif</label>
             <select name="retensiinaktif" class="form-control">
                 <option value="0">pilih data</option>
@@ -116,7 +129,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Status</label>
 
             <select name="status" class="form-control"> 
@@ -126,7 +139,7 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Pemusnahan</label>
 
             <input type="date"
@@ -135,7 +148,7 @@
                    value="{{$data->pemusnahan}}">
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Deskripsi</label>
 
             <textarea name="deskripsi"
@@ -143,7 +156,7 @@
         </div> 
     </div>
     <div class="row"> 
-        <div class="col-md-6"> 
+        <div class="col-md-6 mt-3"> 
             <label>Nomor RAK</label>
 
             <select name="nomor_rak" class="form-control select-rak_arsip">
@@ -158,7 +171,7 @@
 
             </select> 
         </div> 
-        <div class="col-md-6">
+        <div class="col-md-6 mt-3">
             <label>Nomor Dus</label>
 
             <select name="nomor_dus" class="form-control  select-dus_arsip">
@@ -173,12 +186,12 @@
         </div> 
     </div>
 
-        <button class="btn btn-primary">
+        <button class="btn btn-primary mt-3">
             Simpan
         </button>
 
         <a href="{{ route('arsip.home') }}"
-           class="btn btn-secondary">
+           class="btn btn-secondary mt-3">
 
             Kembali
 

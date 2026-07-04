@@ -103,14 +103,35 @@
             <div class="col-md-6 mt-3">
                 <label>OPD</label>
 
+                <select name="opd_induk_id" class="form-select form-select-sm" aria-label="Large select example">
+
+                    <option value="0">-- Pilih Unit --</option>
+                    @foreach($opds as $opd)
+
+                    <option value="{{ $opd->opd_induk_id }}">
+
+                    {{ $opd->kode_instansi }} - {{ $opd->singkatan_instansi }}
+
+                    </option>
+
+                    @endforeach
+
+                    
+                </select>
+            </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Unit</label>
+
                 <select name="opd_id" class="form-select form-select-sm" aria-label="Large select example">
 
-                    <option value="0">-- Pilih OPD --</option>
+                    <option value="0">-- Pilih Unit --</option>
                     @foreach($opds as $opd)
 
                     <option value="{{ $opd->id }}">
 
-                    {{ $opd->kode_instansi }} - {{ $opd->unit_kerja }} - {{ $opd->singkatan_instansi }}
+                    {{ $opd->unit_kerja }}
 
                     </option>
 
@@ -177,7 +198,7 @@
 
                 <select name="status" class="form-control">
 
-                    <option value="aktif">Aktif</option>
+                    <option value="input">Input</option>
                     <option value="nonaktif">Nonaktif</option>
 
                 </select>

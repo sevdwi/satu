@@ -22,7 +22,7 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('dashboard-admin')}}" class="active">
+        <a href="{{route('arsip.home-admin')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
       </li>
@@ -126,11 +126,11 @@
 
 
                         <td>
-                            {{ $item->rak_arsip->nomor_rak }}
+                            {{ $item->rak_arsip->nomor_rak ?? '-'  }}
                         </td>
 
                         <td>
-                            {{ $item->dus_arsip->nomor_dus }}
+                            {{ $item->dus_arsip->nomor_dus ?? '-'  }}
                         </td>
 
                         <td>

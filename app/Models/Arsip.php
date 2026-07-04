@@ -16,6 +16,7 @@ class Arsip extends Model
         'master_kode_id',
         'created_by',
         'opd_id',
+        'opd_induk_id',
         'retensi',
         'nomor',
         'status',

@@ -82,7 +82,7 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Unit</th>
+                    <!-- <th>Unit</th> -->
                     <th>OPD id</th>
                     <th>instansi</th>
                     <th>Status</th>
@@ -99,9 +99,9 @@
 
                         <td>{{ $loop->iteration }}</td>
 
-                        <td>
+                        <!-- <td>
                             {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
-                        </td>
+                        </td> -->
 
                         <td>
                             {{ $item->opd_induk->id }}
