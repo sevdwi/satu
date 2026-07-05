@@ -16,18 +16,30 @@ class MasterKodeController extends Controller
 
         return view('master-kodes.index', compact('data'));
     }
-    public function search2(Request $request)
-    {
-        $q = $request->q; 
+    // public function search2(Request $request)
+    // {
+    //     $q = $request->q; 
 
+    //     $data = MasterKode::where('kode', 'like', "%$q%")
+    //         ->orWhere('nama', 'like', "%$q%")
+    //         ->orWhere('keterangan', 'like', "%$q%") 
+    //         ->limit(20)
+    //         ->get();
+
+    //     return response()->json($data);
+    // }
+    public function search(Request $request)
+    {
+        $q = $request->q;
+ 
         $data = MasterKode::where('kode', 'like', "%$q%")
             ->orWhere('nama', 'like', "%$q%")
-            ->orWhere('keterangan', 'like', "%$q%") 
             ->limit(20)
             ->get();
 
         return response()->json($data);
     }
+
     public function edit($id)
     {
         $data = MasterKode::findOrFail($id);
@@ -43,25 +55,26 @@ class MasterKodeController extends Controller
 
         return view('master-kodes.create', compact('data','parents'));
     } 
-    public function search(Request $request)
-    {
-        $q = $request->q;
-        $currentId = $request->current_id;
+    // public function search(Request $request)
+    // {
+    //     $q = $request->q;
+    //     $currentId = $request->current_id;
 
-        $query = MasterKode::query()
-            ->select('id', 'kode', 'nama')
-            ->where(function ($x) use ($q) {
-                $x->where('nama', 'like', "%{$q}%")
-                  ->orWhere('kode', 'like', "%{$q}%");
-            });
+    //     $query = MasterKode::query()
+    //         ->select('id', 'kode', 'nama')
+    //         ->where(function ($x) use ($q) {
+    //             $x->where('nama', 'like', "%{$q}%")
+    //               ->orWhere('kode', 'like', "%{$q}%");
+    //         });
 
-        // ❌ jangan tampilkan dirinya sendiri saat edit
-        if ($currentId) {
-            $query->where('id', '!=', $currentId);
-        }
+    //     // ❌ jangan tampilkan dirinya sendiri saat edit
+    //     if ($currentId) {
+    //         $query->where('id', '!=', $currentId);
+    //     }
 
-        return $query->limit(20)->get();
-    }
+    //     return $query->limit(20)->get();
+    // }
+    
     public function getdataajax()
     {
         $data = MasterKode::with('parent', 'children')
@@ -241,4 +254,7 @@ class MasterKodeController extends Controller
             'message' => 'Data berhasil dihapus'
         ]);
     }
+
+
+
 }

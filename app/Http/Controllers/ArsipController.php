@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Opd;
+use App\Models\Opd_induk;
 use App\Models\Arsip;
 use App\Models\MasterKode;
 use App\Models\Rak_arsip;
@@ -181,7 +182,8 @@ class ArsipController extends Controller
         $q = $request->q;
  
         $data = Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi'
         ])
         ->where('judul', 'like', "%{$q}%")
         ->orWhere('nomor', 'like', "%{$q}%")
@@ -312,6 +314,7 @@ class ArsipController extends Controller
     { 
         $data = Arsip::with([
             'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,kode_instansi,instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus,nomor_rak',
@@ -345,8 +348,8 @@ class ArsipController extends Controller
             'nomor' => $request->nomor,
             'status' => $request->status,
             'pemusnahan' => $request->pemusnahan, 
-            'nomor_dus' => $request->nomor_dus,
-            'nomor_rak' => $request->nomor_rak, 
+            'dus_arsip_id' => $request->dus_arsip_id,
+            'rak_arsip_id' => $request->rak_arsip_id, 
         ]);
 
         return redirect()->route('arsip.home')

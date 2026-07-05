@@ -57,6 +57,18 @@
           <a href="#"><i class="bi bi-archive-fill"></i> Daftar Arsip Statis</a>
         </div>
       </li>
+      <li>
+        <a href="#">
+          <i class="bi bi-building-lock"></i> Nomor Rak & Dus
+          <i class="bi bi-chevron-down nav-caret"></i>
+        </a>
+        <div class="dropdown-menu-custom">
+          <a href="{{route('rak_arsip.index')}}"><i class="bi bi-send"></i> Buat Nomor Rak</a>
+          <!-- <div class="dropdown-divider-custom"></div> -->
+          <a href="#"><i class="bi bi-archive-fill"></i> Buat Nomor Dus</a>
+        </div>
+      </li>
+
     </ul>
 
     <!-- Account -->

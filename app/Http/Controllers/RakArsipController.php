@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Rak_arsip;
 use App\Models\Opd;
+use App\Models\Opd_induk;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RakArsipController extends Controller
@@ -13,19 +15,32 @@ class RakArsipController extends Controller
      */
     public function dashbord()
     {
-        $data = Rak_arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
-        ])->latest()->get(); 
-
+        // $data = Rak_arsip::with([
+        //     'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
+        // ])->latest()->get(); 
+        $data = Rak_arsip::all();
         return view('rak_arsip.index', compact('data'
         ));
         //
     }
     public function index()
     {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+        
+        // Filter OPD agar HANYA menampilkan OPD si user saja
+        // $opd_indukId = Opd_induk::where('id', $userOpdId)->get();
+
         $data = Rak_arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
-        ])->latest()->get(); 
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi'
+        ])
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_id' ini ada di tabel rak_arsips
+        ->latest()
+        ->get(); 
 
         return view('rak_arsip.index', compact('data'
         ));

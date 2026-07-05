@@ -1,4 +1,4 @@
-@extends('layouts.administrator')
+@extends('layouts.head_customer')
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,29 +24,24 @@
 
             <select name="master_kode_id" class="form-control  select-master-kode">
 
-                <option value="">-- Pilih Kode --</option>
+                <option value="0">-- Pilih Kode --</option>
 
-                @foreach($masterKodes as $kode)
-
-                    <option value="{{ $kode->id }}" <?php if($kode->id==$data->master_kode_id){?>selected<?php }?>>
-
-                        {{ $data->masterKode->kode }} - {{ $data->masterKode->nama }}
-
-                    </option>
-
-                @endforeach
+                <option value="{{ $data->master_kode_id }}" selected> 
+                        {{ $data->masterKode->kode }} -   {{ $data->masterKode->nama }}
+                </option>  
 
             </select>
+            
         </div>
 
         <div class="col-md-6 mt-3">
             <label>OPD</label>
 
-            <select name="opd_induk_id" class="form-control  select-opd">
+            <select name="opd_induk_id" class="form-control  select-opd_induk">
 
                 <option value="0">-- Pilih OPD --</option>
                 <option value="{{ $data->opd_induk_id }}" selected> 
-                        {{ $data->opd->singkatan_instansi }}
+                {{ $data->opd_induk->kode_instansi }} - {{ $data->opd_induk->instansi }} 
                 </option>  
             </select>
         </div>
@@ -159,12 +154,12 @@
         <div class="col-md-6 mt-3"> 
             <label>Nomor RAK</label>
 
-            <select name="nomor_rak" class="form-control select-rak_arsip">
+            <select name="rak_arsip_id" class="form-control select-rak_arsip">
 
                 <option value="0">-- Pilih Rak --</option>
 
                 @if($data['rak_arsip'])
-                    <option value="{{ $data->nomor_rak }}" selected>
+                    <option value="{{ $data->rak_arsip_id }}" selected>
                         {{ $data->rak_arsip->nomor_rak }}
                     </option>
                 @endif
@@ -174,11 +169,11 @@
         <div class="col-md-6 mt-3">
             <label>Nomor Dus</label>
 
-            <select name="nomor_dus" class="form-control  select-dus_arsip">
+            <select name="dus_arsip_id" class="form-control  select-dus_arsip">
 
                 <option value="0">-- Pilih Dus --</option>
                 @if($data['dus_arsip'])
-                <option value="{{ $data->nomor_dus }}" selected> 
+                <option value="{{ $data->dus_arsip_id }}" selected> 
                         {{ $data->dus_arsip->nomor_dus }}
                 </option> 
                 @endif
@@ -186,12 +181,12 @@
         </div> 
     </div>
 
-        <button class="btn btn-primary mt-3">
+        <button class="btn btn-primary mt-3 mb-3">
             Simpan
         </button>
 
         <a href="{{ route('arsip.home') }}"
-           class="btn btn-secondary mt-3">
+           class="btn btn-secondary mt-3 mb-3">
 
             Kembali
 
@@ -224,7 +219,7 @@ $(document).ready(function () {
         minimumInputLength: 3,
 
         ajax: {
-            url: "{{ route('master-kodes.search') }}", 
+            url: "{{ route('master_kodes.search') }}", 
 
             dataType: 'json',
 
@@ -383,6 +378,50 @@ $(document).ready(function () {
     }
 
 });
+
+$('.select-opd_induk').select2({
+
+placeholder: 'Cari OPD...',
+allowClear: true,
+minimumInputLength: 3,
+
+ajax: {
+
+    url: "{{ route('opd_induk.search') }}",
+
+    type: 'GET',
+
+    dataType: 'json',
+
+    delay: 250,
+
+    data: function (params) {
+
+        return {
+            q: params.term,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        };
+    },
+
+    processResults: function (data) {
+
+        return {
+            results: $.map(data, function(item) {
+
+                return {
+                    id: item.id,
+                    text: item.kode_instansi + ' - ' + item.instansi
+                }
+
+            })
+        };
+    },
+
+    cache: true
+}
+
+});
+
 
 });
 </script>

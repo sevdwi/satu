@@ -40,7 +40,9 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
-                            {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
+                            <!-- {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }} -->                             
+                            {{ $item->opd_id ?? '-' }}
+
                         </td> 
                         <td>
                             {{ $item->nomor_rak ?? '-' }}

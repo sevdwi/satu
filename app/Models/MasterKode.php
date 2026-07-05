@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MasterKode extends Model
 {
-    use HasFactory;
+    // use HasFactory;
 
     protected $table = 'master_kodes';
 
@@ -31,14 +31,14 @@ class MasterKode extends Model
     */
 
     // Parent
-    public function parent()
-    {
-        return $this->belongsTo(MasterKode::class, 'parent_id');
-    }
+    // public function parent()
+    // {
+    //     return $this->belongsTo(MasterKode::class, 'parent_id');
+    // }
 
     // Children
-    public function children()
+    public function arsips()
     {
-        return $this->hasMany(MasterKode::class, 'parent_id');
+        return $this->hasMany(Arsip::class, 'master_kode_id');
     }
 }

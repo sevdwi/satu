@@ -24,8 +24,8 @@ class Arsip extends Model
         'pemusnahan',
         'korektor',
         'nomor_sementara',
-        'nomor_dus',
-        'nomor_rak'
+        'dus_arsip_id',
+        'rak_arsip_id'
     ];
 
     /*

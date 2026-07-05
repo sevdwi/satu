@@ -19,14 +19,19 @@ class Opd_induk extends Model
         return $this->hasMany(Arsip::class, 'opd_induk_id');
     }
 
-    public function opd()
+    public function opds()
     {
         return $this->hasMany(Opd::class, 'opd_induk_id');
     }
 
-    public function user()
+    public function users()
     {
         return $this->hasMany(User::class, 'opd_induk_id');
+    }
+
+    public function rak_arsips()
+    {
+        return $this->hasMany(rak_arsip::class, 'opd_induk_id');
     }
 
 }
