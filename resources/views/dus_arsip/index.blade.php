@@ -1,4 +1,4 @@
-@extends('layouts.administrator')
+@extends('layouts.head_customer')
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -7,7 +7,59 @@
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
-<div class="container mt-4">
+<nav class="navbar-custom">
+  <div class="navbar-inner">
+
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('dashboard')}}" class="active">
+          <i class="bi bi-house"></i> Kembali
+        </a>
+
+      </li>
+      <!-- <li>
+      <a href="{{route('dashboard')}}" class="active">
+          <i class="bi bi-house"></i> Beranda
+        </a>
+      </li> -->
+    </ul>
+    
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <i class="bi">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+        </i>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
+</nav>
+
+<div class="container mt-4 mb-4">
 
     <div class="d-flex justify-content-between mb-3">
         <h3>Data Dus Arsip</h3>
@@ -41,10 +93,10 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
-                            {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
+                        {{ $item->opd_induk->kode_instansi ?? '-' }} - {{ $item->opd->unit_kerja ?? '-' }}
                         </td> 
                         <td>
-                            {{ $item->nomor_rak ?? '-' }}
+                            {{ $item->rak_arsip->nomor_rak ?? '-' }}
                         </td> 
                         <td>
                             {{ $item->nomor_dus ?? '-' }}

@@ -7,6 +7,8 @@ use App\Models\Opd;
 use App\Models\Opd_induk;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class RakArsipController extends Controller
 {
@@ -23,6 +25,7 @@ class RakArsipController extends Controller
         ));
         //
     }
+
     public function index()
     {
         // Ambil data user yang sedang login beserta id OPD-nya
@@ -30,22 +33,22 @@ class RakArsipController extends Controller
 
         // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
-        
-        // Filter OPD agar HANYA menampilkan OPD si user saja
-        // $opd_indukId = Opd_induk::where('id', $userOpdId)->get();
 
+        // dd($userOpdId); 
+        
         $data = Rak_arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
-            'opd_induk:id,instansi'
+            'opd_induk:id,instansi,kode_instansi'
         ])
         ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_id' ini ada di tabel rak_arsips
-        ->latest()
+        // ->latest()
         ->get(); 
 
         return view('rak_arsip.index', compact('data'
         ));
         //
     }
+
     public function search(Request $request){
 
         $q = $request->q;
@@ -89,6 +92,7 @@ class RakArsipController extends Controller
             $data = Rak_arsip::create([
                 'nomor_rak' => $request->nomor_rak, 
                 'opd_id' => $request->opd_id, 
+                'opd_induk_id' => $request->opd_induk_id, 
             ]);
             return redirect()->route('rak_arsip.index')
                 ->with('success', 'Data berhasil ditambahkan!');  
@@ -140,8 +144,22 @@ class RakArsipController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Rak_arsip $rak_arsip)
+    public function destroy($id)
     {
-        //
+
+        try {
+            // Find data by ID, will return 404 error if not found
+            $rak = Rak_arsip::findOrFail($id);
+            
+            // Delete data from database
+            $rak->delete();
+    
+            return redirect()->route('rak_arsip.index')
+                ->with('success', 'Data berhasil dihapus!');  
+        } catch (\Throwable $e) {
+            // Display error message if delete process fails
+            dd($e->getMessage());
+        }
+
     }
 }

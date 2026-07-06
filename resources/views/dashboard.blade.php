@@ -65,7 +65,7 @@
         <div class="dropdown-menu-custom">
           <a href="{{route('rak_arsip.index')}}"><i class="bi bi-send"></i> Buat Nomor Rak</a>
           <!-- <div class="dropdown-divider-custom"></div> -->
-          <a href="#"><i class="bi bi-archive-fill"></i> Buat Nomor Dus</a>
+          <a href="{{route('dus_arsip.index')}}"><i class="bi bi-archive-fill"></i> Buat Nomor Dus</a>
         </div>
       </li>
 

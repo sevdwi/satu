@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Dus_arsip;
 use App\Models\Rak_arsip;
 use App\Models\Opd;
+use App\Models\Opd_induk;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class DusArsipController extends Controller
 {
@@ -14,9 +18,19 @@ class DusArsipController extends Controller
      */
     public function index()
     {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+
         $data = Dus_arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
-        ])->latest()->get(); 
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi,kode_instansi',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('opd_induk_id', $userOpdId)
+        ->get(); 
 
         return view('dus_arsip.index', compact('data'
         ));
