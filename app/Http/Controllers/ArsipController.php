@@ -79,14 +79,21 @@ class ArsipController extends Controller
     } 
     public function index()
     {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+               
         $data = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
+            'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        ->where('created_by', auth()->id())
+        // ->where('created_by', auth()->id())
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel rak_arsips
         ->where('status', '!=', 'inaktif')
         ->latest()->get(); 
 
@@ -106,7 +113,7 @@ class ArsipController extends Controller
             'opd_induk:id,instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
+            'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
         ->where('status', '!=', 'inaktif')

@@ -1,13 +1,56 @@
-@extends('layouts.administrator')
+@extends('layouts.head_customer')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-</head>
-<body>
+<nav class="navbar-custom">
+  <div class="navbar-inner">
 
-<div class="container mt-4">
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('dashboard')}}" class="active">
+          <i class="bi bi-house"></i> Kembali
+        </a>
+
+      </li>
+    </ul>
+    
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <i class="bi">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+        </i>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
+</nav>
+
+
+<div class="container mt-4 mb-4">
 
     <h3>Tambah Dus Arsip</h3>
 
@@ -53,12 +96,12 @@
             Simpan
         </button>
 
-        <a href="{{ route('arsip.index') }}"
+        <!-- <a href="{{ route('arsip.home') }}"
            class="btn btn-secondary">
 
             Kembali
 
-        </a>
+        </a> -->
 
     </form>
 

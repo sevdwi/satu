@@ -17,16 +17,32 @@ class AdminUserController extends Controller
         $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
 
         $data = Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
-            'masterKode:id,kode,nama',
-            'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
-            'rak_arsip:id,nomor_rak'
+            'opd_induk:id,instansi' // Pastikan kolom 'instansi' ada di tabel opd_induk
+            // 'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            // 'masterKode:id,kode,nama',
+            // 'user:id,name,email',
+            // 'dus_arsip:id,nomor_dus',
+            // 'rak_arsip:id,nomor_rak'
         ])
         ->where('status', '!=', 'inaktif')
         ->latest()->get(); 
 
-        return view('dashboard-admin', compact('user', 'data'));
+        // Lakukan debug terlebih dahulu untuk melihat apakah data sudah terisi
+        //dd($data->toArray()); 
+
+        // Kelompokkan data dan hitung jumlah arsip per opd_induk
+        $rekap = $data->groupBy('opd_induk_id')->map(function ($item) {
+            return [
+                'instansi' => $item->first()->opd_induk->instansi ?? 'Tidak Diketahui',
+                'jumlah' => $item->count()
+            ];
+        })->values();
+
+        // Siapkan array untuk Chart.js
+        $labels = $rekap->pluck('instansi');
+        $totals = $rekap->pluck('jumlah');
+
+        return view('dashboard-admin', compact('user', 'data','labels', 'totals'));
     }
 
     // form create dan show daftar opd saat register

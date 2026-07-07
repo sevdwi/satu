@@ -23,7 +23,7 @@
     <ul class="nav-links">
       <li>
         <a href="{{route('dashboard')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
+          <i class="bi bi-house"></i> Kembali
         </a>
 
       </li>
@@ -137,12 +137,12 @@
 
                         <!-- Rak (Aman) -->
                         <td>
-                            {{ $item->rak_arsip?->nomor_rak ?? '-' }}
+                            {{ $item->rak_arsip->nomor_rak ?? '-' }}
                         </td>
 
                         <!-- Dus (Aman) -->
                         <td>
-                            {{ $item->dus_arsip?->nomor_dus ?? '-' }}
+                            {{ $item->dus_arsip->nomor_dus ?? '-' }}
                         </td>
 
                         <td>

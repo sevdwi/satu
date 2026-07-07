@@ -64,7 +64,7 @@
           <a href="{{route('arsip.home-admin')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
         </div>
       </li>
-      <li>
+      <!-- <li>
         <a href="#">
           <i class="bi bi-trash3"></i> Arsip Musnah
           <i class="bi bi-chevron-down nav-caret"></i>
@@ -85,7 +85,7 @@
           <div class="dropdown-divider-custom"></div>
           <a href="#"><i class="bi bi-archive-fill"></i> Daftar Arsip Statis</a>
         </div>
-      </li>
+      </li> -->
       <li>
         <a href="{{route('master-kodes.index')}}">
           <i class="bi bi-building-lock"></i> Data Klasifikasi
@@ -108,8 +108,8 @@
       </div>
       <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
       <div class="account-dropdown">
-        <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
-        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a>
+        <!-- <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
+        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a> -->
         <form action="{{ route('logout-admin') }}" method="POST">
             @csrf
             <button type="submit" class="logout btn px-4 btn-logout-red">
@@ -122,6 +122,64 @@
     <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
   </div>
 </nav>
+
+<!-- Bungkus Canvas dengan DIV yang memiliki ukuran tinggi (Height) yang jelas -->
+<div style="width: 800px; margin: auto;">
+        <canvas id="arsipChart"></canvas>
+    </div>
+
+    <script>
+        // Ambil data dari Controller Laravel
+        const labels = @json($labels);
+        const dataJumlah = @json($totals);
+
+        // Konfigurasi Chart.js
+        const ctx = document.getElementById('arsipChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Sumbu X: Nama OPD Induk / Instansi
+                datasets: [{
+                    label: 'Jumlah Data Arsip',
+                    data: dataJumlah, // Sumbu Y: Jumlah Arsip
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'OPD Induk (Instansi)'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1 // Pastikan angka pada sumbu Y berupa bilangan bulat
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jumlah Arsip'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Statistik Arsip Berdasarkan OPD Induk'
+                    }
+                }
+            }
+        });
+    </script>
+
 
 
 @endsection

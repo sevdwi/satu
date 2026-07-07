@@ -30,6 +30,11 @@
         <!-- Theme style -->
         <!-- <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">  -->
         <!-- ... -->
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        
+
         
 
 

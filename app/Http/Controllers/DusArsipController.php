@@ -119,9 +119,21 @@ class DusArsipController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dus_arsip $dus_arsip)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find data by ID, will return 404 error if not found
+            $dus = Dus_arsip::findOrFail($id);
+            
+            // Delete data from database
+            $dus->delete();
+    
+            return redirect()->route('dus_arsip.index')
+                ->with('success', 'Data berhasil dihapus!');  
+        } catch (\Throwable $e) {
+            // Display error message if delete process fails
+            dd($e->getMessage());
+        }
     }
     public function edit($id)
     { 

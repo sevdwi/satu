@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dus_arsip extends Model
 {
-    //
-    // 1. Tambahkan baris ini untuk mematikan created_at dan updated_at
+    
+    // Tambahkan baris ini untuk mematikan created_at dan updated_at
     public $timestamps = false; 
 
     protected $table = 'dus_arsips';
 
     protected $fillable = [ 
         'nomor_dus',
-        'nomor_rak',
+        'rak_arsip_id',
         'opd_id', 
         'opd_induk_id'
     ];

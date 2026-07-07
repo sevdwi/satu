@@ -27,11 +27,6 @@
         </a>
 
       </li>
-      <!-- <li>
-      <a href="{{route('dashboard')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
-        </a>
-      </li> -->
     </ul>
     
 
@@ -106,6 +101,23 @@
                                class="btn btn-warning btn-sm"> 
                                 <i class="fa fa-edit"></i> 
                             </a> 
+
+                            <form action="{{ route('dus_arsip.destroy', $item->id) }}"
+                                method="POST"
+                                class="d-inline">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Hapus data?')">
+
+                                    Hapus
+
+                                </button>
+
+                            </form>
+
                         </td> 
                     </tr>
                 @endforeach
