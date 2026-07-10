@@ -82,48 +82,33 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <!-- <th>Unit</th> -->
                     <th>OPD id</th>
                     <th>instansi</th>
-                    <th>Status</th>
-                    <!-- <th>File</th> -->
                     <th width="180">Aksi</th>
                 </tr>
             </thead>
 
             <tbody id="tableBody">
 
-                @forelse($data as $item)
+                @forelse($opd_induk as $item)
 
                     <tr>
 
                         <td>{{ $loop->iteration }}</td>
 
-                        <!-- <td>
-                            {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }}
-                        </td> -->
-
                         <td>
-                            {{ $item->opd_induk->id }}
+                            {{ $item->id }}
                         </td>
 
                         <td>
-                            {{ $item->opd_induk->instansi }}
+                            {{ $item->instansi }}
                         </td>
 
                         <td>
-                            <span class="badge bg-success">
-                                {{ $item->status }}
-                            </span>
-                        </td>
-
-                        <td>
-                        @if(isset($item->opd->id))
-                            <a href="{{ route('arsip.detail-admin', $item->opd->id) }}"
+                            <a href="{{ route('arsip.detail-admin', $item->id) }}"
                             class="btn btn-warning btn-sm mb-2">
                                 Daftar Lengkap
                             </a>
-                        @endif
                             <!-- <button class="btn btn-secondary btn-sm mb-2" disabled>Tidak Ada OPD</button> -->
                        
                         </td>

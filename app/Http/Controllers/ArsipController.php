@@ -105,8 +105,8 @@ class ArsipController extends Controller
     {
         $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
 
-        // $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
-        // $opds = Opd::all();
+        $opd_induk = Opd_induk::orderBy('instansi')->get(); // sesuaikan nama kolom
+
 
         $data = Arsip::with([
             'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -119,28 +119,31 @@ class ArsipController extends Controller
         ->where('status', '!=', 'inaktif')
         ->latest()->get(); 
 
-        return view('arsip.index-admin', compact('user', 'data'));
+        return view('arsip.index-admin', compact('user', 'data','opd_induk'));
     }
 
 
-    public function detail_admin($opd_id = null)
-    {
-        $query= Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+    public function detail_admin($opd_induk_id)
+    {        
+                // 1. Ambil data OPD Induk yang dipilih untuk menampilkan judul halaman
+        $opd_induk = Opd_induk::findOrFail($opd_induk_id);
+
+        // 2. Ambil data arsip yang HANYA memiliki opd_induk_id sesuai tombol yang diklik
+        $data_arsip = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
+            'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        ->where('status', '!=', 'inaktif');
+        ->where('opd_induk_id', $opd_induk_id) // Menyaring berdasarkan OPD Induk
+        ->where('status', '!=', 'inaktif')
+        ->latest()
+        ->get();
 
-            // JIKA ada parameter id_opd dikirim, lakukan filter arsip berdasarkan OPD tersebut
-        if ($opd_id) {
-            $query->where('opd_id', $opd_id); // Pastikan 'opd_id' adalah nama kolom foreign key di tabel arsip Anda
-        }
-        $data = $query->latest()->get(); 
-
-        return view('arsip.detail-admin', compact('data'));
+        // 3. Kirim data ke halaman view baru (misal: arsip/detail-admin.blade.php)
+        return view('arsip.detail-admin', compact('opd_induk', 'data_arsip'));
     }
 
     /**
@@ -221,7 +224,7 @@ class ArsipController extends Controller
             'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
+            'dus_arsip:id,nomor_dus,rak_arsip_id',
             'rak_arsip:id,nomor_rak'
         ])->latest()->get();  
 

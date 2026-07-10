@@ -98,7 +98,7 @@
 
             <tbody id="tableBody">
 
-                @forelse($data as $item)
+                @forelse($data_arsip as $item)
 
                     <tr>
 

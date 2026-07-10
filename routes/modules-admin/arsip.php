@@ -14,7 +14,7 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
     Route::get('/inaktif', [ArsipController::class, 'index_admin'])
     ->name('home-admin');
 
-    Route::get('/data/{id}/', [ArsipController::class, 'detail_admin'])
+    Route::get('/data/{opd_induk_id}/', [ArsipController::class, 'detail_admin'])
     ->name('detail-admin');
 
         

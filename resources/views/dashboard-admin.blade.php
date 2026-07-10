@@ -96,6 +96,12 @@
           <i class="bi bi-building-lock"></i> Kelola User
         </a>
       </li>
+      <li>
+        <a href="{{route('opd_induk.index')}}">
+          <i class="bi bi-building-lock"></i> Kelola Unit
+        </a>
+      </li>
+
 
     </ul>
 
