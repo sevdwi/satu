@@ -1,4 +1,4 @@
-@extends('layouts.head_customer')
+@extends('layouts.head')
 
 @section('content')
 
@@ -17,31 +17,27 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('dashboard')}}" class="active">
+        <a href="{{route('dashboard-admin')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
-
       </li>
     </ul>
-    
 
     <!-- Account -->
     <div class="nav-account">
       <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
       <div>
-        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-name">{{ auth()->guard('admin')->user()->name }}</div>
         <div class="account-role">Akun yang digunakan</div>
       </div>
       <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
       <div class="account-dropdown">
-        <i class="bi">
-        <form action="{{ route('logout') }}" method="POST">
+        <form action="{{ route('logout-admin') }}" method="POST">
             @csrf
             <button type="submit" class="logout btn px-4 btn-logout-red">
                 <i class="bi bi-box-arrow-right"></i> Logout
             </button>
         </form>
-        </i>
       </div>
     </div>
 
@@ -52,69 +48,81 @@
 
 <div class="container mt-4 mb-4">
 
-    <h3>Tambah Dus Arsip</h3>
+    <h3>Ubah Data Instansi</h3>
 
-    <form action="{{ route('dus_arsip.store') }}"
-          method="POST"
-          enctype="multipart/form-data">
+    <form action="{{ route('opd_induk.update',$opd_induk->id) }}"
+        method="POST"
+        enctype="multipart/form-data"
+        class="needs-validation" 
+        novalidate>
 
         @csrf 
-        <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
+        @method('PUT')
 
         <div class="mb-3">
-            <label>Unit</label>
-
-            <select name="opd_id" class="form-control  select-opd">
-
-                <option value="0">-- Pilih OPD --</option>
-
-                
-
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Nomor Rak Arsip</label>
-
-            <select name="rak_arsip_id" class="form-control  select-rakarsip">
-
-                <option value="0">-- Pilih Rak --</option>
-
-                
-
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Nomor Dus</label>
-
+            <label>Kode</label>
             <input type="text"
-                   name="nomor_dus"
-                   class="form-control">
+                name="kode_instansi"
+                class="form-control" 
+                value="{{ $opd_induk->kode_instansi}}" 
+                required>
+            <div class="invalid-feedback">Kode instansi wajib diisi.</div>
         </div> 
 
-        <button class="btn btn-primary">
+        <div class="mb-3">
+            <label>Instansi</label>
+            <input type="text"
+                name="instansi"
+                class="form-control" 
+                value="{{$opd_induk->instansi}}" 
+                required>
+            <div class="invalid-feedback">Nama instansi wajib diisi.</div>
+        </div>
+
+        <div class="mb-3">
+            <label>Singkatan Instansi</label>
+            <input type="text"
+                name="singkatan_instansi"
+                class="form-control" 
+                value="{{$opd_induk->singkatan_instansi}}" 
+                required>
+            <div class="invalid-feedback">Singkatan instansi wajib diisi.</div>
+        </div>
+
+        <button type="submit" class="btn-add">
             Simpan
         </button>
 
-        <!-- <a href="{{ route('arsip.home') }}"
-           class="btn btn-secondary">
-
+        <a href="{{ route('opd_induk.index') }}" class="btn btn-secondary">
             Kembali
-
-        </a> -->
+        </a>
 
     </form>
 
+
 </div>
-<!-- jQuery (WAJIB paling atas) -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Ambil semua form yang memiliki kelas 'needs-validation'
+        const forms = document.querySelectorAll('.needs-validation');
 
-<!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        // Lakukan iterasi pada setiap form
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                // Periksa apakah form memenuhi syarat validasi HTML5
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                // Tambahkan kelas 'was-validated' untuk memunculkan pesan invalid-feedback
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
+
 <script>
 $(document).ready(function () {
 

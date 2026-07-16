@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Opd_induk extends Model
 {
+    // Tambahkan baris ini untuk mematikan created_at dan updated_at
+    public $timestamps = false; 
+
     protected $table = 'opd_induks';
 
     protected $fillable = [

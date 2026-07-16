@@ -1,4 +1,4 @@
-@extends('layouts.head_customer')
+@extends('layouts.head')
 
 @section('content')
 
@@ -17,7 +17,7 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('dashboard')}}" class="active">
+        <a href="{{route('dashboard-admin')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
 
@@ -29,13 +29,13 @@
     <div class="nav-account">
       <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
       <div>
-        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-name">{{ auth()->guard('admin')->user()->name }}</div>
         <div class="account-role">Akun yang digunakan</div>
       </div>
       <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
       <div class="account-dropdown">
         <i class="bi">
-        <form action="{{ route('logout') }}" method="POST">
+        <form action="{{ route('logout-admin') }}" method="POST">
             @csrf
             <button type="submit" class="logout btn px-4 btn-logout-red">
                 <i class="bi bi-box-arrow-right"></i> Logout
@@ -50,59 +50,50 @@
 </nav>
 
 
-<div class="container mt-4 mb-4">
+<div class="page-wrap">
 
-    <h3>Tambah Dus Arsip</h3>
+    <h3>Tambah Data OPD</h3>
 
-    <form action="{{ route('dus_arsip.store') }}"
+    <form action="{{ route('opd_induk.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf 
-        <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
+
+        <!-- <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}"> -->
 
         <div class="mb-3">
-            <label>Unit</label>
-
-            <select name="opd_id" class="form-control  select-opd">
-
-                <option value="0">-- Pilih OPD --</option>
-
-                
-
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Nomor Rak Arsip</label>
-
-            <select name="rak_arsip_id" class="form-control  select-rakarsip">
-
-                <option value="0">-- Pilih Rak --</option>
-
-                
-
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Nomor Dus</label>
+            <label>Kode Instansi</label>
 
             <input type="text"
-                   name="nomor_dus"
+                   name="kode_instansi"
                    class="form-control">
-        </div> 
+        </div>
 
-        <button class="btn btn-primary">
+        <div class="mb-3">
+            <label>Instansi</label>
+
+            <input type="text"
+                   name="instansi"
+                   class="form-control">
+        </div>  
+
+        <div class="mb-3">
+            <label>Singkatan Instansi</label>
+
+            <input type="text"
+                   name="singkatan_instansi"
+                   class="form-control">
+        </div>  
+
+        <button class="btn-add">
             Simpan
         </button>
 
-        <!-- <a href="{{ route('arsip.home') }}"
-           class="btn btn-secondary">
-
+        <a href="{{ route('opd_induk.index') }}"
+           class="btn btn-secondary ms-5">
             Kembali
-
-        </a> -->
+        </a>
 
     </form>
 
@@ -116,52 +107,7 @@
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$(document).ready(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | SELECT MASTER KODE
-    |--------------------------------------------------------------------------
-    */
-
-    $('.select-rakarsip').select2({
-
-        placeholder: 'Cari kode arsip...',
-        allowClear: true,
-        minimumInputLength: 3,
-
-        ajax: {
-            url: "{{ route('rak_arsip.search') }}", 
-
-            dataType: 'json',
-
-            delay: 250,
-
-            data: function (params) {
-
-                console.log('Kode diketik:', params.term);
-
-                return {
-                    q: params.term
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data.map(function (item) {
-                        return {
-                            id: item.id,
-                            text: item.nomor_rak + ' - ' +
-                                  (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
-                                    : '-')
-                        };
-                    })
-                };
-            }
-        }
-    });
-
-
+$(document).ready(function () {  
     /*
     |--------------------------------------------------------------------------
     | SELECT OPD

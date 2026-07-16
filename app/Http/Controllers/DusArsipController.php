@@ -90,7 +90,7 @@ class DusArsipController extends Controller
     { 
         try { 
             $data = Dus_arsip::create([
-                'nomor_rak' => $request->nomor_rak, 
+                'rak_arsip_id' => $request->rak_arsip_id, 
                 'nomor_dus' => $request->nomor_dus, 
                 'opd_id' => $request->opd_id, 
             ]);
