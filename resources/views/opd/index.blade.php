@@ -84,7 +84,7 @@
       <div class="toolbar-right">
         <div class="total-badge">
           <i class="bi bi-people" style="font-size:.72rem;"></i>
-          <span id="totalCount">{{ $opd_induk->count() }}</span> instansi
+          <span id="totalCount">{{ $data_opd->count() }}</span> Bidang
         </div>
       </div>
     </div>
@@ -105,7 +105,7 @@
           </tr>
         </thead>
         <tbody id="tableBody">
-        @foreach($opd_induk as $u)
+        @foreach($data_opd as $u)
  
           <tr>
             <td><span class="id-badge">#{{ $u->id }}</span></td>
@@ -118,13 +118,12 @@
                 </div>
               </div>
             </td>
-            <td class="cell-muted">{{ $u->instansi ?? 'Tidak Ada OPD'}}</td>
-            <td class="cell-muted">{{ $u->singkatan_instansi ?? 'Tidak Ada OPD'}}</td>
+            <td class="cell-muted">{{ $u->opd_induk->instansi ?? 'Tidak Ada OPD'}}</td>
+            <td class="cell-muted">{{ $u->unit_kerja ?? 'Tidak Ada OPD'}}</td>
             <td>
               <div class="actions">
-              <a href="{{ route('opd.index', $u->id) }}" class="btn-update"><i class="bi bi-caret-down-fill"></i> Bidang </a>
-                <a href="{{ route('opd_induk.edit', $u->id) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>
-                <form action="{{ route('opd_induk.destroy', $u->id) }}" method="POST" class="d-inline">
+                <a href="{{ route('opd.edit', $u->id) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>
+                <form action="{{ route('opd.destroy', $u->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn-hapus" onclick="openDelete('admin')"><i class="bi bi-trash3"></i> Hapus</button>

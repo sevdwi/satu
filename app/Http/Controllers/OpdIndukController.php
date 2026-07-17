@@ -57,7 +57,7 @@ class OpdIndukController extends Controller
         ]);
 
         // 3. Alihkan halaman kembali dengan pesan sukses
-        return redirect()->route('arsip.home-admin')->with('success', 'Data instansi berhasil ditambahkan!');
+        return redirect()->route('opd_induk.index')->with('success', 'Data instansi berhasil ditambahkan!');
     }
 
     public function destroy($id)

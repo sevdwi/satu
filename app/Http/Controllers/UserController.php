@@ -34,6 +34,8 @@ class UserController extends Controller
             'email'    => 'required|email|unique:users,email',
             'phone_number'   => 'required|unique:users,phone_number',
             'password' => 'required|min:4',
+            'status'       => 'required|in:active,banned,verify',
+            'role'         => 'required',
         ]);
 
         User::create([
@@ -48,7 +50,7 @@ class UserController extends Controller
             'password' => $request->password, // auto hash oleh model
         ]);
 
-        return redirect()->route('dashboard-admin');
+        return redirect()->route('users.index');
     }
 
     // form edit

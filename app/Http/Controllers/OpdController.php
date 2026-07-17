@@ -3,15 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Opd;
+use App\Models\Opd_Induk;
 use Illuminate\Http\Request;
 
 class OpdController extends Controller
 {
-    public function index()
+    public function index($opd_induk_id)
     {
-        $data = Opd::latest()->get();
-        return view('opd.index', compact('data'));
+        $opd_induk = Opd_induk::findOrFail($opd_induk_id);
+        $data_opd = Opd::with([
+            'opd_induk:id,instansi'
+        ])
+        ->where('opd_induk_id', $opd_induk_id) // Menyaring berdasarkan OPD Induk
+        ->latest()
+        ->get();
+
+        return view('opd.index', compact('data_opd'));
     }
+
 
     public function create()
     {
@@ -46,8 +55,8 @@ class OpdController extends Controller
 
     public function edit($id)
     {
-        $data = Opd::findOrFail($id);
-        return view('opd.edit', compact('data'));
+        $opd = Opd::findOrFail($id);
+        return view('opd.edit', compact('opd'));
     }
 
     public function update(Request $request, $id)
