@@ -52,15 +52,15 @@
 
 <div class="page-wrap">
 
-    <h3 class="text-center">Tambah Data OPD</h3>
+    <h3 class="text-center">Tambah Data Unit Kerja</h3>
 
-    <form action="{{ route('opd_induk.store') }}"
+    <form action="{{ route('opd.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf 
 
-        <!-- <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}"> -->
+        <input type="hidden" name="opd_induk_id" value="{{ $opd_induk }}">
 
         <div class="mb-3">
             <label>Kode Instansi</label>
@@ -69,6 +69,22 @@
                    name="kode_instansi"
                    class="form-control">
         </div>
+
+        <div class="mb-3">
+            <label>Unit Kerja</label>
+
+            <input type="text"
+                   name="unit_kerja"
+                   class="form-control">
+        </div>  
+
+        <div class="mb-3">
+            <label>Singkatan Unit Kerja</label>
+
+            <input type="text"
+                   name="singkatan_uk"
+                   class="form-control">
+        </div>  
 
         <div class="mb-3">
             <label>Instansi</label>

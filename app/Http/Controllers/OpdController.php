@@ -18,13 +18,14 @@ class OpdController extends Controller
         ->latest()
         ->get();
 
-        return view('opd.index', compact('data_opd'));
+        return view('opd.index', compact('data_opd','opd_induk_id'));
     }
 
 
-    public function create()
+    public function create($opd_induk_id)
     {
-        return view('opd.create');
+        $opd_induk = $opd_induk_id;
+        return view('opd.create',compact('opd_induk'));
     }
     public function search(Request $request)
     {
@@ -42,16 +43,38 @@ class OpdController extends Controller
     }
     public function store(Request $request)
     {
-        $request->validate([
-            'kode' => 'required|unique:opds',
-            'nama' => 'required'
+        // 1. Validasi input dari form
+        $validatedData = $request->validate([
+            'kode_instansi'      => 'required|string|max:255',
+            'unit_kerja'           => 'required|string|max:255',
+            'singkatan_uk' => 'required|string|max:255',
+            'instansi'           => 'required|string|max:255',
+            'singkatan_instansi' => 'required|string|max:255',
+        ], [
+            // Kustomisasi pesan error (Opsional)
+            'kode_instansi.required' => 'Kode instansi wajib diisi.',
+            'unit_kerja.required'      => 'unit kerja wajib diisi.',
+            'singkatan_uk.required'      => 'singkatan unit kerja wajib diisi.',
+
         ]);
 
-        Opd::create($request->all());
+                // 2. Simpan data ke database menggunakan Mass Assignment
+        // Ganti 'OpdInduk' dengan nama Model yang Anda gunakan untuk tabel ini
+        Opd::create([
+            'kode_instansi'      => $validatedData['kode_instansi'],
+            'unit_kerja'           => $validatedData['unit_kerja'],
+            'singkatan_uk' => $validatedData['singkatan_uk'],
+            'instansi'           => $validatedData['instansi'],
+            'singkatan_instansi' => $validatedData['singkatan_instansi'],
+            'opd_induk_id' => $request->opd_induk_id,
 
-        return redirect()->route('opd.index')
-            ->with('success', 'OPD berhasil ditambahkan');
+
+        ]);
+
+        // 3. Alihkan halaman kembali dengan pesan sukses
+        return redirect()->route('opd_induk.index')->with('success', 'Data instansi berhasil ditambahkan!');
     }
+
 
     public function edit($id)
     {

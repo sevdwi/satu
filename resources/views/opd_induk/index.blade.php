@@ -124,11 +124,13 @@
               <div class="actions">
               <a href="{{ route('opd.index', $u->id) }}" class="btn-update"><i class="bi bi-caret-down-fill"></i> Bidang </a>
                 <a href="{{ route('opd_induk.edit', $u->id) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>
-                <form action="{{ route('opd_induk.destroy', $u->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn-hapus" onclick="openDelete('admin')"><i class="bi bi-trash3"></i> Hapus</button>
-                </form>
+                <form action="{{ route('opd_induk.destroy', $u->id) }}" method="POST" class="d-inline" id="deleteForm-{{ $u->id }}">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn-hapus" onclick="openDelete(event, 'admin', 'deleteForm-{{ $u->id }}')">
+                      <i class="bi bi-trash3"></i> Hapus
+                  </button>
+              </form>
               </div>
             </td>
           </tr>
@@ -197,20 +199,35 @@
  
   /* ── Delete Modal ──────────────────────────────── */
   let pendingName = '';
-  function openDelete(name) {
+  let pendingFormId = ''; // Variabel baru untuk menyimpan ID formulir
+
+  function openDelete(event, name, formId) {
+    // Blokir pengiriman formulir otomatis
+    event.preventDefault(); 
+
     pendingName = name;
+    pendingFormId = formId; 
+
     document.getElementById('deleteModalMsg').textContent =
       `Pengguna "${name}" akan dihapus secara permanen dan tidak dapat dipulihkan.`;
     document.getElementById('deleteModal').classList.add('show');
+    
+    // Kaitkan aksi konfirmasi ke fungsi doDelete
     document.getElementById('confirmDeleteBtn').onclick = doDelete;
   }
+
   function closeDelete() {
     document.getElementById('deleteModal').classList.remove('show');
   }
+
   function doDelete() {
     closeDelete();
-    showToast(`Pengguna "${pendingName}" berhasil dihapus.`, 'success');
+    
+    // Kirimkan formulir spesifik ke server
+    document.getElementById(pendingFormId).submit();
   }
+
+  // Menutup modal saat pengguna menekan area luar
   document.getElementById('deleteModal').addEventListener('click', function(e) {
     if (e.target === this) closeDelete();
   });

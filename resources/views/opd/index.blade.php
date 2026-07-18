@@ -16,7 +16,7 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('dashboard-admin')}}" class="active">
+        <a href="{{route('opd_induk.index')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
       </li>
@@ -69,8 +69,8 @@
           <div class="card-subtitle">Kelola seluruh instansi pengolah sistem</div>
         </div>
       </div>
-      <a href="{{ route('opd_induk.create') }}" class="btn-add">
-        <i class="bi bi-plus-lg"></i> Tambah Instansi
+      <a href="{{ route('opd.create', $opd_induk_id) }}" class="btn-add">
+        <i class="bi bi-plus-lg"></i> Tambah Unit Kerja
       </a>
     </div>
  
