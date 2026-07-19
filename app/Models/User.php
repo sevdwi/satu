@@ -69,4 +69,13 @@ class User extends Authenticatable
         return $this->belongsTo(Opd_Induk::class, 'opd_induk_id');
     }
 
+    // OPD
+    public function opd()
+    {
+        return $this->belongsTo(Opd::class, 'opd_id');
+    }
+    
+
+
+
 }

@@ -30,8 +30,6 @@
         </a>
         <div class="dropdown-menu-custom">
           <a href="{{route('arsip.home')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
-          <a href="#"><i class="bi bi-plus-square"></i> Input Unit Pengolah Yg Ditata</a>
-          <a href="#"><i class="bi bi-pencil-square"></i> Input Deskripsi Arsip</a>
           <!-- <div class="dropdown-divider-custom"></div> -->
         </div>
       </li>
@@ -42,8 +40,6 @@
         </a>
         <div class="dropdown-menu-custom">
           <a href="#"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
-          <!-- <div class="dropdown-divider-custom"></div> -->
-          <a href="#"><i class="bi bi-list-check"></i> Daftar Musnah</a>
         </div>
       </li>
       <li>

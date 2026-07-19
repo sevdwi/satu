@@ -80,22 +80,33 @@ class ArsipController extends Controller
     public function index()
     {
         // Ambil data user yang sedang login beserta id OPD-nya
-        $user = auth()->user(); 
+        // $user = auth()->user(); 
+        $user = auth()->user()->load('opd'); 
 
         // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
                
-        $data = Arsip::with([
+        $data_filter = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        // ->where('created_by', auth()->id())
         ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel rak_arsips
-        ->where('status', '!=', 'inaktif')
-        ->latest()->get(); 
+        ->where('status', '!=', 'inaktif');
+        // Cek kondisi Unit Kerja user
+        // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
+        // if (strcode($user->opd_id->unit_kerja) !== 'sekretariat') {
+        //     $data_filter->where('opd_id', $user->opd_id); 
+        // }
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }
+            // Eksekusi data
+        $data = $data_filter->latest()->get(); 
+        
+        // ->latest()->get(); 
 
         return view('arsip.index', compact('data'
         ));
