@@ -320,6 +320,27 @@ class ArsipController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    public function edit_admin($id)
+    { 
+        $data = Arsip::with([
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,kode_instansi,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])->findOrFail($id);
+
+        $opds = Opd::all();
+        $masterKodes = MasterKode::all();
+
+        return view('arsip.edit-admin', compact('id',
+            'data',
+            'opds',
+            'masterKodes'
+        ));
+    }
+
     public function edit($id)
     { 
         $data = Arsip::with([
@@ -327,7 +348,7 @@ class ArsipController extends Controller
             'opd_induk:id,kode_instansi,instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
+            'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])->findOrFail($id);
 

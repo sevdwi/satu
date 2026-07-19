@@ -50,7 +50,7 @@
 
     <h3>Ubah Data Instansi</h3>
 
-    <form action="{{ route('opd.update',$opd->id) }}"
+    <form action="{{ route('opd_admin.update',$opd->id) }}"
         method="POST"
         enctype="multipart/form-data"
         class="needs-validation" 

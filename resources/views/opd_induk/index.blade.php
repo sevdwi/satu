@@ -122,7 +122,7 @@
             <td class="cell-muted">{{ $u->singkatan_instansi ?? 'Tidak Ada OPD'}}</td>
             <td>
               <div class="actions">
-              <a href="{{ route('opd.index', $u->id) }}" class="btn-update"><i class="bi bi-caret-down-fill"></i> Bidang </a>
+              <a href="{{ route('opd_admin.index', $u->id) }}" class="btn-update"><i class="bi bi-caret-down-fill"></i> Bidang </a>
                 <a href="{{ route('opd_induk.edit', $u->id) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>
                 <form action="{{ route('opd_induk.destroy', $u->id) }}" method="POST" class="d-inline" id="deleteForm-{{ $u->id }}">
                   @csrf

@@ -22,7 +22,7 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('arsip.home-admin')}}" class="active">
+        <a href="{{route('arsip_admin.home-admin')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
       </li>
@@ -63,7 +63,7 @@
                 <div class="card-subtitle">Kelola seluruh data arsip</div>
                 </div>
             </div>
-            <!-- <a href="{{ route('arsip.create') }}" class="btn-add">
+            <!-- <a href="{{ route('arsip_admin.create') }}" class="btn-add">
                 <i class="bi bi-plus-lg"></i> Tambah Arsip
             </a> -->
         </div>
@@ -83,7 +83,7 @@
                 <tr>
                     <th>No</th>
                     <th>Kode</th>
-                    <th>Judul</th>
+                    <th>Redaksi</th>
                     <th>Deskripsi</th>
                     <th>OPD</th>
                     <th>OPD id</th>
@@ -173,12 +173,12 @@
 
                         <td>
 
-                            <a href="{{ route('arsip.edit', $item->id) }}"
+                            <a href="{{ route('arsip_admin.edit', $item->id) }}"
                             class="btn btn-warning btn-sm mb-2">
                                 Edit
                             </a>
 
-                            <form action="{{ route('arsip.destroy', $item->id) }}"
+                            <form action="{{ route('arsip_admin.destroy', $item->id) }}"
                                 method="POST"
                                 class="d-inline">
 
@@ -235,7 +235,7 @@
         </div>
         <div class="modal fade" id="uploadModal" tabindex="-1">
             <div class="modal-dialog">
-                <form action="{{ route('arsip.uploads') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('arsip_admin.uploads') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <input type="hidden" name="id" id="upload_id">

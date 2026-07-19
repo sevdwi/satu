@@ -17,7 +17,7 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('dashboard-admin')}}" class="active">
+        <a href="{{route('opd_admin.index',$opd_induk->id)}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
 
@@ -54,7 +54,7 @@
 
     <h3 class="text-center">Tambah Data Unit Kerja</h3>
 
-    <form action="{{ route('opd.store') }}"
+    <form action="{{ route('opd_admin.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
@@ -106,11 +106,6 @@
             Simpan
         </button>
 
-        <a href="{{ route('opd_induk.index') }}"
-           class="btn btn-secondary ms-5">
-            Kembali
-        </a>
-
     </form>
 
 </div>
@@ -130,7 +125,7 @@ $(document).ready(function () {
     |--------------------------------------------------------------------------
     */
 
-    $('.select-opd').select2({
+    $('.select-opd_admin').select2({
 
     placeholder: 'Cari OPD...',
     allowClear: true,
@@ -138,7 +133,7 @@ $(document).ready(function () {
 
     ajax: {
 
-        url: "{{ route('opd.search') }}",
+        url: "{{ route('opd_admin.search') }}",
 
         type: 'GET',
 

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OpdController;
 
-Route::prefix('opd')->name('opd.')->group(function () {
+Route::prefix('opd_admin')->name('opd_admin.')->group(function () {
 
 
     // 1. Menampilkan halaman utama (daftar data)

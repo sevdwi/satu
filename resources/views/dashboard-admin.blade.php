@@ -61,7 +61,7 @@
           <!-- <a href="#"><i class="bi bi-plus-square"></i> Input Unit Pengolah Yg Ditata</a> -->
           <!-- <a href="#"><i class="bi bi-pencil-square"></i> Input Deskripsi Arsip</a> -->
           <!-- <div class="dropdown-divider-custom"></div> -->
-          <a href="{{route('arsip.home-admin')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
+          <a href="{{route('arsip_admin.home-admin')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
         </div>
       </li>
       <!-- <li>

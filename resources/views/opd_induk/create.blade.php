@@ -17,7 +17,7 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('dashboard-admin')}}" class="active">
+        <a href="{{route('opd_induk.index')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
 

@@ -18,13 +18,13 @@ class OpdController extends Controller
         ->latest()
         ->get();
 
-        return view('opd.index', compact('data_opd','opd_induk_id'));
+        return view('opd.index', compact('data_opd','opd_induk'));
     }
 
 
     public function create($opd_induk_id)
     {
-        $opd_induk = $opd_induk_id;
+        $opd_induk = Opd_induk::findOrFail($opd_induk_id);
         return view('opd.create',compact('opd_induk'));
     }
     public function search(Request $request)
@@ -58,8 +58,7 @@ class OpdController extends Controller
 
         ]);
 
-                // 2. Simpan data ke database menggunakan Mass Assignment
-        // Ganti 'OpdInduk' dengan nama Model yang Anda gunakan untuk tabel ini
+        // 2. Simpan data ke database menggunakan Mass Assignment
         Opd::create([
             'kode_instansi'      => $validatedData['kode_instansi'],
             'unit_kerja'           => $validatedData['unit_kerja'],

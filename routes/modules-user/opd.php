@@ -5,7 +5,6 @@ use App\Http\Controllers\OpdController;
 
 Route::prefix('opd')->name('opd.')->group(function () {
 
-    Route::resource('/', OpdController::class);
     Route::get('/search', [OpdController::class, 'search'])
     ->name('search');
 

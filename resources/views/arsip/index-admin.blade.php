@@ -105,7 +105,7 @@
                         </td>
 
                         <td>
-                            <a href="{{ route('arsip.detail-admin', $item->id) }}"
+                            <a href="{{ route('arsip_admin.detail-admin', $item->id) }}"
                             class="btn btn-warning btn-sm mb-2">
                                 Daftar Lengkap
                             </a>

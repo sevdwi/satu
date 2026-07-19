@@ -61,7 +61,7 @@
 
     <!-- Brand -->
     <a href="#" class="nav-brand">
-      <img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
       <div class="nav-brand-text">
         <strong>SATU</strong>
         <small>Sistem Informasi Kearsipan Terpadu</small>
@@ -72,15 +72,9 @@
     <ul class="nav-links">
       <li>
         <a href="{{route('dashboard-admin')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
+          <i class="bi bi-house"></i> Kembali
         </a>
       </li>
-      <li>
-        <a class="btn px-4 btn-logout-green me-3" href="{{route('users.index')}}">
-          <i class="bi bi-building-lock"></i> Kembali
-        </a>
-      </li>
-
     </ul>
 
     <!-- Account -->

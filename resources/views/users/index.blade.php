@@ -1,27 +1,7 @@
 @extends('layouts.head')
 
 @section('content')
-<!-- <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-        <div class="container px-5">
-            <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                    <li class="nav-item"><a class="btn px-4 btn-logout-green me-3" href="{{route('dashboard-admin')}}">Kembali</a></li>
-                    <li class="nav-item">
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn px-4 btn-logout-red">
-                                <i class="bi bi-box-arrow-right me-1"></i> Logout
-                            </button>
-                        </form>
-                    </li>
-
-                </ul>
-            </div>
-        </div>
-</nav> -->
 <nav class="navbar-custom">
   <div class="navbar-inner">
 
@@ -41,11 +21,6 @@
           <i class="bi bi-house"></i> Kembali
         </a>
       </li>
-      <!-- <li>
-        <a class="btn px-4 btn-logout-green me-3" href="{{route('dashboard-admin')}}">
-          <i class="bi bi-building-lock"></i> Kembali
-        </a>
-      </li> -->
     </ul>
 
     <!-- Account -->
@@ -156,11 +131,14 @@
             <td>
               <div class="actions">
                 <a href="{{ route('users.edit', $u) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>
-                <form action="{{ route('users.destroy', $u) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn-hapus" onclick="openDelete('admin')"><i class="bi bi-trash3"></i> Hapus</button>
-                </form>
+                <form action="{{ route('users.destroy', $u->id) }}" method="POST" class="d-inline" id="deleteForm-{{ $u->id }}">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn-hapus" onclick="openDelete(event, 'admin', 'deleteForm-{{ $u->id }}')">
+                      <i class="bi bi-trash3"></i> Hapus
+                  </button>
+              </form>
+
               </div>
             </td>
           </tr>
@@ -230,20 +208,35 @@
  
   /* ── Delete Modal ──────────────────────────────── */
   let pendingName = '';
-  function openDelete(name) {
+  let pendingFormId = ''; // Variabel baru untuk menyimpan ID formulir
+
+  function openDelete(event, name, formId) {
+    // Blokir pengiriman formulir otomatis
+    event.preventDefault(); 
+
     pendingName = name;
+    pendingFormId = formId; 
+
     document.getElementById('deleteModalMsg').textContent =
       `Pengguna "${name}" akan dihapus secara permanen dan tidak dapat dipulihkan.`;
     document.getElementById('deleteModal').classList.add('show');
+    
+    // Kaitkan aksi konfirmasi ke fungsi doDelete
     document.getElementById('confirmDeleteBtn').onclick = doDelete;
   }
+
   function closeDelete() {
     document.getElementById('deleteModal').classList.remove('show');
   }
+
   function doDelete() {
     closeDelete();
-    showToast(`Pengguna "${pendingName}" berhasil dihapus.`, 'success');
+    
+    // Kirimkan formulir spesifik ke server
+    document.getElementById(pendingFormId).submit();
   }
+
+  // Menutup modal saat pengguna menekan area luar
   document.getElementById('deleteModal').addEventListener('click', function(e) {
     if (e.target === this) closeDelete();
   });

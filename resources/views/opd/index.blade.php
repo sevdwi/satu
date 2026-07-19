@@ -69,7 +69,7 @@
           <div class="card-subtitle">Kelola seluruh instansi pengolah sistem</div>
         </div>
       </div>
-      <a href="{{ route('opd.create', $opd_induk_id) }}" class="btn-add">
+      <a href="{{ route('opd_admin.create', $opd_induk->id) }}" class="btn-add">
         <i class="bi bi-plus-lg"></i> Tambah Unit Kerja
       </a>
     </div>
@@ -122,12 +122,14 @@
             <td class="cell-muted">{{ $u->unit_kerja ?? 'Tidak Ada OPD'}}</td>
             <td>
               <div class="actions">
-                <a href="{{ route('opd.edit', $u->id) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>
-                <form action="{{ route('opd.destroy', $u->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn-hapus" onclick="openDelete('admin')"><i class="bi bi-trash3"></i> Hapus</button>
-                </form>
+                <a href="{{ route('opd_admin.edit', $u->id) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>
+              <form action="{{ route('opd_admin.destroy', $u->id) }}" method="POST" class="d-inline" id="deleteForm-{{ $u->id }}">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn-hapus" onclick="openDelete(event, 'admin', 'deleteForm-{{ $u->id }}')">
+                      <i class="bi bi-trash3"></i> Hapus
+                  </button>
+              </form>
               </div>
             </td>
           </tr>
@@ -196,20 +198,35 @@
  
   /* ── Delete Modal ──────────────────────────────── */
   let pendingName = '';
-  function openDelete(name) {
+  let pendingFormId = ''; // Variabel baru untuk menyimpan ID formulir
+
+  function openDelete(event, name, formId) {
+    // Blokir pengiriman formulir otomatis
+    event.preventDefault(); 
+
     pendingName = name;
+    pendingFormId = formId; 
+
     document.getElementById('deleteModalMsg').textContent =
       `Pengguna "${name}" akan dihapus secara permanen dan tidak dapat dipulihkan.`;
     document.getElementById('deleteModal').classList.add('show');
+    
+    // Kaitkan aksi konfirmasi ke fungsi doDelete
     document.getElementById('confirmDeleteBtn').onclick = doDelete;
   }
+
   function closeDelete() {
     document.getElementById('deleteModal').classList.remove('show');
   }
+
   function doDelete() {
     closeDelete();
-    showToast(`Pengguna "${pendingName}" berhasil dihapus.`, 'success');
+    
+    // Kirimkan formulir spesifik ke server
+    document.getElementById(pendingFormId).submit();
   }
+
+  // Menutup modal saat pengguna menekan area luar
   document.getElementById('deleteModal').addEventListener('click', function(e) {
     if (e.target === this) closeDelete();
   });
