@@ -135,6 +135,8 @@
                 <option value="" disabled {{ old('role') ? '' : 'selected' }}>-- Pilih Role --</option>
                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                 <option value="pengolah" {{ old('role') == 'pengolah' ? 'selected' : '' }}>Pengolah</option>
+                <option value="sekretariat" {{ old('role') == 'sekretariat' ? 'selected' : '' }}>Sekretariat</option>
+
             </select>
             @error('role')
                 <div class="invalid-feedback">{{ $message }}</div>

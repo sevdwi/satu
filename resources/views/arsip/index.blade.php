@@ -67,7 +67,7 @@
             <div class="card-top-left">
                 <div class="card-icon"><i class="bi bi-archive"></i></div>
                 <div>
-                <div class="card-title">Data Arsip  {{ auth()->guard('web')->user()->opd }}</div>
+                <div class="card-title">Data Arsip {{ auth()->user()->opd?->unit_kerja }}</div>
                 <div class="card-subtitle">Kelola seluruh data arsip</div>
                 </div>
             </div>

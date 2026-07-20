@@ -83,18 +83,35 @@ class OpdController extends Controller
 
     public function update(Request $request, $id)
     {
-        $opd = Opd::findOrFail($id);
+    // 1. Validasi input dari form
+    $validatedData = $request->validate([
+        'kode_instansi'      => 'required|string|max:255',
+        'unit_kerja'         => 'required|string|max:255',
+        'singkatan_uk'       => 'required|string|max:255',
+        // 'instansi'           => 'required|string|max:255',
+        // 'singkatan_instansi' => 'required|string|max:255',
+    ], [
+        // Kustomisasi pesan error (Opsional)
+        'kode_instansi.required' => 'Kode instansi wajib diisi.',
+        'unit_kerja.required'    => 'unit kerja wajib diisi.',
+        'singkatan_uk.required'  => 'singkatan unit kerja wajib diisi.',
+    ]);
 
-        $request->validate([
-            'kode' => 'required|unique:opds,kode,' . $id,
-            'nama' => 'required'
-        ]);
+    // 2. Cari data berdasarkan ID dan perbarui menggunakan Mass Assignment
+    $opd = Opd::findOrFail($id);
+    $opd->update([
+        'kode_instansi'      => $validatedData['kode_instansi'],
+        'unit_kerja'         => $validatedData['unit_kerja'],
+        'singkatan_uk'       => $validatedData['singkatan_uk'],
+        // 'instansi'           => $validatedData['instansi'],
+        // 'singkatan_instansi' => $validatedData['singkatan_instansi'],
+        // 'opd_induk_id'       => $request->opd_induk_id,
+    ]);
 
-        $opd->update($request->all());
-
-        return redirect()->route('opd.index')
-            ->with('success', 'OPD berhasil diupdate');
+    // 3. Alihkan halaman kembali dengan pesan sukses
+    return redirect()->route('opd_induk.index')->with('success', 'Data instansi berhasil diperbarui!');
     }
+
 
     public function destroy($id)
     {

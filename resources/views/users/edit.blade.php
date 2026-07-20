@@ -126,7 +126,7 @@
       <div class="user-avatar-lg">AD</div>
       <div>
         <div class="user-strip-name">{{ $user->role }}</div>
-        <div class="user-strip-label">ID <span>{{ $user->id }}</span>---<span>{{ $user->opd }}</span></div>
+        <div class="user-strip-label">ID <span>{{ $user->id }}</span>---<span>{{ $user->opd->unit_kerja }}</span></div>
       </div>
       <span class="user-strip-badge">
         <i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aktif
@@ -155,6 +155,40 @@
                    placeholder="Nama pengguna" />
           </div>
         </div>
+
+        <!-- Role -->
+        <!-- <div class="form-group">
+          <label class="form-label-custom">
+            <i class="bi bi-envelope"></i> Role <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope input-icon"></i>
+            <input type="text" name="role" class="form-input"
+                   value="{{ $user->role }}"
+                   placeholder="Role User" />
+          </div>
+        </div> -->
+
+        <div class="form-group">
+          <label class="form-label-custom" for="role">
+            <i class="bi bi-shield-lock"></i> Role <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-shield-lock input-icon"></i>
+            <select name="role" id="role" class="form-input @error('role') is-invalid @enderror" required>
+              <option value="" disabled {{ (old('role') ?? $user->role) == '' ? 'selected' : '' }}>-- Pilih Role --</option>
+              <option value="admin" {{ (old('role') ?? $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+              <option value="pengolah" {{ (old('role') ?? $user->role) == 'pengolah' ? 'selected' : '' }}>Pengolah</option>
+              <option value="sekretariat" {{ (old('role') ?? $user->role) == 'sekretariat' ? 'selected' : '' }}>Sekretariat</option>
+              <option value="customer" {{ (old('role') ?? $user->role) == 'customer' ? 'selected' : '' }}>Customer</option>
+            </select>
+          </div>
+          @error('role')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+
  
         <!-- Email -->
         <div class="form-group">

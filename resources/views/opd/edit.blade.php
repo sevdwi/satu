@@ -72,7 +72,7 @@
         <div class="mb-3">
             <label>Unit Kerja</label>
             <input type="text"
-                name="instansi"
+                name="unit_kerja"
                 class="form-control" 
                 value="{{$opd->unit_kerja}}" 
                 required>
@@ -82,7 +82,7 @@
         <div class="mb-3">
             <label>Singkatan Unit Kerja</label>
             <input type="text"
-                name="singkatan_instansi"
+                name="singkatan_uk"
                 class="form-control" 
                 value="{{$opd->singkatan_uk}}" 
                 required>

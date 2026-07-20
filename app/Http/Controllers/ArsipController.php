@@ -81,7 +81,11 @@ class ArsipController extends Controller
     {
         // Ambil data user yang sedang login beserta id OPD-nya
         // $user = auth()->user(); 
-        $user = auth()->user()->load('opd'); 
+        $user = auth()->user()->opd; // load('opd'); 
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
 
         // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
@@ -93,13 +97,10 @@ class ArsipController extends Controller
             'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel rak_arsips
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
         ->where('status', '!=', 'inaktif');
         // Cek kondisi Unit Kerja user
         // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
-        // if (strcode($user->opd_id->unit_kerja) !== 'sekretariat') {
-        //     $data_filter->where('opd_id', $user->opd_id); 
-        // }
         if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
             $data_filter->where('opd_id', $user->opd_id); 
         }
@@ -108,7 +109,7 @@ class ArsipController extends Controller
         
         // ->latest()->get(); 
 
-        return view('arsip.index', compact('data'
+        return view('arsip.index', compact('data','userid'
         ));
     }
 
