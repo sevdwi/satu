@@ -22,6 +22,8 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
 
     // 5. Menampilkan form untuk mengedit data spesifik
     Route::get('/{id}/edit', [ArsipController::class, 'edit'])->name('edit');
+    Route::get('/{id}/edit-nomor', [ArsipController::class, 'edit_nomor'])->name('edit-nomor');
+
 
     // 6. Memperbarui data spesifik di database
     Route::match(['put', 'patch'], '/{id}', [ArsipController::class, 'update'])->name('update');

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Opd_induk extends Model
+class Opd_Induk extends Model
 {
     // Tambahkan baris ini untuk mematikan created_at dan updated_at
     public $timestamps = false; 
@@ -34,12 +34,12 @@ class Opd_induk extends Model
 
     public function rak_arsips()
     {
-        return $this->hasMany(Rak_arsip::class, 'opd_induk_id');
+        return $this->hasMany(Rak_Arsip::class, 'opd_induk_id');
     }
 
     public function dus_arsips()
     {
-        return $this->hasMany(Dus_arsip::class, 'opd_induk_id');
+        return $this->hasMany(Dus_Arsip::class, 'opd_induk_id');
     }
 
 

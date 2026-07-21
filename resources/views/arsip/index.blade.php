@@ -90,8 +90,12 @@
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>ID Arsip</th>
+                    <th>ID User</th>
+                    <th>Nomor Sementara</th>
+                    <th>Nomor Definitif</th>
                     <th>Kode</th>
-                    <th>Judul</th>
+                    <th>Redaksi</th>
                     <th>Deskripsi</th>
                     <th>Unit</th>
                     <th>Nomor RAK</th>
@@ -111,6 +115,27 @@
 
                         <td>
                             {{ $loop->iteration }}
+                        </td>
+
+                        <td>
+                            {{ $item->id }}
+                        </td>
+
+                        <td>
+                            {{ $item->created_by }}
+                        </td>
+
+                        <td>
+                            {{ $item->id }} + {{ auth()->user()->id }} = {{ $item->id + auth()->user()->id }}
+                        </td>
+
+                        <td>
+                            {{ $item->nomor?? '-' }} - 
+                            <a href="{{ route('arsip.edit-nomor', $item->id) }}"
+                            class="btn btn-warning btn-sm mb-2">
+                                Edit nomor
+                            </a>
+
                         </td>
 
                         <!-- Kode Master (Aman) -->

@@ -10,7 +10,7 @@ class OpdController extends Controller
 {
     public function index($opd_induk_id)
     {
-        $opd_induk = Opd_induk::findOrFail($opd_induk_id);
+        $opd_induk = Opd_Induk::findOrFail($opd_induk_id);
         $data_opd = Opd::with([
             'opd_induk:id,instansi'
         ])
@@ -24,7 +24,7 @@ class OpdController extends Controller
 
     public function create($opd_induk_id)
     {
-        $opd_induk = Opd_induk::findOrFail($opd_induk_id);
+        $opd_induk = Opd_Induk::findOrFail($opd_induk_id);
         return view('opd.create',compact('opd_induk'));
     }
     public function search(Request $request)

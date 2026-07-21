@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dus_arsip;
-use App\Models\Rak_arsip;
+use App\Models\Dus_Arsip;
+use App\Models\Rak_Arsip;
 use App\Models\Opd;
-use App\Models\Opd_induk;
+use App\Models\Opd_Induk;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +24,7 @@ class DusArsipController extends Controller
         // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
 
-        $data = Dus_arsip::with([
+        $data = Dus_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'opd_induk:id,instansi,kode_instansi',
             'rak_arsip:id,nomor_rak'
@@ -40,7 +40,7 @@ class DusArsipController extends Controller
 
         $q = $request->q;
  
-        $data = Dus_arsip::with([
+        $data = Dus_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'rak_arsip:id,nomor_rak'
         ])
@@ -62,7 +62,7 @@ class DusArsipController extends Controller
     }
     public function dashbord()
     {
-        $data = Dus_arsip::with([
+        $data = Dus_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
         ])->latest()->get(); 
 
@@ -89,7 +89,7 @@ class DusArsipController extends Controller
     public function store(Request $request)
     { 
         try { 
-            $data = Dus_arsip::create([
+            $data = Dus_Arsip::create([
                 'rak_arsip_id' => $request->rak_arsip_id, 
                 'nomor_dus' => $request->nomor_dus, 
                 'opd_id' => $request->opd_id, 
@@ -123,7 +123,7 @@ class DusArsipController extends Controller
     {
         try {
             // Find data by ID, will return 404 error if not found
-            $dus = Dus_arsip::findOrFail($id);
+            $dus = Dus_Arsip::findOrFail($id);
             
             // Delete data from database
             $dus->delete();
@@ -137,13 +137,13 @@ class DusArsipController extends Controller
     }
     public function edit($id)
     { 
-        $data = Dus_arsip::with([ 
+        $data = Dus_Arsip::with([ 
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'rak_arsip:id,nomor_rak,opd_id'
         ])->findOrFail($id);
 
         $opds       = Opd::all(); 
-        $rak_arsips = Rak_arsip::with([ 
+        $rak_arsips = Rak_Arsip::with([ 
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi', 
         ])->latest()->get(); 
 
@@ -159,7 +159,7 @@ class DusArsipController extends Controller
      */
     public function update(Request $request, $id)
     { 
-        $arsip = Dus_arsip::findOrFail($id); 
+        $arsip = Dus_Arsip::findOrFail($id); 
         $arsip->update([ 
                 'nomor_dus' => $request->nomor_dus, 
                 'nomor_rak' => $request->nomor_rak, 

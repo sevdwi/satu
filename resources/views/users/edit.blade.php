@@ -144,7 +144,7 @@
         <div class="section-label">Informasi Pengguna</div>
  
         <!-- Nama -->
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label class="form-label-custom">
             <i class="bi bi-person"></i> Nama Pengguna <span class="required">*</span>
           </label>
@@ -154,6 +154,23 @@
                    value="{{ $user->name }}"
                    placeholder="Nama pengguna" />
           </div>
+        </div> -->
+
+        <!-- Nama -->
+        <div class="form-group">
+          <label class="form-label-custom">
+            <i class="bi bi-person"></i> Nama Pengguna <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-person input-icon"></i>
+            <input type="text" name="name" class="form-input @error('name') is-invalid @enderror" 
+                  value="{{ old('name') ?? $user->name }}" placeholder="Nama pengguna" required />
+          </div>
+          @error('name')
+            <div class="invalid-feedback text-danger small mt-1">
+              <i class="bi bi-exclamation-circle"></i> {{ $message }}
+            </div>
+          @enderror
         </div>
 
         <!-- Role -->
@@ -191,7 +208,7 @@
 
  
         <!-- Email -->
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label class="form-label-custom">
             <i class="bi bi-envelope"></i> Alamat Email <span class="required">*</span>
           </label>
@@ -201,10 +218,27 @@
                    value="{{ $user->email }}"
                    placeholder="contoh@email.com" />
           </div>
+        </div> -->
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label-custom">
+            <i class="bi bi-envelope"></i> Alamat Email <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope input-icon"></i>
+            <input type="email" name="email" class="form-input @error('email') is-invalid @enderror" 
+                  value="{{ old('email') ?? $user->email }}" placeholder="contoh@email.com" required />
+          </div>
+          @error('email')
+            <div class="invalid-feedback text-danger small mt-1">
+              <i class="bi bi-exclamation-circle"></i> {{ $message }}
+            </div>
+          @enderror
         </div>
  
         <!-- Nomor Telepon -->
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label class="form-label-custom">
             <i class="bi bi-telephone"></i> Nomor Telepon <span class="required">*</span>
           </label>
@@ -218,6 +252,26 @@
             <i class="bi bi-info-circle"></i>
             Format: diawali 08, tanpa tanda hubung.
           </div>
+        </div> -->
+
+        <!-- Nomor Telepon -->
+        <div class="form-group">
+          <label class="form-label-custom">
+            <i class="bi bi-telephone"></i> Nomor Telepon <span class="required">*</span>
+          </label>
+          <div class="input-wrap">
+            <i class="bi bi-telephone input-icon"></i>
+            <input type="text" name="phone_number" class="form-input @error('phone_number') is-invalid @enderror" 
+                  value="{{ old('phone_number') ?? $user->phone_number }}" placeholder="08xxxxxxxxxx" required />
+          </div>
+          <div class="form-hint">
+            <i class="bi bi-info-circle"></i> Format: diawali 08, tanpa tanda hubung.
+          </div>
+          @error('phone_number')
+            <div class="invalid-feedback text-danger small mt-1">
+              <i class="bi bi-exclamation-circle"></i> {{ $message }}
+            </div>
+          @enderror
         </div>
  
         <hr class="form-divider" />

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Opd;
-use App\Models\Opd_induk;
+use App\Models\Opd_Induk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +22,7 @@ class UserController extends Controller
     public function create()
     {
         $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
-        $opd_induks = Opd_induk::all();
+        $opd_induks = Opd_Induk::all();
         return view('users.create', compact('opds','opd_induks'));
     }
 

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rak_arsip extends Model
+class Rak_Arsip extends Model
 {
     //
     // Tambahkan baris ini untuk mematikan created_at dan updated_at
@@ -26,7 +26,7 @@ class Rak_arsip extends Model
     // Parent Dus Arsip
     public function dus_arsips()
     {
-        return $this->hasMany(Dus_arsip::class, 'rak_arsip_id');
+        return $this->hasMany(Dus_Arsip::class, 'rak_arsip_id');
     }
    
     // OPD

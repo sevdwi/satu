@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Opd;
-use App\Models\Opd_induk;
+use App\Models\Opd_Induk;
 use App\Models\Arsip;
 use App\Models\MasterKode;
-use App\Models\Rak_arsip;
-use App\Models\Dus_arsip;
+use App\Models\Rak_Arsip;
+use App\Models\Dus_Arsip;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -117,7 +117,7 @@ class ArsipController extends Controller
     {
         $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
 
-        $opd_induk = Opd_induk::orderBy('instansi')->get(); // sesuaikan nama kolom
+        $opd_induk = Opd_Induk::orderBy('instansi')->get(); // sesuaikan nama kolom
 
 
         $data = Arsip::with([
@@ -138,7 +138,7 @@ class ArsipController extends Controller
     public function detail_admin($opd_induk_id)
     {        
                 // 1. Ambil data OPD Induk yang dipilih untuk menampilkan judul halaman
-        $opd_induk = Opd_induk::findOrFail($opd_induk_id);
+        $opd_induk = Opd_Induk::findOrFail($opd_induk_id);
 
         // 2. Ambil data arsip yang HANYA memiliki opd_induk_id sesuai tombol yang diklik
         $data_arsip = Arsip::with([
@@ -226,11 +226,13 @@ class ArsipController extends Controller
         // Ambil data user yang sedang login beserta id OPD-nya
         $user = auth()->user(); 
 
-        // Pastikan nama kolom 'opd_id' sesuai di tabel users
-        $userOpdId = $user->opd_id; 
+        // Pastikan nama kolom 'opd_induk_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+
+        $userUnit = $user->opd_id;
        
         // Filter OPD agar HANYA menampilkan OPD si user saja
-        $opds = Opd::where('id', $userOpdId)->get();
+        $opds = Opd::where('id', $userUnit)->get();
 
         $data = Arsip::with([
             'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -243,8 +245,8 @@ class ArsipController extends Controller
         $masterKodes = MasterKode::all();
 
         // Filter Rak dan Dus berdasarkan OPD si user (Asumsi tabel rak & dus punya kolom opd_id)
-        $dus_arsips = Dus_arsip::where('opd_id', $userOpdId)->get();
-        $rak_arsips = Rak_arsip::where('opd_id', $userOpdId)->get();
+        $dus_arsips = Dus_Arsip::where('opd_induk_id', $userOpdId)->get();
+        $rak_arsips = Rak_Arsip::where('opd_induk_id', $userOpdId)->get();
 
 
 
@@ -374,10 +376,20 @@ class ArsipController extends Controller
         ));
     }
 
+    public function edit_nomor($id)
+    { 
+        $data = Arsip::select('id', 'nomor')->findOrFail($id);
+
+        return view('arsip.edit-nomor', compact('id',
+            'data'
+        ));
+    }
+
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function updateTahan(Request $request, $id)
     {
         $arsip = Arsip::findOrFail($id); 
         $arsip->update([
@@ -398,6 +410,36 @@ class ArsipController extends Controller
         return redirect()->route('arsip.home')
             ->with('success', 'Data berhasil diupdate');
     }
+
+    public function update(Request $request, $id)
+    {
+        $arsip = Arsip::findOrFail($id); 
+
+        // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
+        $dataToUpdate = $request->only([
+            'judul', 'deskripsi', 'tanggal', 'master_kode_id', 
+            'opd_id', 'opd_induk_id', 'retensi', 'nomor', 
+            'status', 'pemusnahan', 'dus_arsip_id', 'rak_arsip_id'
+        ]);
+
+        // 2. Filter data: Hanya update kolom yang benar-benar dikirim dari Form (mencegah NULL tidak sengaja)
+        $dataToUpdate = array_filter($dataToUpdate, function ($value, $key) use ($request) {
+            // Khusus untuk input 'nomor', jika dikosongkan (string kosong), kita tetap loloskan agar terupdate jadi NULL di DB
+            if ($key === 'nomor') {
+                return true; 
+            }
+            
+            // Kolom lainnya hanya diupdate jika memang ada inputnya di form Blade
+            return $request->has($key);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        // 3. Eksekusi perubahan ke database
+        $arsip->update($dataToUpdate);
+
+        return redirect()->route('arsip.home')
+            ->with('success', 'Data berhasil diupdate');
+    }
+
 
     /**
      * Remove the specified resource from storage.

@@ -1,8 +1,6 @@
 @extends('layouts.head_customer')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <nav class="navbar-custom">
   <div class="navbar-inner">
@@ -24,11 +22,6 @@
         </a>
 
       </li>
-      <!-- <li>
-      <a href="{{route('dashboard')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
-        </a>
-      </li> -->
     </ul>
     
 
@@ -79,6 +72,9 @@
           enctype="multipart/form-data">
 
         @csrf
+
+    <input type="hidden" name="created_by" value="{{ auth()->user()->id }}">
+
     <div class="row mt-3 ms-2 me-2">
             <div class="col-md-6 mt-3">
                 <label>Kode Arsip</label>
@@ -150,7 +146,7 @@
             </div>
 
             <div class="col-md-6 mt-3">
-                <label>Judul</label>
+                <label>Redaksi</label>
 
                 <input type="text"
                     name="judul"
@@ -162,7 +158,8 @@
 
                 <input type="text"
                     name="nomor"
-                    class="form-control">
+                    class="form-control"
+                    placeholder="Masukkan nomor atau biarkan kosong">
             </div>
 
             <div class="col-md-6 mt-3">

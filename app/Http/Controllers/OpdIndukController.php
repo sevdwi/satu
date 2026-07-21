@@ -10,7 +10,7 @@ class OpdIndukController extends Controller
 {
     public function index()
     {
-        $opd_induk = Opd_induk::all();
+        $opd_induk = Opd_Induk::all();
         return view('opd_induk.index', compact('opd_induk'));
     }
 
@@ -19,7 +19,7 @@ class OpdIndukController extends Controller
     {
         $q = $request->q;
  
-        $data = Opd_induk::where('instansi', 'like', "%$q%")
+        $data = Opd_Induk::where('instansi', 'like', "%$q%")
             ->orWhere('kode_instansi', 'like', "%$q%")
             // ->orWhere('singkatan_instansi', 'like', "%$q%")
             ->limit(20)
@@ -31,7 +31,7 @@ class OpdIndukController extends Controller
     public function create()
     {
         $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
-        $opd_induks = Opd_induk::all();
+        $opd_induks = Opd_Induk::all();
         return view('opd_induk.create', compact('opds','opd_induks'));
     }
 
@@ -50,7 +50,7 @@ class OpdIndukController extends Controller
 
         // 2. Simpan data ke database menggunakan Mass Assignment
         // Ganti 'OpdInduk' dengan nama Model yang Anda gunakan untuk tabel ini
-        Opd_induk::create([
+        Opd_Induk::create([
             'kode_instansi'      => $validatedData['kode_instansi'],
             'instansi'           => $validatedData['instansi'],
             'singkatan_instansi' => $validatedData['singkatan_instansi'],
@@ -64,7 +64,7 @@ class OpdIndukController extends Controller
     {
         try {
             // Find data by ID, will return 404 error if not found
-            $opd_induk = Opd_induk::findOrFail($id);
+            $opd_induk = Opd_Induk::findOrFail($id);
             
             // Delete data from database
             $opd_induk->delete();
@@ -81,7 +81,7 @@ class OpdIndukController extends Controller
     public function edit($id)
     {
         // 1. Cari data berdasarkan ID, jika tidak ketemu akan otomatis error 404
-        $opd_induk = Opd_induk::findOrFail($id);
+        $opd_induk = Opd_Induk::findOrFail($id);
     
         // 2. Tampilkan view edit dan kirimkan data yang akan diedit
         // Ganti 'arsip.edit' sesuai dengan folder dan nama file blade form edit Anda
@@ -104,7 +104,7 @@ class OpdIndukController extends Controller
         ]);
 
         // 2. Cari data lama berdasarkan ID
-        $opdInduk = Opd_induk::findOrFail($id);
+        $opdInduk = Opd_Induk::findOrFail($id);
 
         // 3. Perbarui data di database menggunakan Mass Assignment
         $opdInduk->update([
