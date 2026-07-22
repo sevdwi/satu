@@ -92,7 +92,7 @@
                     <th>Korektor</th>
                     <th>Status</th>
                     <!-- <th>File</th> -->
-                    <th width="180">Aksi</th>
+                    <!-- <th width="180">Aksi</th> -->
                 </tr>
             </thead>
 
@@ -138,10 +138,27 @@
                         </td>
 
                         <td>
-                            <span class="badge bg-success">
-                                {{ $item->status }}
-                            </span>
+                            @switch($item->status)
+                                @case('verify')
+                                    <span class="badge bg-success">Verify</span>
+                                    @break
+                                @case('input')
+                                    <span class="badge bg-primary">Input</span>
+                                    @break
+                                @case('draft')
+                                    <span class="badge bg-warning text-dark">Draft</span>
+                                    @break
+                                @default
+                                    <span class="badge bg-secondary">{{ $item->status }}</span>
+                            @endswitch
+
+                            <a href="{{ route('arsip_admin.edit-status', $item->id) }}"
+                            class="btn btn-warning btn-sm mt-2 mb-2">
+                                Edit
+                            </a>
+
                         </td>
+
                         <!-- <td>
                             @if($item->file)
 
@@ -171,8 +188,7 @@
                             @endif
                         </td>  -->
 
-                        <td>
-
+                        <!-- <td>
                             <a href="{{ route('arsip_admin.edit', $item->id) }}"
                             class="btn btn-warning btn-sm mb-2">
                                 Edit
@@ -194,7 +210,7 @@
 
                             </form>
 
-                        </td>
+                        </td> -->
 
                     </tr>
 

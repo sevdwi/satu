@@ -173,11 +173,21 @@
                         <td>
                             {{ $item->korektor ?? '-' }}
                         </td>
-
+                        
                         <td>
-                            <span class="badge bg-success">
-                                {{ $item->status }}
-                            </span>
+                            @switch($item->status)
+                                @case('verify')
+                                    <span class="badge bg-success">Verify</span>
+                                    @break
+                                @case('input')
+                                    <span class="badge bg-primary">Input</span>
+                                    @break
+                                @case('draft')
+                                    <span class="badge bg-warning text-dark">Draft</span>
+                                    @break
+                                @default
+                                    <span class="badge bg-secondary">{{ $item->status }}</span>
+                            @endswitch
                         </td>
 
                         <!-- <td>
@@ -215,6 +225,12 @@
                             class="btn btn-warning btn-sm mb-2">
                                 Edit
                             </a>
+
+                            <a href="{{ route('arsip.kartu', $item->id) }}"
+                            class="btn btn-warning btn-sm mb-2">
+                                Kartu
+                            </a>
+
 
                             <form action="{{ route('arsip.destroy', $item->id) }}"
                                 method="POST"

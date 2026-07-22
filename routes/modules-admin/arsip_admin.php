@@ -29,8 +29,10 @@ Route::prefix('arsip_admin')->name('arsip_admin.')->group(function () {
     // 5. Menampilkan form untuk mengedit data spesifik
     Route::get('/{id}/edit', [ArsipController::class, 'edit_admin'])->name('edit');
 
+    Route::get('/{id}/edit-status', [ArsipController::class, 'edit_status'])->name('edit-status');
+
     // 6. Memperbarui data spesifik di database
-    Route::match(['put', 'patch'], '/{id}', [ArsipController::class, 'update'])->name('update');
+    Route::match(['put', 'patch'], '/{id}', [ArsipController::class, 'update_admin'])->name('update-admin');
 
     // 7. Menghapus data spesifik dari database
     Route::delete('/{id}', [ArsipController::class, 'destroy'])->name('destroy');

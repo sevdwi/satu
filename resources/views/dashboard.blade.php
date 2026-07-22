@@ -43,15 +43,15 @@
         </div>
       </li>
       <li>
-        <a href="#">
-          <i class="bi bi-building-lock"></i> Arsip Statis
+        <a href="{{route('arsip.kartu')}}">
+          <i class="bi bi-building-lock"></i> Kartu Arsip
           <i class="bi bi-chevron-down nav-caret"></i>
         </a>
-        <div class="dropdown-menu-custom">
+        <!-- <div class="dropdown-menu-custom">
           <a href="#"><i class="bi bi-send"></i> Daftar Usul Serah</a>
-          <!-- <div class="dropdown-divider-custom"></div> -->
+          <div class="dropdown-divider-custom"></div>
           <a href="#"><i class="bi bi-archive-fill"></i> Daftar Arsip Statis</a>
-        </div>
+        </div> -->
       </li>
       <li>
         <a href="#">

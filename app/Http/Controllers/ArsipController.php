@@ -158,6 +158,7 @@ class ArsipController extends Controller
         return view('arsip.detail-admin', compact('opd_induk', 'data_arsip'));
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -385,6 +386,15 @@ class ArsipController extends Controller
         ));
     }
 
+    public function edit_status($id)
+    { 
+        $data = Arsip::select('id', 'status')->findOrFail($id);
+
+        return view('arsip.edit-status', compact('id',
+            'data'
+        ));
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -440,6 +450,36 @@ class ArsipController extends Controller
             ->with('success', 'Data berhasil diupdate');
     }
 
+    public function update_admin(Request $request, $id)
+    {
+        $arsip = Arsip::findOrFail($id); 
+
+        // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
+        $dataToUpdate = $request->only([
+            'judul', 'deskripsi', 'tanggal', 'master_kode_id', 
+            'opd_id', 'opd_induk_id', 'retensi', 'nomor', 
+            'status', 'pemusnahan', 'dus_arsip_id', 'rak_arsip_id'
+        ]);
+
+        // 2. Filter data: Hanya update kolom yang benar-benar dikirim dari Form (mencegah NULL tidak sengaja)
+        $dataToUpdate = array_filter($dataToUpdate, function ($value, $key) use ($request) {
+            // Khusus untuk input 'nomor', jika dikosongkan (string kosong), kita tetap loloskan agar terupdate jadi NULL di DB
+            if ($key === 'status') {
+                return true; 
+            }
+            
+            // Kolom lainnya hanya diupdate jika memang ada inputnya di form Blade
+            return $request->has($key);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        // 3. Eksekusi perubahan ke database
+        $arsip->update($dataToUpdate);
+
+        return redirect()->route('arsip_admin.home-admin')
+            ->with('success', 'Data berhasil diupdate');
+    }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -468,4 +508,26 @@ class ArsipController extends Controller
                 ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
     }
+
+    public function kartu($id)
+    { 
+        $data = Arsip::with([
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,kode_instansi,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])->findOrFail($id);
+
+        $opds = Opd::all();
+        $masterKodes = MasterKode::all();
+
+        return view('arsip.kartu', compact('id',
+            'data',
+            'opds',
+            'masterKodes'
+        ));
+    }
+
 }

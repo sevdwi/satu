@@ -11,6 +11,10 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
 
     Route::get('/data', [ArsipController::class, 'index'])->name('home');
 
+    Route::get('/{id}/kartu', [ArsipController::class, 'kartu'])->name('kartu');
+
+
+
     // 2. Menampilkan form untuk membuat data baru
     Route::get('/create', [ArsipController::class, 'create'])->name('create');
 
