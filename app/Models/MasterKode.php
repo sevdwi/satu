@@ -17,6 +17,8 @@ class MasterKode extends Model
         'parent_id',
         'level',
         'nama',
+        'aktif',
+        'inaktif',
         'keterangan',
     ];
 

@@ -43,9 +43,9 @@
         </div>
       </li>
       <li>
-        <a href="{{route('arsip.kartu')}}">
-          <i class="bi bi-building-lock"></i> Kartu Arsip
-          <i class="bi bi-chevron-down nav-caret"></i>
+        <a href="">
+          <!-- <i class="bi bi-building-lock"></i> Kartu Arsip
+          <i class="bi bi-chevron-down nav-caret"></i> -->
         </a>
         <!-- <div class="dropdown-menu-custom">
           <a href="#"><i class="bi bi-send"></i> Daftar Usul Serah</a>
