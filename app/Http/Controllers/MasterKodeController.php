@@ -255,6 +255,53 @@ class MasterKodeController extends Controller
         ]);
     }
 
+    public function import()
+    {
+        return view('master-kodes.import');
+    }
+
+    public function store_import(Request $request)
+    {
+        // Sistem memvalidasi fail masukan
+        $request->validate([
+            'file' => 'required|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('file');
+        $fileHandle = fopen($file->getRealPath(), 'r');
+
+        // Program melewati baris pertama jika CSV memiliki tajuk (header)
+        fgetcsv($fileHandle);
+
+        // Program mengulang setiap baris data
+        // Program mengulang setiap baris data
+        while (($row = fgetcsv($fileHandle, 1000, ',')) !== false) {
+            // Program menyiapkan array asosiatif tanpa kolom id
+            $data = [
+                'is_parent'  => $row[1],
+                'parent_id'  => (empty($row[2]) || $row[2] == 0) ? null : (int) $row[2],
+                'level'      => empty($row[3]) ? 0 : (int) $row[3],
+                'kode'       => $row[4],
+                'nama'       => $row[5],
+                'aktif'      => empty($row[6]) ? null : (int) $row[6],
+                'inaktif'    => empty($row[7]) ? null : (int) $row[7],
+                'keterangan' => empty($row[8]) ? null : $row[8],
+            ];
+
+            // Program memvalidasi eksistensi data ID pada baris CSV
+            $id = empty($row[0]) ? null : (int) $row[0];
+
+            // Program menyisipkan kunci id hanya jika data tersedia
+            if ($id !== null) {
+                $data['id'] = $id;
+            }
+
+            // Sistem menyimpan data ke pangkalan data MySQL
+            MasterKode::create($data);
+        }
+        return back()->with('success', 'Sistem berhasil mengimpor data CSV ke MySQL.');
+    }
+
 
 
 }

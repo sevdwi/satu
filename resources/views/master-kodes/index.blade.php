@@ -29,11 +29,11 @@
         </a>
 
       </li>
-      <!-- <li>
-      <a href="{{route('dashboard')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
+      <li>
+      <a href="{{route('master-kodes.import')}}" class="active">
+          <i class="bi bi-house"></i> Import
         </a>
-      </li> -->
+      </li>
     </ul>
     
 

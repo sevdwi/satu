@@ -28,11 +28,18 @@
         <!-- Core theme CSS -->
         <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
         <!-- Slot untuk CSS Tambahan dari Halaman Anak -->
         @stack('styles')
 
         <!-- jQuery (Wajib ada di head agar bisa digunakan langsung oleh skrip halaman anak) -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     </head>
 
     <body class="d-flex flex-column h-100">
@@ -52,8 +59,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Chart.js dan Select2 JS (Dipindah ke bawah agar tidak memblokir render halaman) -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>

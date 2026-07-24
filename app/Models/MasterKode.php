@@ -9,13 +9,16 @@ class MasterKode extends Model
 {
     // use HasFactory;
 
+    public $timestamps = false; 
+
     protected $table = 'master_kodes';
 
     protected $fillable = [
-        'kode',
+        'id', 
         'is_parent',
         'parent_id',
         'level',
+        'kode',
         'nama',
         'aktif',
         'inaktif',

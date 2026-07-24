@@ -8,9 +8,9 @@ use App\Http\Controllers\MasterKodeImportController;
 Route::prefix('master-kodes')->name('master-kodes.')->group(function () {
 
 Route::get('/search', [MasterKodeController::class, 'search']) ->name('search');
-Route::get('/import', [MasterKodeImportController::class, 'index'])->name('import');
+Route::get('/import', [MasterKodeController::class, 'import'])->name('import');
 
-Route::post('/import', [MasterKodeImportController::class, 'store']);
+Route::post('/import', [MasterKodeController::class, 'store_import'])->name('store-import');
 // Route::get('/search', [MasterKodeController::class, 'search2']);
 // Route::resource('/', MasterKodeController::class);
 
