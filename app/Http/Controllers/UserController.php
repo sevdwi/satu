@@ -60,7 +60,7 @@ class UserController extends Controller
     }
 
     // update
-    public function update(Request $request, User $user)
+    public function updatetahan2(Request $request, User $user)
     {
         $request->validate([
             'name'  => 'required',
@@ -75,6 +75,31 @@ class UserController extends Controller
 
         return redirect()->route('users.index');
     }
+
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'name'          => 'required',
+            'email'         => 'required|email|unique:users,email,' . $user->id,
+            'phone_number'  => 'required|unique:users,phone_number,' . $user->id,
+            'password'      => 'nullable|min:4',
+            'status'        => 'required|in:active,banned,verify',
+            'role'          => 'required',
+        ]);
+
+        // Mengambil semua input kecuali password
+        $data = $request->except('password');
+
+        // Update password hanya jika user mengisi input password baru
+        if ($request->filled('password')) {
+            $data['password'] = $request->password; // auto hash tetap berjalan oleh model
+        }
+
+        $user->update($data);
+
+        return redirect()->route('users.index');
+    }
+
 
     // delete
     public function destroy(User $user)

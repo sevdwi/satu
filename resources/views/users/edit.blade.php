@@ -126,7 +126,7 @@
       <div class="user-avatar-lg">AD</div>
       <div>
         <div class="user-strip-name">{{ $user->role }}</div>
-        <div class="user-strip-label">ID <span>{{ $user->id }}</span>---<span>{{ $user->opd->unit_kerja }}</span></div>
+        <div class="user-strip-label">ID <span>{{ $user->id }}</span>---<span>{{ $user->status }}</span></div>
       </div>
       <span class="user-strip-badge">
         <i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aktif
@@ -138,155 +138,143 @@
  
       {{-- Ganti action="{{ route('users.update', $user) }}" dan value="{{ $user->xxx }}" sesuai Blade --}}
       <form action="{{ route('users.update', $user) }}" method="POST">
-        @csrf
-        @method('PUT')
- 
-        <div class="section-label">Informasi Pengguna</div>
- 
-        <!-- Nama -->
-        <!-- <div class="form-group">
-          <label class="form-label-custom">
-            <i class="bi bi-person"></i> Nama Pengguna <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-person input-icon"></i>
-            <input type="text" name="name" class="form-input"
-                   value="{{ $user->name }}"
-                   placeholder="Nama pengguna" />
-          </div>
-        </div> -->
+    @csrf
+    @method('PUT')
 
-        <!-- Nama -->
-        <div class="form-group">
-          <label class="form-label-custom">
-            <i class="bi bi-person"></i> Nama Pengguna <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-person input-icon"></i>
-            <input type="text" name="name" class="form-input @error('name') is-invalid @enderror" 
-                  value="{{ old('name') ?? $user->name }}" placeholder="Nama pengguna" required />
-          </div>
-          @error('name')
-            <div class="invalid-feedback text-danger small mt-1">
-              <i class="bi bi-exclamation-circle"></i> {{ $message }}
-            </div>
-          @enderror
+    <div class="section-label">Informasi Pengguna</div>
+
+    <!-- Nama -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-person"></i> Nama Pengguna <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-person input-icon"></i>
+        <input type="text" name="name" class="form-input @error('name') is-invalid @enderror" 
+              value="{{ old('name') ?? $user->name }}" placeholder="Nama pengguna" required />
+      </div>
+      @error('name')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
         </div>
+      @enderror
+    </div>
 
-        <!-- Role -->
-        <!-- <div class="form-group">
-          <label class="form-label-custom">
-            <i class="bi bi-envelope"></i> Role <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-envelope input-icon"></i>
-            <input type="text" name="role" class="form-input"
-                   value="{{ $user->role }}"
-                   placeholder="Role User" />
-          </div>
-        </div> -->
-
-        <div class="form-group">
-          <label class="form-label-custom" for="role">
-            <i class="bi bi-shield-lock"></i> Role <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-shield-lock input-icon"></i>
-            <select name="role" id="role" class="form-input @error('role') is-invalid @enderror" required>
-              <option value="" disabled {{ (old('role') ?? $user->role) == '' ? 'selected' : '' }}>-- Pilih Role --</option>
-              <option value="admin" {{ (old('role') ?? $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-              <option value="pengolah" {{ (old('role') ?? $user->role) == 'pengolah' ? 'selected' : '' }}>Pengolah</option>
-              <option value="sekretariat" {{ (old('role') ?? $user->role) == 'sekretariat' ? 'selected' : '' }}>Sekretariat</option>
-              <option value="customer" {{ (old('role') ?? $user->role) == 'customer' ? 'selected' : '' }}>Customer</option>
-            </select>
-          </div>
-          @error('role')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
+    <!-- Role -->
+    <div class="form-group">
+      <label class="form-label-custom" for="role">
+        <i class="bi bi-shield-lock"></i> Role <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-shield-lock input-icon"></i>
+        <select name="role" id="role" class="form-input @error('role') is-invalid @enderror" required>
+          <option value="" disabled {{ (old('role') ?? $user->role) == '' ? 'selected' : '' }}>-- Pilih Role --</option>
+          <option value="admin" {{ (old('role') ?? $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+          <option value="pengolah" {{ (old('role') ?? $user->role) == 'pengolah' ? 'selected' : '' }}>Pengolah</option>
+          <option value="sekretariat" {{ (old('role') ?? $user->role) == 'sekretariat' ? 'selected' : '' }}>Sekretariat</option>
+          <option value="customer" {{ (old('role') ?? $user->role) == 'customer' ? 'selected' : '' }}>Customer</option>
+        </select>
+      </div>
+      @error('role')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
         </div>
+      @enderror
+    </div>
 
-
- 
-        <!-- Email -->
-        <!-- <div class="form-group">
-          <label class="form-label-custom">
-            <i class="bi bi-envelope"></i> Alamat Email <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-envelope input-icon"></i>
-            <input type="email" name="email" class="form-input"
-                   value="{{ $user->email }}"
-                   placeholder="contoh@email.com" />
-          </div>
-        </div> -->
-
-        <!-- Email -->
-        <div class="form-group">
-          <label class="form-label-custom">
-            <i class="bi bi-envelope"></i> Alamat Email <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-envelope input-icon"></i>
-            <input type="email" name="email" class="form-input @error('email') is-invalid @enderror" 
-                  value="{{ old('email') ?? $user->email }}" placeholder="contoh@email.com" required />
-          </div>
-          @error('email')
-            <div class="invalid-feedback text-danger small mt-1">
-              <i class="bi bi-exclamation-circle"></i> {{ $message }}
-            </div>
-          @enderror
+    <!-- Status -->
+    <div class="form-group">
+      <label class="form-label-custom" for="status">
+        <i class="bi bi-toggle-on"></i> Status <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-toggle-on input-icon"></i>
+        <select name="status" id="status" class="form-input @error('status') is-invalid @enderror" required>
+          <option value="" disabled {{ (old('status') ?? $user->status) == '' ? 'selected' : '' }}>-- Pilih Status --</option>
+          <option value="active" {{ (old('status') ?? $user->status) == 'active' ? 'selected' : '' }}>Active</option>
+          <option value="banned" {{ (old('status') ?? $user->status) == 'banned' ? 'selected' : '' }}>Banned</option>
+          <option value="verify" {{ (old('status') ?? $user->status) == 'verify' ? 'selected' : '' }}>Verify</option>
+        </select>
+      </div>
+      @error('status')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
         </div>
- 
-        <!-- Nomor Telepon -->
-        <!-- <div class="form-group">
-          <label class="form-label-custom">
-            <i class="bi bi-telephone"></i> Nomor Telepon <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-telephone input-icon"></i>
-            <input type="text" name="phone_number" class="form-input"
-                   value="{{ $user->phone_number}}"
-                   placeholder="08xxxxxxxxxx" />
-          </div>
-          <div class="form-hint">
-            <i class="bi bi-info-circle"></i>
-            Format: diawali 08, tanpa tanda hubung.
-          </div>
-        </div> -->
+      @enderror
+    </div>
 
-        <!-- Nomor Telepon -->
-        <div class="form-group">
-          <label class="form-label-custom">
-            <i class="bi bi-telephone"></i> Nomor Telepon <span class="required">*</span>
-          </label>
-          <div class="input-wrap">
-            <i class="bi bi-telephone input-icon"></i>
-            <input type="text" name="phone_number" class="form-input @error('phone_number') is-invalid @enderror" 
-                  value="{{ old('phone_number') ?? $user->phone_number }}" placeholder="08xxxxxxxxxx" required />
-          </div>
-          <div class="form-hint">
-            <i class="bi bi-info-circle"></i> Format: diawali 08, tanpa tanda hubung.
-          </div>
-          @error('phone_number')
-            <div class="invalid-feedback text-danger small mt-1">
-              <i class="bi bi-exclamation-circle"></i> {{ $message }}
-            </div>
-          @enderror
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-envelope"></i> Alamat Email <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-envelope input-icon"></i>
+        <input type="email" name="email" class="form-input @error('email') is-invalid @enderror" 
+              value="{{ old('email') ?? $user->email }}" placeholder="contoh@email.com" required />
+      </div>
+      @error('email')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
         </div>
- 
-        <hr class="form-divider" />
- 
-        <!-- Action Buttons -->
-        <div class="action-row">
-          <a href="{{route('users.index')}}" class="btn-back">
-            <i class="bi bi-arrow-left"></i> Kembali
-          </a>
-          <button type="submit" class="btn-update">
-            <i class="bi bi-check-lg"></i> Simpan Perubahan
-          </button>
+      @enderror
+    </div>
+
+    <!-- Nomor Telepon -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-telephone"></i> Nomor Telepon <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-telephone input-icon"></i>
+        <input type="text" name="phone_number" class="form-input @error('phone_number') is-invalid @enderror" 
+              value="{{ old('phone_number') ?? $user->phone_number }}" placeholder="08xxxxxxxxxx" required />
+      </div>
+      <div class="form-hint">
+        <i class="bi bi-info-circle"></i> Format: diawali 08, tanpa tanda hubung.
+      </div>
+      @error('phone_number')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
         </div>
- 
-      </form>
+      @enderror
+    </div>
+
+    <!-- Password (Opsional saat update) -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-key"></i> Password Baru <span class="text-muted" style="font-size: 0.8rem;">(Kosongkan jika tidak ingin mengubah)</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-key input-icon"></i>
+        <input type="password" name="password" class="form-input @error('password') is-invalid @enderror" 
+              placeholder="Minimal 4 karakter" />
+      </div>
+      @error('password')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
+        </div>
+      @enderror
+    </div>
+
+    {{-- Field Tersembunyi (Sesuai database pada method store) --}}
+    <input type="hidden" name="opd_id" value="{{ old('opd_id') ?? $user->opd_id }}">
+    <input type="hidden" name="opd_induk_id" value="{{ old('opd_induk_id') ?? $user->opd_induk_id }}">
+
+    <hr class="form-divider" />
+
+    <!-- Action Buttons -->
+    <div class="action-row">
+      <a href="{{route('users.index')}}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Kembali
+      </a>
+      <button type="submit" class="btn-update">
+        <i class="bi bi-check-lg"></i> Simpan Perubahan
+      </button>
+    </div>
+
+</form>
+
     </div>
  
   </div>

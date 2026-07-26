@@ -29,11 +29,11 @@
         </a>
 
       </li>
-      <li>
+      <!-- <li>
       <a href="{{route('master-kodes.import')}}" class="active">
           <i class="bi bi-house"></i> Import
         </a>
-      </li>
+      </li> -->
     </ul>
     
 
@@ -61,7 +61,7 @@
   </div>
 </nav>
 
-<div class="page-wrap">
+<div >
 
   <div class="breadcrumb-custom">
     <a href="#"><i class="bi bi-house"></i></a>
