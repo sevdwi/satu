@@ -76,25 +76,6 @@
     <input type="hidden" name="created_by" value="{{ auth()->user()->id }}">
 
     <div class="row mt-3 ms-2 me-2">
-            <div class="col-md-6 mt-3">
-                <label>Kode Arsip</label>
-                <!-- @dump($masterKodes) -->
-                <select name="master_kode_id" class="form-select form-select-sm" aria-label="Large select example">
-
-                    <option value="">-- Pilih Kode --</option>
-
-                    @foreach($masterKodes as $kode)
-
-                        <option value="{{ $kode->id }}">
-
-                            {{ $kode->kode }} - {{ $kode->nama }}
-
-                        </option>
-
-                    @endforeach
-
-                </select>
-            </div>
 
             <div class="col-md-6 mt-3">
                 <label>OPD</label>
@@ -102,11 +83,11 @@
                 <select name="opd_induk_id" class="form-select form-select-sm" aria-label="Large select example">
 
                     <option value="0">-- Pilih Unit --</option>
-                    @foreach($opds as $opd)
+                    @foreach($opdinduks as $opdinduk)
 
-                    <option value="{{ $opd->opd_induk_id }}">
+                    <option value="{{ $opdinduk->id }}">
 
-                    {{ $opd->kode_instansi }} - {{ $opd->singkatan_instansi }}
+                    {{ $opdinduk->kode_instansi }} - {{ $opdinduk->instansi }}
 
                     </option>
 
@@ -138,14 +119,6 @@
             </div>
 
             <div class="col-md-6 mt-3">
-                <label>Korektor</label>
-
-                <input type="text"
-                    name="korektor"
-                    class="form-control">
-            </div>
-
-            <div class="col-md-6 mt-3">
                 <label>Redaksi</label>
 
                 <input type="text"
@@ -154,7 +127,7 @@
             </div>
 
             <div class="col-md-6 mt-3">
-                <label>Nomor</label>
+                <label>Nomor Arsip</label>
 
                 <input type="text"
                     name="nomor"
@@ -171,24 +144,50 @@
             </div>
 
             <div class="col-md-6 mt-3">
-                <label>Retensi Aktif</label>
-                <select name="retensi" class="form-control">
-                    <option value="0">pilih data</option>
-                    @for($a=1;$a<=10;$a++)
-                    <option value="{{$a}}">{{$a}} Tahun</option>
-                    @endfor
+                <label>Kode Arsip</label>
+                <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm" aria-label="Large select example"> 
+                    <option value="" data-aktif="0" data-inaktif="0" data-keterangan="">-- Pilih Kode --</option> 
+                    @foreach($masterKodes as $kode) 
+                        <option value="{{ $kode->id }}" 
+                                data-aktif="{{ $kode->aktif }}" 
+                                data-inaktif="{{ $kode->inaktif }}" 
+                                data-keterangan="{{ $kode->keterangan }}"> 
+                            {{ $kode->kode }} - {{ $kode->nama }} 
+                        </option> 
+                    @endforeach 
                 </select>
             </div>
 
-            <div class="col-md-6 mt-3">
-                <label>Retensi Inaktif</label>
-                <select name="retensiinaktif" class="form-control">
-                    <option value="0">pilih data</option>
-                    @for($a=1;$a<=10;$a++)
-                    <option value="{{$a}}">{{$a}} Tahun</option>
-                    @endfor
-                </select>
+
+            <!-- Dropdown Retensi Aktif -->
+            <div class="col-md-6 mt-3"> 
+                <label>Retensi Aktif</label> 
+                <select name="aktif" id="aktif" class="form-control" readonly style="pointer-events: none;"> 
+                    <option value="0">pilih data</option> 
+                    @for($a=1;$a<=10;$a++) 
+                        <option value="{{$a}}">{{$a}} Tahun</option> 
+                    @endfor 
+                </select> 
+            </div> 
+
+            <!-- Dropdown Retensi Inaktif -->
+            <div class="col-md-6 mt-3"> 
+                <label>Retensi Inaktif</label> 
+                <select name="inaktif" id="inaktif" class="form-control" readonly style="pointer-events: none;"> 
+                    <option value="0">pilih data</option> 
+                    @for($a=1;$a<=10;$a++) 
+                        <option value="{{$a}}">{{$a}} Tahun</option> 
+                    @endfor 
+                </select> 
+            </div> 
+
+            <!-- Input Pemusnahan/Keterangan -->
+            <div class="col-md-6 mt-3"> 
+                <label>Pemusnahan (Keterangan)</label> 
+                <!-- Tipe input diubah ke 'text' menyesuaikan isi data string 'Permanen' atau 'Musnah' -->
+                <input type="text" name="pemusnahan" id="pemusnahan" class="form-control" readonly> 
             </div>
+
 
             <div class="col-md-6 mt-3">
                 <label>Status</label>
@@ -196,18 +195,11 @@
                 <select name="status" class="form-control">
 
                     <option value="input">Input</option>
-                    <option value="nonaktif">Nonaktif</option>
+                    <option value="draft">Draft</option>
 
                 </select>
             </div>
 
-            <div class="col-md-6 mt-3">
-                <label>Pemusnahan</label>
-
-                <input type="date"
-                    name="pemusnahan"
-                    class="form-control">
-            </div>
 
             <div class="col-md-6 mt-3">
                 <label>Deskripsi</label>
@@ -215,15 +207,26 @@
                 <textarea name="deskripsi"
                         class="form-control"></textarea>
             </div> 
+
+            <div class="col-md-6 mt-3">
+                <label>Korektor</label>
+
+                <input type="text"
+                    name="korektor"
+                    class="form-control"
+                    placeholder="Belum ada"
+                    value="Belum ada">
+            </div>
+
         </div>
 
         <div class="row ms-2 me-2"> 
             <div class="col-md-6 mt-3">
-                <label>Nomor RAK</label>
+                <label>Nomor RAK (kosongkan jika belum dibuat)</label>
 
                 <select name="rak_arsip_id" class="form-select form-select-sm" aria-label="Large select example">
 
-                    <option value="0">-- Pilih Rak --</option> 
+                    <option value="">-- Pilih Rak --</option> 
                     @foreach($rak_arsips as $rak_arsip)
 
                     <option value="{{ $rak_arsip->id }}">
@@ -235,11 +238,11 @@
                 </select>
             </div> 
             <div class="col-md-6 mt-3">
-                <label>Nomor Dus</label>
+                <label>Nomor Dus (kosongkan jika belum dibuat)</label>
 
                 <select name="dus_arsip_id" class="form-select form-select-sm" aria-label="Large select example">
 
-                    <option value="0">-- Pilih Dus --</option> 
+                    <option value="">-- Pilih Dus --</option> 
                     @foreach($dus_arsips as $dus_arsip)
 
                     <option value="{{ $dus_arsip->id }}">
@@ -271,6 +274,29 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectMasterKode = document.getElementById('master_kode_id');
+        const selectAktif = document.getElementById('aktif');
+        const selectInaktif = document.getElementById('inaktif');
+        const inputPemusnahan = document.getElementById('pemusnahan');
+
+        selectMasterKode.addEventListener('change', function() {
+            // Dapatkan opsi yang sedang dipilih oleh user
+            const selectedOption = this.options[this.selectedIndex];
+
+            // Ambil data atribut dari opsi terpilih
+            const valAktif = selectedOption.getAttribute('data-aktif');
+            const valInaktif = selectedOption.getAttribute('data-inaktif');
+            const valKeterangan = selectedOption.getAttribute('data-keterangan');
+
+            // Tetapkan nilai ke masing-masing elemen target
+            selectAktif.value = valAktif ? valAktif : "0";
+            selectInaktif.value = valInaktif ? valInaktif : "0";
+            inputPemusnahan.value = valKeterangan ? valKeterangan : "";
+        });
+    });
+</script>
 <script>
 $(document).ready(function () {
 

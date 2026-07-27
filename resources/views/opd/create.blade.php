@@ -60,14 +60,15 @@
 
         @csrf 
 
-        <input type="hidden" name="opd_induk_id" value="{{ $opd_induk }}">
+        <input type="hidden" name="opd_induk_id" value="{{ $opd_induk->id }}">
 
         <div class="mb-3">
             <label>Kode Instansi</label>
 
             <input type="text"
                    name="kode_instansi"
-                   class="form-control">
+                   class="form-control"
+                   value="{{ $opd_induk->kode_instansi }}">
         </div>
 
         <div class="mb-3">
@@ -91,16 +92,17 @@
 
             <input type="text"
                    name="instansi"
-                   class="form-control">
+                   class="form-control"
+                   value="{{ $opd_induk->instansi }}">
         </div>  
 
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label>Singkatan Instansi</label>
 
             <input type="text"
                    name="singkatan_instansi"
                    class="form-control">
-        </div>  
+        </div>   -->
 
         <button class="btn-add">
             Simpan

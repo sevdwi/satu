@@ -10,6 +10,10 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
     // Route::get('/', [ArsipController::class, 'index'])->name('index');
 
     Route::get('/data', [ArsipController::class, 'index'])->name('home');
+    Route::get('/manuver', [ArsipController::class, 'manuver'])->name('manuver');
+    Route::get('/musnah', [ArsipController::class, 'musnah'])->name('musnah');
+
+
 
     Route::get('/{id}/kartu', [ArsipController::class, 'kartu'])->name('kartu');
 

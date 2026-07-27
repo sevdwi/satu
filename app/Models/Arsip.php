@@ -13,19 +13,19 @@ class Arsip extends Model
         'deskripsi',
         'file',
         'tanggal',
+        'tanggal_musnah',
         'master_kode_id',
         'created_by',
         'opd_id',
         'opd_induk_id',
-        'retensi',
+        'dus_arsip_id',
+        'rak_arsip_id',
+        'korektor',
+        'aktif',
+        'inaktif',
         'nomor',
         'status',
-        'retensiinaktif',
         'pemusnahan',
-        'korektor',
-        'nomor_sementara',
-        'dus_arsip_id',
-        'rak_arsip_id'
     ];
 
     /*

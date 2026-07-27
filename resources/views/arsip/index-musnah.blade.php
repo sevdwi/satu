@@ -27,11 +27,6 @@
         </a>
 
       </li>
-      <!-- <li>
-      <a href="{{route('dashboard')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
-        </a>
-      </li> -->
     </ul>
     
 
@@ -67,17 +62,10 @@
             <div class="card-top-left">
                 <div class="card-icon"><i class="bi bi-archive"></i></div>
                 <div>
-                <div class="card-title">Data Arsip {{ auth()->user()->opd?->unit_kerja }}</div>
-                <div class="card-subtitle">Kelola seluruh data arsip</div>
+                <div class="card-title">Data Arsip Musnah {{ auth()->user()->opd?->unit_kerja }}</div>
+                <div class="card-subtitle">Kelola seluruh data arsip musnah</div>
                 </div>
             </div>
-            <a href="{{ route('arsip.manuver') }}" class="btn-manuver">
-                <i class="bi bi-list-check"></i> Manuver
-            </a>
-
-            <a href="{{ route('arsip.create') }}" class="btn-add">
-                <i class="bi bi-plus-lg"></i> Tambah Arsip
-            </a>
         </div>
 
 
@@ -94,13 +82,12 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Master Kode ID </th>
-                    <th>Nomor Sementara</th>
+                    <th>Tanggal Musnah </th>
                     <th>Nomor Definitif</th>
                     <th>Kode</th>
+                    <th>Tanggal</th>
                     <th>Redaksi</th>
                     <th>Deskripsi</th>
-                    <th>Tanggal</th>
                     <th>Unit</th>
                     <th>Nomor RAK</th>
                     <th>Nomor Dus</th>
@@ -122,11 +109,7 @@
                         </td>
 
                         <td>
-                            {{ $item->master_kode_id }}
-                        </td>
-
-                        <td>
-                            {{ $item->id }} - {{ auth()->user()->id }} 
+                            {{ $item->tanggal_musnah }}
                         </td>
 
                         <td>
@@ -144,17 +127,17 @@
                         </td>
 
                         <td>
+                            {{ $item->tanggal }}
+                        </td>
+
+
+                        <td>
                             {{ $item->judul }}
                         </td>
 
                         <td>
                             {{ $item->deskripsi }}
                         </td>
-
-                        <td>
-                            {{ $item->tanggal }}
-                        </td>
-
 
                         <!-- OPD (Sudah Diperbaiki & Aman dari null) -->
                         <td>
@@ -195,47 +178,7 @@
                             @endswitch
                         </td>
 
-                        <!-- <td>
-                            @if($item->file)
-
-                                <button class="btn btn-info btn-sm form-control btn-view-pdf"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#pdfModal"
-                                        data-file="{{ asset('arsip/'.$item->file) }}">
-                                    <i class="fa fa-book"></i> Lihat File
-                                </button>
-
-                                <button class="btn btn-primary btn-sm form-control btn-upload"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#uploadModal"
-                                        data-id="{{ $item->id }}">
-                                    <i class="fa fa-upload"></i>
-                                </button>
-
-                            @else
-
-                                <button class="btn btn-primary btn-sm form-control btn-upload"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#uploadModal"
-                                        data-id="{{ $item->id }}">
-                                    <i class="fa fa-upload"></i>
-                                </button>
-
-                            @endif
-                        </td>  -->
-
                         <td>
-
-                            <a href="{{ route('arsip.edit', $item->id) }}"
-                            class="btn btn-warning btn-sm mb-2">
-                                Edit
-                            </a>
-
-                            <a href="{{ route('arsip.kartu', $item->id) }}"
-                            class="btn btn-warning btn-sm mb-2">
-                                Kartu
-                            </a>
-
 
                             <form action="{{ route('arsip.destroy', $item->id) }}"
                                 method="POST"
@@ -292,42 +235,27 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="uploadModal" tabindex="-1">
-            <div class="modal-dialog">
-                <form action="{{ route('arsip.uploads') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <input type="hidden" name="id" id="upload_id">
-
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h5 class="modal-title">Upload Dokumen</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <input type="file" name="file" class="form-control" required>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-success">Upload</button>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
 <script>
     $(document).ready(function () {
-        $('#arsipTable').DataTable({
+        // Simpan inisialisasi DataTables ke dalam variabel 't'
+        var t = $('#arsipTable').DataTable({
             responsive: true,
             pageLength: 10,
-            ordering: true,
+            
+            // Nonaktifkan fitur pengurutan pada kolom No (indeks 0)
+            columnDefs: [
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 0
+                }
+            ],
+            
+            // Pengurutan awal (indeks 1 = Master Kode, indeks 7 = Tanggal)
+            order: [[1, 'asc']], 
+            
             language: {
                 search: "Cari:",
                 lengthMenu: "Tampilkan _MENU_ data",
@@ -342,39 +270,14 @@
                 }
             }
         });
+
+        // Hitung ulang nomor urut pada kolom indeks 0 setiap kali tabel diurutkan atau dicari
+        t.on('order.dt search.dt', function () {
+            let i = 1;
+            t.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                this.data(i++);
+            });
+        }).draw();
     });
-    document.addEventListener('DOMContentLoaded', function () {
-
-    // OPEN PDF
-    document.querySelectorAll('.btn-view-pdf').forEach(btn => {
-        btn.addEventListener('click', function () {
-
-            let file = this.dataset.file;
-
-            document.getElementById('pdfFrame').src = file;
-
-        });
-    });
-
-    // OPEN UPLOAD
-    document.querySelectorAll('.btn-upload').forEach(btn => {
-        btn.addEventListener('click', function () {
-
-            let id = this.dataset.id;
-
-            document.getElementById('upload_id').value = id;
-
-        });
-    });
-
-    // CLEAN IFRAME
-    document.getElementById('pdfModal')
-        .addEventListener('hidden.bs.modal', function () {
-
-            document.getElementById('pdfFrame').src = '';
-
-        });
-
-});
 </script>
 @endsection

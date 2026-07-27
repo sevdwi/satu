@@ -49,7 +49,7 @@ class OpdController extends Controller
             'unit_kerja'           => 'required|string|max:255',
             'singkatan_uk' => 'required|string|max:255',
             'instansi'           => 'required|string|max:255',
-            'singkatan_instansi' => 'required|string|max:255',
+            // 'singkatan_instansi' => 'required|string|max:255',
         ], [
             // Kustomisasi pesan error (Opsional)
             'kode_instansi.required' => 'Kode instansi wajib diisi.',
@@ -64,7 +64,7 @@ class OpdController extends Controller
             'unit_kerja'           => $validatedData['unit_kerja'],
             'singkatan_uk' => $validatedData['singkatan_uk'],
             'instansi'           => $validatedData['instansi'],
-            'singkatan_instansi' => $validatedData['singkatan_instansi'],
+            // 'singkatan_instansi' => $validatedData['singkatan_instansi'],
             'opd_induk_id' => $request->opd_induk_id,
 
 

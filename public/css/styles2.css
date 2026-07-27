@@ -336,7 +336,7 @@ body {
 
 /* ── HERO ─────────────────────────────────────── */
 .hero {
-  background: linear-gradient(135deg, #1B5E8A 0%, #2980B5 50%, #4AABCF 100%);
+  background: linear-gradient(135deg, #1B5E8A 0%, #c5ccd1 70%, #ffffff 100%);
   position: relative;
   overflow: hidden;
   padding: 5.5rem 2rem 6rem;
@@ -630,6 +630,30 @@ body {
     transform: translateY(-1px);
     box-shadow: 0 4px 14px rgba(27,94,138,.25);
   }
+  .btn-manuver {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    background: var(--blue-mid);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    padding: .55rem 1.2rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .18s, transform .15s, box-shadow .18s;
+    white-space: nowrap;
+  }
+  .btn-manuver:hover {
+    background: #164d72;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(27,94,138,.25);
+  }
+
 
   /* ── TOOLBAR ─────────────────────────────────── */
   .toolbar {

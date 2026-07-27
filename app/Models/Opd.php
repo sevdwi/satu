@@ -13,7 +13,7 @@ class Opd extends Model
         'unit_kerja',
         'singkatan_uk',
         'instansi',
-        'singkatan_instansi',
+        // 'singkatan_instansi',
         'opd_induk_id',
     ]; 
 

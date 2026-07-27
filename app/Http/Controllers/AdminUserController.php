@@ -18,13 +18,8 @@ class AdminUserController extends Controller
 
         $data = Arsip::with([
             'opd_induk:id,instansi' // Pastikan kolom 'instansi' ada di tabel opd_induk
-            // 'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
-            // 'masterKode:id,kode,nama',
-            // 'user:id,name,email',
-            // 'dus_arsip:id,nomor_dus',
-            // 'rak_arsip:id,nomor_rak'
+
         ])
-        ->where('status', '!=', 'inaktif')
         ->latest()->get(); 
 
         // Lakukan debug terlebih dahulu untuk melihat apakah data sudah terisi

@@ -54,7 +54,7 @@
     <i class="bi bi-chevron-right"></i>
     <a href="#">Manajemen Sistem</a>
     <i class="bi bi-chevron-right"></i>
-    <span class="current">Data Instansi</span>
+    <span class="current">Data Unit Kerja</span>
   </div>
  
   <!-- Card -->
@@ -65,8 +65,8 @@
       <div class="card-top-left">
         <div class="card-icon"><i class="bi bi-house-door-fill"></i></div>
         <div>
-          <div class="card-title">List Instansi</div>
-          <div class="card-subtitle">Kelola seluruh instansi pengolah sistem</div>
+          <div class="card-title">List Unit Kerja</div>
+          <div class="card-subtitle">Kelola seluruh Unit Kerja dari Instansi pengolah sistem</div>
         </div>
       </div>
       <a href="{{ route('opd_admin.create', $opd_induk->id) }}" class="btn-add">
@@ -96,8 +96,8 @@
           <tr>
             <th>ID</th>
             <th>Kode</th>
+            <th>Unit Kerja</th>
             <th>Instansi</th>
-            <th>Singkatan Instansi</th>
             <th>Aksi</th>
             <!-- <th>Nomor HP</th>
             <th>Peran</th>
@@ -118,8 +118,8 @@
                 </div>
               </div>
             </td>
-            <td class="cell-muted">{{ $u->opd_induk->instansi ?? 'Tidak Ada OPD'}}</td>
             <td class="cell-muted">{{ $u->unit_kerja ?? 'Tidak Ada OPD'}}</td>
+            <td class="cell-muted">{{ $u->opd_induk->instansi ?? 'Tidak Ada OPD'}}</td>
             <td>
               <div class="actions">
                 <a href="{{ route('opd_admin.edit', $u->id) }}" class="btn-edit"><i class="bi bi-pencil"></i> Edit</a>

@@ -34,12 +34,12 @@
         </div>
       </li>
       <li>
-        <a href="#">
+        <a href="">
           <i class="bi bi-trash3"></i> Arsip Musnah
           <i class="bi bi-chevron-down nav-caret"></i>
         </a>
         <div class="dropdown-menu-custom">
-          <a href="#"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
+          <a href="{{route('arsip.musnah')}}"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
         </div>
       </li>
       <li>
@@ -47,11 +47,6 @@
           <!-- <i class="bi bi-building-lock"></i> Kartu Arsip
           <i class="bi bi-chevron-down nav-caret"></i> -->
         </a>
-        <!-- <div class="dropdown-menu-custom">
-          <a href="#"><i class="bi bi-send"></i> Daftar Usul Serah</a>
-          <div class="dropdown-divider-custom"></div>
-          <a href="#"><i class="bi bi-archive-fill"></i> Daftar Arsip Statis</a>
-        </div> -->
       </li>
       <li>
         <a href="#">
@@ -111,36 +106,22 @@
         Platform terpusat untuk pencatatan, pengelolaan, dan pemusnahan arsip
         inaktif, musnah, dan statis di lingkungan pemerintah daerah.
       </p>
-      <div class="hero-actions">
+      <!-- <div class="hero-actions">
         <a href="#modul" class="btn-hero-primary">
           <i class="bi bi-grid-1x2-fill"></i> Masuk ke Modul
         </a>
         <a href="#" class="btn-hero-ghost">
           <i class="bi bi-question-circle"></i> Panduan Penggunaan
         </a>
-      </div>
+      </div> -->
     </div>
 
     <!-- Folder Stack Illustration -->
-    <div class="hero-illustration">
-      <div class="folder-stack">
-        <div class="folder-item f3"><div class="folder-tab"></div></div>
-        <div class="folder-item f2"><div class="folder-tab"></div></div>
-        <div class="folder-item f1">
-          <div class="folder-tab"></div>
-          <div class="f1-lines">
-            <div class="f1-line"></div>
-            <div class="f1-line"></div>
-            <div class="f1-line"></div>
-            <div class="f1-line"></div>
-          </div>
-        </div>
-      </div>
-      <div class="hero-badge">
-        <div class="hero-badge-dot"></div>
-        <span>Sistem Berjalan Normal</span>
-      </div>
+    <!-- Bungkus Canvas dengan DIV yang memiliki ukuran tinggi (Height) yang jelas -->
+    <div style="width: 800px; margin: auto;">
+          <canvas id="arsipChart"></canvas>
     </div>
+
   </div>
 </section>
 
@@ -153,7 +134,7 @@
     <div class="stat-item">
       <div class="stat-icon blue"><i class="bi bi-archive"></i></div>
       <div>
-        <div class="stat-num">1.284</div>
+        <div class="stat-num">{{ $jumlah_data }}</div>
         <div class="stat-label">Arsip Inaktif</div>
       </div>
     </div>
@@ -167,15 +148,8 @@
     <div class="stat-item">
       <div class="stat-icon green"><i class="bi bi-building-lock"></i></div>
       <div>
-        <div class="stat-num">92</div>
+        <div class="stat-num">comming soon</div>
         <div class="stat-label">Arsip Statis</div>
-      </div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-icon teal"><i class="bi bi-clock-history"></i></div>
-      <div>
-        <div class="stat-num">18</div>
-        <div class="stat-label">Diperbarui Hari Ini</div>
       </div>
     </div>
   </div>
@@ -189,6 +163,59 @@
 
   
 </div><!-- /main-wrap -->
+
+    <script>
+        // Ambil data dari Controller Laravel
+        const labels = @json($labels);
+        const dataJumlah = @json($totals);
+
+        // Konfigurasi Chart.js
+        const ctx = document.getElementById('arsipChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Sumbu X: Nama OPD Induk / Instansi
+                datasets: [{
+                    label: 'Jumlah Data Arsip',
+                    data: dataJumlah, // Sumbu Y: Jumlah Arsip
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Unit Kerja'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1 // Pastikan angka pada sumbu Y berupa bilangan bulat
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jumlah Arsip'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Statistik Arsip Berdasarkan Unit Kerja'
+                    }
+                }
+            }
+        });
+    </script>
+
 
 @endsection
 <!-- ═══════════════════════════════════════════════
