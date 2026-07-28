@@ -178,6 +178,7 @@ class ArsipController extends Controller
         $data = $data_filter->latest()->get(); 
         
         // ->latest()->get(); 
+        
 
         return view('arsip.index-musnah', compact('data','userid'
         ));
@@ -200,7 +201,7 @@ class ArsipController extends Controller
             'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        ->where('status', '!=', 'inaktif')
+        // ->where('status', '!=', 'inaktif')
         ->latest()->get(); 
 
         return view('arsip.index-admin', compact('user', 'data','opd_induk'));
@@ -229,6 +230,28 @@ class ArsipController extends Controller
         // 3. Kirim data ke halaman view baru (misal: arsip/detail-admin.blade.php)
         return view('arsip.detail-admin', compact('opd_induk', 'data_arsip'));
     }
+
+    public function musnah_admin()
+    {
+        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+
+        $opd_induk = Opd_Induk::orderBy('instansi')->get(); // sesuaikan nama kolom
+
+
+        $data = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        // ->where('status', '!=', 'inaktif')
+        ->latest()->get(); 
+
+        return view('arsip.index-musnah-admin', compact('user', 'data','opd_induk'));
+    }
+
 
 
     /**

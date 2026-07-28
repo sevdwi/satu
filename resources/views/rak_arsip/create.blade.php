@@ -63,7 +63,7 @@
         <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
 
         <div class="mb-3">
-            <label>OPD</label>
+            <label>Unit Kerja</label>
 
             <select name="opd_id" class="form-control  select-opd">
 

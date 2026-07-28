@@ -1,9 +1,6 @@
 @extends('layouts.head')
 @section('content')
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
@@ -38,8 +35,8 @@
       </div>
       <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
       <div class="account-dropdown">
-        <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
-        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a>
+        <!-- <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
+        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a> -->
         <form action="{{ route('logout-admin') }}" method="POST">
             @csrf
             <button type="submit" class="logout btn px-4 btn-logout-red">

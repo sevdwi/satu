@@ -60,8 +60,13 @@ class CustomerController extends Controller
     $labels = $rekap->pluck('unit_kerja');
     $totals = $rekap->pluck('jumlah');
 
+    $total_lewat = Arsip::where('tanggal_musnah', '<', now()->toDateString())->where('opd_induk_id', $userOpdId)
+    ->count();
+    // echo "Total data yang sudah lewat: " . $total_lewat;
+
+
     // Kirim variabel 'labels' dan 'totals' ke view
-    return view('dashboard', compact('user','data', 'userid', 'labels', 'totals','jumlah_data'));
+    return view('dashboard', compact('user','data', 'userid', 'labels', 'totals','jumlah_data','total_lewat'));
     }
 
     public function edit(User $user)

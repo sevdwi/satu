@@ -43,12 +43,6 @@
         </div>
       </li>
       <li>
-        <a href="">
-          <!-- <i class="bi bi-building-lock"></i> Kartu Arsip
-          <i class="bi bi-chevron-down nav-caret"></i> -->
-        </a>
-      </li>
-      <li>
         <a href="#">
           <i class="bi bi-building-lock"></i> Nomor Rak & Dus
           <i class="bi bi-chevron-down nav-caret"></i>
@@ -59,8 +53,29 @@
           <a href="{{route('dus_arsip.index')}}"><i class="bi bi-archive-fill"></i> Buat Nomor Dus</a>
         </div>
       </li>
+      <!-- <li style="color:#4A9CC7;font-size: .75rem;" >
+      </li> -->
+
 
     </ul>
+
+    <!-- tanggal -->
+    <div style="color:#4A9CC7;font-size: .70rem;">
+    <?php 
+           $timezone = new DateTimeZone('Asia/Jakarta');
+           $hari_ini = new DateTime('now', $timezone); 
+
+
+          $fmt = new IntlDateFormatter(
+          'id_ID', // Kode bahasa Indonesia
+          IntlDateFormatter::FULL, // Format tanggal lengkap dengan nama hari
+          IntlDateFormatter::NONE, // Tidak menampilkan jam
+          'Asia/Jakarta'
+            );
+
+            echo  $fmt->format($hari_ini);
+    ?>
+    </div>
 
     <!-- Account -->
     <div class="nav-account">
@@ -141,7 +156,7 @@
     <div class="stat-item">
       <div class="stat-icon amber"><i class="bi bi-trash3"></i></div>
       <div>
-        <div class="stat-num">347</div>
+        <div class="stat-num">{{ $total_lewat}} arsip</div>
         <div class="stat-label">Usul Musnah</div>
       </div>
     </div>

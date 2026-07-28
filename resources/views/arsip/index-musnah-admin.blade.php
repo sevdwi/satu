@@ -1,13 +1,11 @@
-@extends('layouts.head_customer')
-
+@extends('layouts.head')
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
-<nav class="navbar-custom">
+ <nav class="navbar-custom">
   <div class="navbar-inner">
 
     <!-- Brand -->
@@ -22,37 +20,37 @@
     <!-- Nav Links -->
     <ul class="nav-links">
       <li>
-        <a href="{{route('dashboard')}}" class="active">
+        <a href="{{route('dashboard-admin')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
-
       </li>
+
     </ul>
-    
 
     <!-- Account -->
     <div class="nav-account">
       <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
       <div>
-        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-name">{{ auth()->guard('admin')->user()->name }}</div>
         <div class="account-role">Akun yang digunakan</div>
       </div>
       <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
       <div class="account-dropdown">
-        <i class="bi">
-        <form action="{{ route('logout') }}" method="POST">
+        <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
+        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a>
+        <form action="{{ route('logout-admin') }}" method="POST">
             @csrf
             <button type="submit" class="logout btn px-4 btn-logout-red">
                 <i class="bi bi-box-arrow-right"></i> Logout
             </button>
         </form>
-        </i>
       </div>
     </div>
 
     <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
   </div>
 </nav>
+
 
 
 <div class="container mt-4 mb-5">

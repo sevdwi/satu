@@ -336,7 +336,8 @@ body {
 
 /* ── HERO ─────────────────────────────────────── */
 .hero {
-  background: linear-gradient(135deg, #1B5E8A 0%, #c5ccd1 70%, #ffffff 100%);
+  background: linear-gradient(135deg, #3994c4 0%, #c5ccd1 50%, #ffffff 100%);
+  /* background:#ffffff; */
   position: relative;
   overflow: hidden;
   padding: 5.5rem 2rem 6rem;
@@ -379,14 +380,14 @@ body {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-weight: 600;
-  color: #fff;
+  color: rgb(255, 255, 255);
   line-height: 1.12;
   letter-spacing: -.01em;
   margin-bottom: 1.1rem;
 }
 .hero-heading em {
   font-style: italic;
-  color: #A8D8F0;
+  color: #518aa6;
 }
 .hero-sub {
   font-size: .95rem;

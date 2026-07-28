@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Opd;
 use App\Models\Arsip;
 use App\Models\MasterKode;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +22,7 @@ class AdminUserController extends Controller
 
         ])
         ->latest()->get(); 
+        $jumlah_data = $data->count();
 
         // Lakukan debug terlebih dahulu untuk melihat apakah data sudah terisi
         //dd($data->toArray()); 
@@ -37,7 +39,34 @@ class AdminUserController extends Controller
         $labels = $rekap->pluck('instansi');
         $totals = $rekap->pluck('jumlah');
 
-        return view('dashboard-admin', compact('user', 'data','labels', 'totals'));
+        // arsip musnah
+
+        $total_lewat = Arsip::where('tanggal_musnah', '<', now()->toDateString())->count();
+
+        // Tentukan rentang waktu saat ini hingga satu bulan ke depan
+        $hariIni = Carbon::now();
+        $bulanDepan = Carbon::now()->addMonth();
+
+        // Saring data berdasarkan tenggat waktu tanggal_musnah
+        $data_musnah = Arsip::with(['opd_induk:id,instansi'])
+                ->whereBetween('tanggal_musnah', [$hariIni, $bulanDepan])
+                ->get();
+
+        // Kelompokkan data dan hitung kuantitas arsip per OPD Induk
+        $rekapitulasi = $data_musnah->groupBy('opd_induk_id')->map(function ($grup) {
+            return [
+                'instansi_musnah' => $grup->first()->opd_induk->instansi ?? 'Tidak Diketahui',
+                'jumlah_musnah' => $grup->count()
+            ];
+        })->values();
+
+        // Ekstrak label dan data numerik untuk kebutuhan Chart.js
+        $labelGrafik_musnah = $rekapitulasi->pluck('instansi_musnah');
+        $dataGrafik_musnah = $rekapitulasi->pluck('jumlah_musnah');
+
+
+
+        return view('dashboard-admin', compact('user', 'data','labels', 'totals','jumlah_data','total_lewat','labelGrafik_musnah','dataGrafik_musnah'));
     }
 
     // form create dan show daftar opd saat register

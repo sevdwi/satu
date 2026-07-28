@@ -1,12 +1,6 @@
 @extends('layouts.head')
 @section('content')
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
-
 <!-- Navigation-->
  <nav class="navbar-custom">
   <div class="navbar-inner">
@@ -29,48 +23,22 @@
       </li>
       <li>
         <a href="#">
-          <i class="bi bi-archive"></i> Arsip Inaktif
+          <i class="bi bi-archive"></i> Kelola Arsip
           <i class="bi bi-chevron-down nav-caret"></i>
         </a>
         <div class="dropdown-menu-custom">
-        <!-- <a href="{{route('arsip.home')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a> -->
-
-          <!-- <a href="#"><i class="bi bi-plus-square"></i> Input Unit Pengolah Yg Ditata</a> -->
-          <!-- <a href="#"><i class="bi bi-pencil-square"></i> Input Deskripsi Arsip</a> -->
-          <!-- <div class="dropdown-divider-custom"></div> -->
           <a href="{{route('arsip_admin.home-admin')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
+          <a href="{{route('arsip_admin.musnah-admin')}}"><i class="bi bi-trash"></i> Daftar Arsip Musnah</a>
         </div>
       </li>
-      <!-- <li>
-        <a href="#">
-          <i class="bi bi-trash3"></i> Arsip Musnah
-          <i class="bi bi-chevron-down nav-caret"></i>
-        </a>
-        <div class="dropdown-menu-custom">
-          <a href="#"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
-          <div class="dropdown-divider-custom"></div>
-          <a href="#"><i class="bi bi-list-check"></i> Daftar Musnah</a>
-        </div>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bi bi-building-lock"></i> Arsip Statis
-          <i class="bi bi-chevron-down nav-caret"></i>
-        </a>
-        <div class="dropdown-menu-custom">
-          <a href="#"><i class="bi bi-send"></i> Daftar Usul Serah</a>
-          <div class="dropdown-divider-custom"></div>
-          <a href="#"><i class="bi bi-archive-fill"></i> Daftar Arsip Statis</a>
-        </div>
-      </li> -->
       <li>
         <a href="{{route('master-kodes.index')}}">
-          <i class="bi bi-building-lock"></i> Data Klasifikasi
+          <i class="bi bi-clipboard-data"></i> Data Klasifikasi
         </a>
       </li>
       <li>
         <a href="{{route('users.index')}}">
-          <i class="bi bi-building-lock"></i> Kelola User
+          <i class="bi bi-people"></i> Kelola User
         </a>
       </li>
       <li>
@@ -82,6 +50,23 @@
 
     </ul>
 
+    <!-- tanggal -->
+    <div style="color:#4A9CC7;font-size: .70rem;">
+    <?php 
+           $timezone = new DateTimeZone('Asia/Jakarta');
+           $hari_ini = new DateTime('now', $timezone); 
+
+
+          $fmt = new IntlDateFormatter(
+          'id_ID', // Kode bahasa Indonesia
+          IntlDateFormatter::FULL, // Format tanggal lengkap dengan nama hari
+          IntlDateFormatter::NONE, // Tidak menampilkan jam
+          'Asia/Jakarta'
+            );
+
+            echo  $fmt->format($hari_ini);
+    ?>
+    </div>
     <!-- Account -->
     <div class="nav-account">
       <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
@@ -105,63 +90,157 @@
     <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
   </div>
 </nav>
+<section class="hero row">
 
 <!-- Bungkus Canvas dengan DIV yang memiliki ukuran tinggi (Height) yang jelas -->
-<div style="width: 800px; margin: auto;">
+<div class="col-md-6 mt-1">
         <canvas id="arsipChart"></canvas>
+</div>
+
+<div class="chart-container col-md-6 mt-1">
+        <canvas id="grafikMusnah"></canvas>
     </div>
+</section>
+<!-- ═══════════════════════════════════════════════
+     STAT BAR
+════════════════════════════════════════════════ -->
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-item">
+      <div class="stat-icon blue"><i class="bi bi-archive"></i></div>
+      <div>
+        <div class="stat-num">{{ $jumlah_data }}</div>
+        <div class="stat-label">Arsip Inaktif</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon amber"><i class="bi bi-trash3"></i></div>
+      <div>
+        <div class="stat-num">{{ $total_lewat}} arsip</div>
+        <div class="stat-label">Usul Musnah</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon green"><i class="bi bi-building-lock"></i></div>
+      <div>
+        <div class="stat-num">comming soon</div>
+        <div class="stat-label">Arsip Statis</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <script>
-        // Ambil data dari Controller Laravel
-        const labels = @json($labels);
-        const dataJumlah = @json($totals);
+<script>
+    // ==========================================
+    // CHART 1: Statistik Arsip Berdasarkan OPD Induk
+    // ==========================================
+    const labels = @json($labels);
+    const dataJumlah = @json($totals);
 
-        // Konfigurasi Chart.js
-        const ctx = document.getElementById('arsipChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels, // Sumbu X: Nama OPD Induk / Instansi
-                datasets: [{
-                    label: 'Jumlah Data Arsip',
-                    data: dataJumlah, // Sumbu Y: Jumlah Arsip
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'OPD Induk (Instansi)'
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1 // Pastikan angka pada sumbu Y berupa bilangan bulat
-                        },
-                        title: {
-                            display: true,
-                            text: 'Jumlah Arsip'
-                        }
+    // Gunakan nama variabel spesifik: ctxArsip
+    const ctxArsip = document.getElementById('arsipChart').getContext('2d');
+    new Chart(ctxArsip, {
+        type: 'bar',
+        data: {
+            labels: labels, 
+            datasets: [{
+                label: 'Jumlah Data Arsip',
+                data: dataJumlah, 
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Instansi'
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: false
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1 
                     },
                     title: {
                         display: true,
-                        text: 'Statistik Arsip Berdasarkan OPD Induk'
+                        text: 'Jumlah Arsip'
                     }
                 }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Statistik Arsip Berdasarkan Instansi'
+                }
             }
-        });
-    </script>
+        }
+    });
+
+    // ==========================================
+    // CHART 2: Arsip Mendekati Tenggat Musnah
+    // ==========================================
+    const labelInstansi_musnah = @json($labelGrafik_musnah);
+    const dataJumlah_musnah = @json($dataGrafik_musnah);
+
+    // Gunakan nama variabel spesifik: ctxMusnah
+    const ctxMusnah = document.getElementById('grafikMusnah').getContext('2d');
+    new Chart(ctxMusnah, {
+        type: 'bar',
+        data: {
+            labels: labelInstansi_musnah,
+            datasets: [{
+                label: 'Volume Arsip Mendekati Tenggat Musnah',
+                data: dataJumlah_musnah,
+                backgroundColor: 'rgba(83, 74, 183, 0.7)',
+                borderColor: 'rgba(60, 52, 137, 1)',
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Instansi',
+                        // color: '#ffffff',
+                        font: { weight: 'bold' }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    },
+                    title: {
+                        display: true,
+                        text: 'Kuantitas Arsip',
+                        font: { weight: 'bold' }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Statistik Arsip Musnah (Tenggat 1 Bulan ke Depan)',
+                    font: { size: 16 }
+                }
+            }
+        }
+    });
+</script>
 
 
 
