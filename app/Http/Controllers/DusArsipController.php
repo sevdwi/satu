@@ -76,7 +76,16 @@ class DusArsipController extends Controller
      */
     public function create()
     {
-        $opds = Opd::all(); 
+        $user = auth()->user();
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+
+        $opds = Opd::where('opd_induk_id', $userOpdId)->get();;
 
         return view('dus_arsip.create', compact(
             'opds' 
@@ -93,6 +102,8 @@ class DusArsipController extends Controller
                 'rak_arsip_id' => $request->rak_arsip_id, 
                 'nomor_dus' => $request->nomor_dus, 
                 'opd_id' => $request->opd_id, 
+                'opd_induk_id' => $request->opd_induk_id, 
+
             ]);
             return redirect()->route('dus_arsip.index')
                 ->with('success', 'Data berhasil ditambahkan!');  
@@ -145,7 +156,7 @@ class DusArsipController extends Controller
         $opds       = Opd::all(); 
         $rak_arsips = Rak_Arsip::with([ 
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi', 
-        ])->latest()->get(); 
+        ])->get(); 
 
         return view('dus_arsip.edit', compact('id',
             'data',

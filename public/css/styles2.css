@@ -93,7 +93,7 @@
 /* ── BASE ────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 body { 
-  font-family: 'Nunito', sans-serif; margin: 0; background: #EFF6FF; 
+  font-family: 'Nunito', sans-serif; margin: 0; background: #FFFFFF; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -336,11 +336,12 @@ body {
 
 /* ── HERO ─────────────────────────────────────── */
 .hero {
-  background: linear-gradient(135deg, #3994c4 0%, #c5ccd1 50%, #ffffff 100%);
+  /* background: linear-gradient(135deg, #7ecbf4 0%, #bdeaff 30%, #ffffff 100%); */
+  background: linear-gradient(140deg, #b6e0ff 0%, #c2e7ff 45%, #eff9ff 80%, #ffffff 100%);
   /* background:#ffffff; */
   position: relative;
   overflow: hidden;
-  padding: 5.5rem 2rem 6rem;
+  padding: 5rem 2rem 6rem;
 }
 /* Archival index-lines texture — the signature atmosphere */
 .hero::before {
@@ -493,7 +494,7 @@ body {
 /* ── STAT BAR ─────────────────────────────────── */
 .stat-bar {
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  /* border-bottom: 1px solid var(--border); */
 }
 .stat-bar-inner {
   max-width: 1280px;

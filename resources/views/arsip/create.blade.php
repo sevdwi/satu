@@ -82,7 +82,7 @@
 
                 <select name="opd_induk_id" class="form-select form-select-sm" aria-label="Large select example">
 
-                    <option value="0">-- Pilih Unit --</option>
+                    <option value="0">-- Pilih OPD --</option>
                     @foreach($opdinduks as $opdinduk)
 
                     <option value="{{ $opdinduk->id }}">

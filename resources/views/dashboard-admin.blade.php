@@ -51,7 +51,7 @@
     </ul>
 
     <!-- tanggal -->
-    <div style="color:#4A9CC7;font-size: .70rem;">
+    <div style="color:#4A9CC7;font-size: .60rem;">
     <?php 
            $timezone = new DateTimeZone('Asia/Jakarta');
            $hari_ini = new DateTime('now', $timezone); 

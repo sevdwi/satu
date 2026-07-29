@@ -64,11 +64,17 @@
         <div class="mb-3">
             <label>Unit Kerja</label>
 
-            <select name="opd_id" class="form-control  select-opd">
+            <select name="opd_id" class="form-control">
 
-                <option value="0">-- Pilih OPD --</option>
+                <option value="0">-- Pilih --</option>
 
-                
+                @foreach($opds as $opd)
+
+                <option value="{{ $opd->id }}">
+                {{ $opd->unit_kerja }}
+                </option>
+
+                @endforeach            
 
             </select>
         </div>
