@@ -59,49 +59,22 @@
         @csrf
         @method('PUT')
 
+        <input type="hidden" name="id" value="{{$id}}">
+        <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
+        <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
+
+
         <div class="row">
 
-        <div class="col-md-6 mt-3">
-            <label>Kode Arsip</label>
-            <input type="hidden" name="id" value="{{$id}}">
-
-            <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm" aria-label="Large select example"> 
-                <option value="" data-aktif="0" data-inaktif="0" data-keterangan="">-- Pilih Kode --</option> 
-                @foreach($masterKodes as $kode) 
-                    <option value="{{ $kode->id }}" 
-                            data-aktif="{{ $kode->aktif }}" 
-                            data-inaktif="{{ $kode->inaktif }}" 
-                            data-keterangan="{{ $kode->keterangan }}"> 
-                        {{ $kode->kode }} - {{ $kode->nama }} 
-                    </option> 
-                @endforeach 
-            </select>
-
-            
-        </div>
 
         <div class="col-md-6 mt-3">
             <label>OPD</label>
-
-            <select name="opd_induk_id" class="form-control  select-opd_induk">
-
-                <option value="0">-- Pilih OPD --</option>
-                <option value="{{ $data->opd_induk_id }}" selected> 
-                {{ $data->opd_induk->kode_instansi }} - {{ $data->opd_induk->instansi }} 
-                </option>  
-            </select>
+            <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd_induk?->instansi }}" class="form-control" disabled>
         </div>
 
         <div class="col-md-6 mt-3">
             <label>Unit</label>
-
-            <select name="opd_id" class="form-control  select-opd">
-
-                <option value="0">-- Pilih OPD --</option>
-                <option value="{{ $data->opd_id }}" selected> 
-                        {{ $data->opd->singkatan_uk }}
-                </option>  
-            </select>
+            <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
         </div>
 
         <div class="col-md-6 mt-3">
@@ -114,7 +87,7 @@
         </div>
 
         <div class="col-md-6 mt-3">
-            <label>Judul</label>
+            <label>Redaksi</label>
 
             <input type="text"
                    name="judul"
@@ -130,6 +103,29 @@
                    class="form-control"
                    value="{{$data->nomor}}">
         </div>
+
+        <div class="col-md-6 mt-3">
+            <label>Kode Klasifikasi</label>
+            <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm  @error('master_kode_id') is-invalid @enderror"  required aria-label="Large select example"> 
+                <option value="" data-aktif="0" data-inaktif="0" data-keterangan="">-- Pilih Kode --</option> 
+                @foreach($masterKodes as $kode) 
+                    <option value="{{ $kode->id }}" 
+                            data-aktif="{{ $kode->aktif }}" 
+                            data-inaktif="{{ $kode->inaktif }}" 
+                            data-keterangan="{{ $kode->keterangan }}"
+                            @selected($kode->id == (old('master_kode_id') ?? $data->master_kode_id))> 
+                        {{ $kode->kode }} - {{ $kode->nama }} 
+                    </option> 
+                @endforeach 
+            </select>
+                @error('master_kode_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @else
+                    <div class="invalid-feedback">Kode wajib dipilih</div>
+                @enderror
+           
+        </div>
+
 
         <div class="col-md-6 mt-3">
             <label>Tanggal</label>
@@ -248,6 +244,28 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleksi formulir yang memerlukan validasi kustom Bootstrap
+        const forms = document.querySelectorAll('.needs-validation');
+
+        // Berikan penanganan kejadian 'submit' pada setiap formulir
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                // Hentikan pengiriman jika formulir tidak valid secara aturan HTML5
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                // Tambahkan kelas indikator ke formulir untuk memunculkan gaya error
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const selectMasterKode = document.getElementById('master_kode_id');
@@ -255,20 +273,29 @@
         const selectInaktif = document.getElementById('inaktif');
         const inputPemusnahan = document.getElementById('pemusnahan');
 
-        selectMasterKode.addEventListener('change', function() {
-            // Dapatkan opsi yang sedang dipilih oleh user
-            const selectedOption = this.options[this.selectedIndex];
+        // 1. Buat fungsi khusus untuk mengisi data
+        function isiDataOtomatis() {
+            // Dapatkan opsi yang sedang dipilih oleh user atau sistem (saat edit)
+            const selectedOption = selectMasterKode.options[selectMasterKode.selectedIndex];
 
-            // Ambil data atribut dari opsi terpilih
-            const valAktif = selectedOption.getAttribute('data-aktif');
-            const valInaktif = selectedOption.getAttribute('data-inaktif');
-            const valKeterangan = selectedOption.getAttribute('data-keterangan');
+            if (selectedOption) {
+                // Ambil data atribut dari opsi terpilih
+                const valAktif = selectedOption.getAttribute('data-aktif');
+                const valInaktif = selectedOption.getAttribute('data-inaktif');
+                const valKeterangan = selectedOption.getAttribute('data-keterangan');
 
-            // Tetapkan nilai ke masing-masing elemen target
-            selectAktif.value = valAktif ? valAktif : "0";
-            selectInaktif.value = valInaktif ? valInaktif : "0";
-            inputPemusnahan.value = valKeterangan ? valKeterangan : "";
-        });
+                // Tetapkan nilai ke masing-masing elemen target
+                selectAktif.value = valAktif ? valAktif : "0";
+                selectInaktif.value = valInaktif ? valInaktif : "0";
+                inputPemusnahan.value = valKeterangan ? valKeterangan : "";
+            }
+        }
+
+        // 2. JALANKAN PERTAMA KALI SAAT HALAMAN EDIT DIMUAT
+        isiDataOtomatis();
+
+        // 3. JALANKAN SAAT USER MENGUBAH PILIHAN KODE
+        selectMasterKode.addEventListener('change', isiDataOtomatis);
     });
 </script>
 
@@ -325,10 +352,10 @@ $(document).ready(function () {
 
         placeholder: 'Cari kode arsip...',
         allowClear: true,
-        minimumInputLength: 3,
+        minimumInputLength: 1,
 
         ajax: { 
-            url: "{{ route('dus_arsip.search') }}", 
+            url: "{{ route('dus_arsip.search2') }}", 
 
             dataType: 'json',
 
@@ -349,7 +376,7 @@ $(document).ready(function () {
                             id: item.id,
                             text: item.nomor_dus + ' - ' +
                                   (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
+                                    ? item.opd.singkatan_uk 
                                     : '-')
                         };
                     })
@@ -365,7 +392,7 @@ $(document).ready(function () {
 
         placeholder: 'Cari kode arsip...',
         allowClear: true,
-        minimumInputLength: 3,
+        minimumInputLength: 1,
 
         ajax: { 
             url: "{{ route('rak_arsip.search') }}", 
@@ -389,7 +416,7 @@ $(document).ready(function () {
                             id: item.id,
                             text: item.nomor_rak + ' - ' +
                                   (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
+                                    ? item.opd.singkatan_uk
                                     : '-')
                         };
                     })

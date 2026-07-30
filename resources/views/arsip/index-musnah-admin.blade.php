@@ -112,40 +112,29 @@
                         </td>
 
                         <td>
+                
                         <?php
-                            // 1. Atur zona waktu ke Asia/Jakarta (WIB)
-                            // Gunakan 'Asia/Makassar' untuk WITA atau 'Asia/Jayapura' untuk WIT
-                            $timezone = new DateTimeZone('Asia/Jakarta');
-
-                            // Ambil tanggal dari database
-                            $tanggal_musnah_db = $item->tanggal_musnah; 
-                            $tanggal_musnah = new DateTime($tanggal_musnah_db, $timezone);
-
-                            // 2. Buat variabel hari ini dengan format waktu Indonesia
-                            $hari_ini = new DateTime('now', $timezone); 
-
-                            // Hitung selisih objek tanggal
-                            $selisih = $hari_ini->diff($tanggal_musnah);
-
-                            // Tampilkan tanda minus (-) jika sudah lewat
-                            $sisa_hari = $selisih->format('%r%a'); 
-
-                            echo "Sisa waktu: " . $sisa_hari . " hari";
-
+                        $timezone = new DateTimeZone('Asia/Jakarta');
+                    
+                        $tanggal_musnah_db = $item->tanggal_musnah; 
+                        $tanggal_musnah = new DateTime($tanggal_musnah_db, $timezone);
+                    
+                        $hari_ini = new DateTime('now', $timezone); 
+                    
+                        $selisih = $hari_ini->diff($tanggal_musnah);
+                    
+                        // Konversi hasil format ke integer agar pengecekan angka akurat
+                        $sisa_hari = (int) $selisih->format('%r%a'); 
                         ?>
 
+                        <span>Sisa waktu: {{ $sisa_hari }} hari</span>
                         
                         </td>
 
                         
 
                         <td>
-                            {{ $item->nomor?? '-' }} - 
-                            <a href="{{ route('arsip.edit-nomor', $item->id) }}"
-                            class="btn btn-warning btn-sm mb-2">
-                                Edit nomor
-                            </a>
-
+                            {{ $item->nomor?? '-' }}
                         </td>
 
                         <!-- Kode Master (Aman) -->
@@ -206,7 +195,8 @@
                         </td>
 
                         <td>
-
+                        {{-- KONDISI: Jika sisa hari kurang dari atau sama dengan 0 --}}
+                        @if($sisa_hari <= 0)
                             <form action="{{ route('arsip.destroy', $item->id) }}"
                                 method="POST"
                                 class="d-inline">
@@ -222,7 +212,10 @@
                                 </button>
 
                             </form>
-
+                        {{-- ALTERNATIF: Jika belum waktunya musnah (sisa hari masih positif) --}}
+                        @else
+                            <span class="text-muted"> ---- </span>
+                        @endif
                         </td>
 
                     </tr>

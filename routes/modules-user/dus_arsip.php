@@ -8,6 +8,8 @@ Route::prefix('dus_arsip')->name('dus_arsip.')->group(function () {
 
     // Route::get('/dashbord', [DusArsipController::class, 'dashbord'])->name('index');; 
     Route::get('/search', [DusArsipController::class, 'search'])->name('search'); 
+    Route::get('/search', [DusArsipController::class, 'search2'])->name('search2'); 
+
 
     // Rute utama (Halaman Utama, Simpan, Tambah, Edit, Update, dan Hapus)
     Route::get('/', [DusArsipController::class, 'index'])->name('index');

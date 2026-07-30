@@ -60,6 +60,25 @@ class DusArsipController extends Controller
 
         return response()->json($data);
     }
+    public function search2(Request $request){
+
+        $q = $request->q;
+ 
+        $data = Dus_Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('nomor_dus', 'like', "%{$q}%")
+        ->orWhere('opd_id', 'like', "%{$q}%")
+        ->orWhereHas('rak_arsip', function ($query) use ($q) {
+            $query->where('nomor_rak', 'like', "%{$q}%"); 
+        })
+        ->limit(20)
+        ->get();
+
+        return response()->json($data);
+    }
+
     public function dashbord()
     {
         $data = Dus_Arsip::with([

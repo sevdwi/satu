@@ -74,48 +74,50 @@
         @csrf
 
     <input type="hidden" name="created_by" value="{{ auth()->user()->id }}">
+    <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
+    <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
+
+
 
     <div class="row mt-3 ms-2 me-2">
 
             <div class="col-md-6 mt-3">
-                <label>OPD</label>
+                        <label>OPD</label>
+                        <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd_induk?->instansi }}" class="form-control" disabled>
+                        <!-- <select name="opd_induk_id" class="form-select form-select-sm" aria-label="Large select example">
 
-                <select name="opd_induk_id" class="form-select form-select-sm" aria-label="Large select example">
+                            <option value="0">-- Pilih OPD --</option>
+                            @foreach($opdinduks as $opdinduk)
 
-                    <option value="0">-- Pilih OPD --</option>
-                    @foreach($opdinduks as $opdinduk)
+                            <option value="{{ $opdinduk->id }}">
 
-                    <option value="{{ $opdinduk->id }}">
+                            {{ $opdinduk->kode_instansi }} - {{ $opdinduk->instansi }}
 
-                    {{ $opdinduk->kode_instansi }} - {{ $opdinduk->instansi }}
+                            </option>
 
-                    </option>
-
-                    @endforeach
-
-                    
-                </select>
+                            @endforeach
+                        
+                        </select> -->
             </div>
 
-
             <div class="col-md-6 mt-3">
-                <label>Unit</label>
+                        <label>Unit</label>
+                        <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
+                        <!-- <select name="opd_id" class="form-select form-select-sm" aria-label="Large select example">
 
-                <select name="opd_id" class="form-select form-select-sm" aria-label="Large select example">
+                            <option value="0">-- Pilih Unit --</option>
+                            @foreach($opds as $opd)
 
-                    <option value="0">-- Pilih Unit --</option>
-                    @foreach($opds as $opd)
+                            <option value="{{ $opd->id }}">
 
-                    <option value="{{ $opd->id }}">
+                            {{ $opd->unit_kerja }}
 
-                    {{ $opd->unit_kerja }}
+                            </option>
 
-                    </option>
+                            @endforeach
+                         
+                        </select> -->
 
-                    @endforeach
-
-                    
-                </select>
             </div>
 
             <div class="col-md-6 mt-3">
@@ -145,7 +147,8 @@
 
             <div class="col-md-6 mt-3">
                 <label>Kode Arsip</label>
-                <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm" aria-label="Large select example"> 
+                <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm  @error('master_kode_id') is-invalid @enderror"  required aria-label="Large select example"> 
+                <!-- Nilai value untuk opsi default harus kosong "" agar dibaca tidak valid oleh required -->
                     <option value="" data-aktif="0" data-inaktif="0" data-keterangan="">-- Pilih Kode --</option> 
                     @foreach($masterKodes as $kode) 
                         <option value="{{ $kode->id }}" 
@@ -156,6 +159,11 @@
                         </option> 
                     @endforeach 
                 </select>
+                @error('master_kode_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @else
+                    <div class="invalid-feedback">Kode wajib dipilih</div>
+                @enderror
             </div>
 
 
@@ -274,6 +282,28 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleksi formulir yang memerlukan validasi kustom Bootstrap
+        const forms = document.querySelectorAll('.needs-validation');
+
+        // Berikan penanganan kejadian 'submit' pada setiap formulir
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                // Hentikan pengiriman jika formulir tidak valid secara aturan HTML5
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                // Tambahkan kelas indikator ke formulir untuk memunculkan gaya error
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const selectMasterKode = document.getElementById('master_kode_id');
@@ -351,10 +381,10 @@ $(document).ready(function () {
 
         placeholder: 'Cari kode arsip...',
         allowClear: true,
-        minimumInputLength: 3,
+        minimumInputLength: 1,
 
         ajax: { 
-            url: "{{ route('dus_arsip.search') }}", 
+            url: "{{ route('dus_arsip.search2') }}", 
 
             dataType: 'json',
 
@@ -391,7 +421,7 @@ $(document).ready(function () {
 
         placeholder: 'Cari kode arsip...',
         allowClear: true,
-        minimumInputLength: 3,
+        minimumInputLength: 1,
 
         ajax: { 
             url: "{{ route('rak_arsip.search') }}", 

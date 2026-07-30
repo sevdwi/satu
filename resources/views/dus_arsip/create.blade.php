@@ -134,7 +134,7 @@ $(document).ready(function () {
 
         placeholder: 'Cari kode arsip...',
         allowClear: true,
-        minimumInputLength: 3,
+        minimumInputLength: 1,
 
         ajax: {
             url: "{{ route('rak_arsip.search') }}", 
@@ -158,7 +158,7 @@ $(document).ready(function () {
                             id: item.id,
                             text: item.nomor_rak + ' - ' +
                                   (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
+                                    ? item.opd.singkatan_uk 
                                     : '-')
                         };
                     })
