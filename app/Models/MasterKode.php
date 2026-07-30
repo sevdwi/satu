@@ -40,6 +40,11 @@ class MasterKode extends Model
     // {
     //     return $this->belongsTo(MasterKode::class, 'parent_id');
     // }
+    public function parent()
+    {
+        // Menghubungkan kolom parent_id ke kolom id di tabel yang sama
+        return $this->belongsTo(MasterKode::class, 'parent_id', 'is_parent');
+    }
 
     // Children
     public function arsips()

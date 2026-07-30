@@ -143,11 +143,13 @@
             
             <!-- Baris Data Klasifikasi -->
             <tr class="text-center align-middle">
+                <!-- <td>{{ $data->masterKode->kode ?? '-' }}</td> -->
+                
+                <td> {{ Str::substr($data->masterKode->kode, 0, 3) }}</td>
                 <td>{{ $data->masterKode->kode ?? '-' }}</td>
-                <td>{{ $data->nomor ?? '-' }}</td>
                 <!-- Menggabungkan ID sebagai string, bukan penjumlahan matematika -->
                 <td>{{ $data->id }}-{{ auth()->user()->id }}</td>
-                <td></td>
+                <td>{{ $data->nomor ?? '-' }}</td>
             </tr>
 
             <!-- Baris Isi Berkas -->
@@ -158,8 +160,7 @@
                         {{-- Idealnya direstruktur menjadi: {{ $data->isi_berkas }} --}}
                     </div>
                     <div class="ps-3">
-                        <div>- 1 Berkas</div>
-                        <div>- Februari 2020</div>
+                        <div>- {{ $data->deskripsi }}</div>
                         <div>- <em>{{ $data->opd->unit_kerja }} - {{ $data->opd_induk->instansi }}</em></div>
                     </div>
                 </td>
@@ -193,7 +194,7 @@
                                 </li>
                                 <li>
                                     <span class="list-angka">3.</span> 
-                                    <span class="spasi-retensi">Ket</span> : <strong>M</strong> di Th <strong>2022</strong>
+                                    <span class="spasi-retensi">Ket</span> : <strong>{{ Str::substr($data->pemusnahan, 0, 1) }}</strong>&nbsp;di Th&nbsp;<strong>{{ date('Y', strtotime($data->tanggal_musnah)) }}</strong>
                                 </li>
                             </ul>
                         </div>
