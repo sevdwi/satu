@@ -30,7 +30,13 @@
         </a>
         <div class="dropdown-menu-custom">
           <a href="{{route('arsip.home')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
-          <!-- <div class="dropdown-divider-custom"></div> -->
+          <div class="dropdown-divider-custom"></div>
+          <a href="{{route('arsip.home',1)}}"><i class="bi bi-list-ul"></i> 1</a>
+          <div class="dropdown-divider-custom"></div>
+          <a href="{{route('arsip.home',2)}}"><i class="bi bi-list-ul"></i> 2</a>
+          <div class="dropdown-divider-custom"></div>
+
+
         </div>
       </li>
       <li>

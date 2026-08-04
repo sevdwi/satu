@@ -78,6 +78,17 @@
         </div>
 
         <div class="col-md-6 mt-3">
+            <label>Tahun</label>
+            <input type="text" name="tahun" value="{{ date('Y'); }}" class="form-control" disabled>
+        </div>
+
+        <div class="col-md-6 mt-3">
+            <label>Tahap</label>
+            <input type="text" name="tahap" value="{{ session('periodes') }}" class="form-control" disabled>
+        </div>
+
+
+        <div class="col-md-6 mt-3">
             <label>Korektor</label>
 
             <input type="text"

@@ -78,8 +78,18 @@ class ArsipController extends Controller
             'chartColors'
         ));
     } 
-    public function index()
+    public function index($periode=null)
     {
+        // Jika URL tidak ada parameter, gunakan tahun-bulan saat ini sebagai default
+        if (!$periode) {
+            $periode = date('Y-m'); 
+        }
+        // 1. Simpan ke session
+        session(['periodes' => $periode]);
+
+        // 2. Cek apakah data berhasil disimpan
+        // dd(session('periodes')); 
+
         // Ambil data user yang sedang login beserta id OPD-nya
         // $user = auth()->user(); 
         $user = auth()->user(); // load('opd'); 
@@ -384,6 +394,8 @@ class ArsipController extends Controller
                 'korektor' => $request->korektor,
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
+                'tahun' => $request->tahun,
+                'tahap' => $request->tahap,
                 'tanggal' => $request->tanggal,
                 'tanggal_musnah' => $tanggalMusnah,
                 'master_kode_id' => $request->master_kode_id,
@@ -540,7 +552,7 @@ class ArsipController extends Controller
 
         // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
         $dataToUpdate = $request->only([
-            'judul', 'deskripsi', 'tanggal','tanggal_musnah', 'master_kode_id', 
+            'judul', 'deskripsi','tahun','tahap', 'tanggal','tanggal_musnah', 'master_kode_id', 
             'opd_id', 'opd_induk_id', 'aktif','inaktif', 'nomor', 
             'status', 'pemusnahan', 'dus_arsip_id', 'rak_arsip_id'
         ]);

@@ -12,6 +12,8 @@ class Arsip extends Model
         'judul',
         'deskripsi',
         'file',
+        'tahun',
+        'tahap',
         'tanggal',
         'tanggal_musnah',
         'master_kode_id',

@@ -9,7 +9,7 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
     // 1. Menampilkan halaman utama (daftar data)
     // Route::get('/', [ArsipController::class, 'index'])->name('index');
 
-    Route::get('/data', [ArsipController::class, 'index'])->name('home');
+    Route::get('/data/{periode?}', [ArsipController::class, 'index'])->name('home');
     Route::get('/manuver', [ArsipController::class, 'manuver'])->name('manuver');
     Route::get('/musnah', [ArsipController::class, 'musnah'])->name('musnah');
 
