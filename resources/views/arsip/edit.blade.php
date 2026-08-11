@@ -66,174 +66,173 @@
 
         <div class="row">
 
+            <div class="col-md-6 mt-3">
+                <label>OPD</label>
+                <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd_induk?->instansi }}" class="form-control" disabled>
+            </div>
 
-        <div class="col-md-6 mt-3">
-            <label>OPD</label>
-            <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd_induk?->instansi }}" class="form-control" disabled>
-        </div>
+            <div class="col-md-6 mt-3">
+                <label>Unit</label>
+                <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
+            </div>
 
-        <div class="col-md-6 mt-3">
-            <label>Unit</label>
-            <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
-        </div>
+            <div class="col-md-6 mt-3">
+                <label>Tahun</label>
+                <input type="text" name="tahun" value="{{ date('Y'); }}" class="form-control" disabled>
+            </div>
 
-        <div class="col-md-6 mt-3">
-            <label>Tahun</label>
-            <input type="text" name="tahun" value="{{ date('Y'); }}" class="form-control" disabled>
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <label>Tahap</label>
-            <input type="text" name="tahap" value="{{ session('periodes') }}" class="form-control" disabled>
-        </div>
-
-
-        <div class="col-md-6 mt-3">
-            <label>Korektor</label>
-
-            <input type="text"
-                   name="korektor"
-                   class="form-control"
-                   value="{{$data->korektor}}">
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <label>Redaksi</label>
-
-            <input type="text"
-                   name="judul"
-                   class="form-control"
-                   value="{{$data->judul}}">
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <label>Nomor Arsip</label>
-
-            <input type="text"
-                   name="nomor"
-                   class="form-control"
-                   value="{{$data->nomor}}">
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <label>Kode Klasifikasi</label>
-            <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm  @error('master_kode_id') is-invalid @enderror"  required aria-label="Large select example"> 
-                <option value="" data-aktif="0" data-inaktif="0" data-keterangan="">-- Pilih Kode --</option> 
-                @foreach($masterKodes as $kode) 
-                    <option value="{{ $kode->id }}" 
-                            data-aktif="{{ $kode->aktif }}" 
-                            data-inaktif="{{ $kode->inaktif }}" 
-                            data-keterangan="{{ $kode->keterangan }}"
-                            @selected($kode->id == (old('master_kode_id') ?? $data->master_kode_id))> 
-                        {{ $kode->kode }} - {{ $kode->nama }} 
-                    </option> 
-                @endforeach 
-            </select>
-                @error('master_kode_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @else
-                    <div class="invalid-feedback">Kode wajib dipilih</div>
-                @enderror
-           
-        </div>
-
-
-        <div class="col-md-6 mt-3">
-            <label>Tanggal</label>
-
-            <input type="date"
-                   name="tanggal"
-                   class="form-control"
-                   value="{{$data->tanggal}}">
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <label>Tanggal Musnah</label>
-
-            <input type="date"
-                   name="tanggal_musnah"
-                   class="form-control"
-                   value="{{$data->tanggal_musnah}}">
-        </div>
-
-            <!-- Dropdown Retensi Aktif -->
-            <div class="col-md-6 mt-3"> 
-                <label>Retensi Aktif</label> 
-                <select name="aktif" id="aktif" class="form-control" readonly style="pointer-events: none;"> 
-                    <option value="0">pilih data</option> 
-                    @for($a=1;$a<=10;$a++) 
-                        <option value="{{$a}}">{{$a}} Tahun</option> 
-                    @endfor 
-                </select> 
-            </div> 
-
-            <!-- Dropdown Retensi Inaktif -->
-            <div class="col-md-6 mt-3"> 
-                <label>Retensi Inaktif</label> 
-                <select name="inaktif" id="inaktif" class="form-control" readonly style="pointer-events: none;"> 
-                    <option value="0">pilih data</option> 
-                    @for($a=1;$a<=10;$a++) 
-                        <option value="{{$a}}">{{$a}} Tahun</option> 
-                    @endfor 
-                </select> 
-            </div> 
-
-            <!-- Input Pemusnahan/Keterangan -->
-            <div class="col-md-6 mt-3"> 
-                <label>Pemusnahan (Keterangan)</label> 
-                <!-- Tipe input diubah ke 'text' menyesuaikan isi data string 'Permanen' atau 'Musnah' -->
-                <input type="text" name="pemusnahan" id="pemusnahan" class="form-control" readonly> 
+            <div class="col-md-6 mt-3">
+                <label>Tahap</label>
+                <input type="text" name="tahap" value="{{ session('periodes') }}" class="form-control" disabled>
             </div>
 
 
-        <div class="col-md-6 mt-3">
-            <label>Status</label>
+            <div class="col-md-6 mt-3">
+                <label>Korektor</label>
 
-            <select name="status" class="form-control"> 
-                <option value="input" <?php if($data->status=='input'){?> selected<?php }?>>Input</option>
-                <option value="draft" <?php if($data->status=='draft'){?> selected<?php }?>>Draft</option>
+                <input type="text"
+                    name="korektor"
+                    class="form-control"
+                    value="{{$data->korektor}}">
+            </div>
 
-            </select>
+            <div class="col-md-6 mt-3">
+                <label>Redaksi</label>
+
+                <input type="text"
+                    name="judul"
+                    class="form-control"
+                    value="{{$data->judul}}">
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Nomor Arsip</label>
+
+                <input type="text"
+                    name="nomor"
+                    class="form-control"
+                    value="{{$data->nomor}}">
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Kode Klasifikasi</label>
+                <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm  @error('master_kode_id') is-invalid @enderror"  required aria-label="Large select example"> 
+                    <option value="" data-aktif="0" data-inaktif="0" data-keterangan="">-- Pilih Kode --</option> 
+                    @foreach($masterKodes as $kode) 
+                        <option value="{{ $kode->id }}" 
+                                data-aktif="{{ $kode->aktif }}" 
+                                data-inaktif="{{ $kode->inaktif }}" 
+                                data-keterangan="{{ $kode->keterangan }}"
+                                @selected($kode->id == (old('master_kode_id') ?? $data->master_kode_id))> 
+                            {{ $kode->kode }} - {{ $kode->nama }} 
+                        </option> 
+                    @endforeach 
+                </select>
+                    @error('master_kode_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @else
+                        <div class="invalid-feedback">Kode wajib dipilih</div>
+                    @enderror
+            
+            </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Tanggal</label>
+
+                <input type="date"
+                    name="tanggal"
+                    class="form-control"
+                    value="{{$data->tanggal}}">
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Tanggal Musnah</label>
+
+                <input type="date"
+                    name="tanggal_musnah"
+                    class="form-control"
+                    value="{{$data->tanggal_musnah}}">
+            </div>
+
+                <!-- Dropdown Retensi Aktif -->
+                <div class="col-md-6 mt-3"> 
+                    <label>Retensi Aktif</label> 
+                    <select name="aktif" id="aktif" class="form-control" readonly style="pointer-events: none;"> 
+                        <option value="0">pilih data</option> 
+                        @for($a=1;$a<=10;$a++) 
+                            <option value="{{$a}}">{{$a}} Tahun</option> 
+                        @endfor 
+                    </select> 
+                </div> 
+
+                <!-- Dropdown Retensi Inaktif -->
+                <div class="col-md-6 mt-3"> 
+                    <label>Retensi Inaktif</label> 
+                    <select name="inaktif" id="inaktif" class="form-control" readonly style="pointer-events: none;"> 
+                        <option value="0">pilih data</option> 
+                        @for($a=1;$a<=10;$a++) 
+                            <option value="{{$a}}">{{$a}} Tahun</option> 
+                        @endfor 
+                    </select> 
+                </div> 
+
+                <!-- Input Pemusnahan/Keterangan -->
+                <div class="col-md-6 mt-3"> 
+                    <label>Pemusnahan (Keterangan)</label> 
+                    <!-- Tipe input diubah ke 'text' menyesuaikan isi data string 'Permanen' atau 'Musnah' -->
+                    <input type="text" name="pemusnahan" id="pemusnahan" class="form-control" readonly> 
+                </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Status</label>
+
+                <select name="status" class="form-control"> 
+                    <option value="input" <?php if($data->status=='input'){?> selected<?php }?>>Input</option>
+                    <option value="draft" <?php if($data->status=='draft'){?> selected<?php }?>>Draft</option>
+
+                </select>
+            </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Deskripsi</label>
+
+                <textarea name="deskripsi"
+                        class="form-control">{{$data->deskripsi}}</textarea>
+            </div> 
         </div>
+        <div class="row"> 
+            <div class="col-md-6 mt-3"> 
+                <label>Nomor RAK</label>
 
+                <select name="rak_arsip_id" class="form-control select-rak_arsip">
 
-        <div class="col-md-6 mt-3">
-            <label>Deskripsi</label>
+                    <option value="">-- Pilih Rak --</option>
 
-            <textarea name="deskripsi"
-                      class="form-control">{{$data->deskripsi}}</textarea>
-        </div> 
-    </div>
-    <div class="row"> 
-        <div class="col-md-6 mt-3"> 
-            <label>Nomor RAK</label>
+                    @if($data['rak_arsip'])
+                        <option value="{{ $data->rak_arsip_id }}" selected>
+                            {{ $data->rak_arsip->nomor_rak }}
+                        </option>
+                    @endif
 
-            <select name="rak_arsip_id" class="form-control select-rak_arsip">
+                </select> 
+            </div> 
+            <div class="col-md-6 mt-3">
+                <label>Nomor Dus</label>
 
-                <option value="">-- Pilih Rak --</option>
+                <select name="dus_arsip_id" class="form-control  select-dus_arsip">
 
-                @if($data['rak_arsip'])
-                    <option value="{{ $data->rak_arsip_id }}" selected>
-                        {{ $data->rak_arsip->nomor_rak }}
-                    </option>
-                @endif
-
-            </select> 
-        </div> 
-        <div class="col-md-6 mt-3">
-            <label>Nomor Dus</label>
-
-            <select name="dus_arsip_id" class="form-control  select-dus_arsip">
-
-                <option value="">-- Pilih Dus --</option>
-                @if($data['dus_arsip'])
-                <option value="{{ $data->dus_arsip_id }}" selected> 
-                        {{ $data->dus_arsip->nomor_dus }}
-                </option> 
-                @endif
-            </select>
-        </div> 
-    </div>
+                    <option value="">-- Pilih Dus --</option>
+                    @if($data['dus_arsip'])
+                    <option value="{{ $data->dus_arsip_id }}" selected> 
+                            {{ $data->dus_arsip->nomor_dus }}
+                    </option> 
+                    @endif
+                </select>
+            </div> 
+        </div>
 
         <button class="btn btn-primary mt-3 mb-3">
             Simpan
@@ -241,7 +240,7 @@
 
         <!-- <a href="{{ route('arsip.home') }}"
            class="btn btn-secondary mt-3 mb-3">
-            Kembali
+            Kembali 
         </a> -->
 
     </form>

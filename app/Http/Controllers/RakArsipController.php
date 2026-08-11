@@ -75,16 +75,15 @@ class RakArsipController extends Controller
      */
     public function create()
     {
-        $user = auth()->user();
+        $user = auth()->user()>opd_induk_id;
         
         // ambil id user untuk kode sementara
-        $userid = auth()->id();
+        // $userid = auth()->id();
         // dd($userid);
 
-        // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
 
-        $opds = Opd::where('opd_induk_id', $userOpdId)->get();;
+        $opds = Opd::where('opd_induk_id', $userOpdId)->get();
 
         return view('rak_arsip.create', compact(
             'opds'

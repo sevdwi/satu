@@ -32,6 +32,12 @@ class Opd extends Model
         return $this->belongsTo(Opd_Induk::class, 'opd_induk_id');
     }
 
+    public function periode()
+    {
+        return $this->hasMany(Periode::class, 'opd_id');
+    }
+
+
 
 
 }

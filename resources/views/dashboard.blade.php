@@ -8,7 +8,7 @@
   <div class="navbar-inner">
 
     <!-- Brand -->
-    <a href="#" class="nav-brand">
+    <a href="{{route('dashboard')}}" class="nav-brand">
       <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
       <div class="nav-brand-text">
         <strong>SATU</strong>
@@ -61,6 +61,13 @@
       </li>
       <!-- <li style="color:#4A9CC7;font-size: .75rem;" >
       </li> -->
+      <li>
+        <a href="{{ route('periode.edit', auth()->guard('web')->user()->opd_id) }}">
+          <i class="bi bi-bar-chart-steps"></i> Tahap 
+          <!-- <i class="bi bi-chevron-down nav-caret"></i> -->
+        </a>
+      </li>
+
 
 
     </ul>

@@ -1,0 +1,85 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Periode;
+use App\Models\Opd;
+use Illuminate\Http\Request;
+
+class PeriodeController extends Controller
+{
+    public function index()
+    {
+        // Mengambil semua data periode beserta nama OPD-nya
+        $periodes = Periode::with([
+            'opd:id,nama_opd' // WAJIB sertakan id tabel induk agar bisa dicocokkan dengan opd_id
+        ])->get();
+    
+        return view('periode.index', compact('periodes'));
+    }
+
+    public function create()
+    {
+        // $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
+        // $opd_induks = Opd_Induk::all();
+        $opds = Opd::all();
+        return view('opd_induk.create', compact('opds','opd_induks'));
+    }
+
+    public function store(Request $request)
+    {
+        // 1. Validasi input dari form
+        $validatedData = $request->validate([
+        'tahun'  => 'required|integer|digits:4',
+        'tahap'  => 'required|in:1,2,3,4',
+        'status' => 'required|in:buka,tutup',
+        ], [
+            // Kustomisasi pesan error (Opsional)
+            'tahun' => 'Kode instansi wajib diisi.',
+            'tahap'      => 'Nama instansi wajib diisi.',
+            'status'      => 'Nama instansi wajib diisi.',
+        ]);
+
+        // 2. Simpan data ke database menggunakan Mass Assignment
+        // Ganti 'OpdInduk' dengan nama Model yang Anda gunakan untuk tabel ini
+        Periode::create([
+            'opd_id' => $request->opd_id,
+            'tahun'      => $validatedData['kode_instansi'],
+            'tahap'           => $validatedData['instansi'],
+            'status' => $validatedData['singkatan_instansi'],
+        ]);
+
+        // 3. Alihkan halaman kembali dengan pesan sukses
+        return redirect()->route('periode.index')->with('success', 'Data instansi berhasil ditambahkan!');
+    }
+
+    public function edit($opd_id)
+    {
+        // $periodes = Periode::findOrFail($opd_id);
+        $data_periode = Periode::with([
+            'opd:id,unit_kerja,instansi'
+        ])
+        ->where('opd_id', $opd_id) // Menyaring berdasarkan Unit kerja
+        ->latest('id')
+        ->first(); // Mengambil satu data terbaru sebagai objek tunggal;
+        // dd($data_periode);
+            // Jaga-jaga jika data periode untuk OPD tersebut belum ada sama sekali
+        if (!$data_periode) {
+            abort(404, 'Data periode untuk OPD ini belum dibuat.');
+        }
+
+        return view('periode.edit', compact('data_periode'));
+    }
+
+
+    public function destroy($id)
+    {
+        Periode::findOrFail($id)->delete();
+
+        return back()->with('success', 'tahap berhasil dihapus');
+    }
+
+
+
+    
+}
