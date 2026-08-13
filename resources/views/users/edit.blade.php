@@ -137,7 +137,7 @@
     <div class="card-body-form">
  
       {{-- Ganti action="{{ route('users.update', $user) }}" dan value="{{ $user->xxx }}" sesuai Blade --}}
-      <form action="{{ route('users.update', $user) }}" method="POST">
+    <form action="{{ route('users.update', $user) }}" method="POST">
     @csrf
     @method('PUT')
 

@@ -51,35 +51,61 @@
 
     <h3>Edit Tahapan</h3>
 
-    <form action="{{ route('arsip.update',$data_periode->first()->id) }}"
+    <form action="{{ route('periode.update',$data_periode) }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf
         @method('PUT')
+        
+
+        <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
+
 
         <div class="row">
 
+          <div class="col-md-6 mt-3">
+                <label>Unit</label>
+                <input type="text" name="opd_id" value="{{ auth()->user()->opd_id }}" class="form-control" disabled>
+            </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Unit</label>
+                <input type="text" name="opd_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
+            </div>
+
             <div class="col-md-6 mt-3">
                 <label>Tahun</label>
-                <input type="text" name="tahun" value="{{ date('Y'); }}" class="form-control" disabled>
+                <input type="text" name="tahun" value="{{ date('Y'); }}" class="form-control" readonly>
             </div>
 
             <div class="col-md-6 mt-3">
                 <label>Tahap</label>
                 <select name="tahap" id="tahap" class="form-input @error('tahap') is-invalid @enderror" required>
                     <option value="" disabled {{ (old('tahap') ?? $data_periode->tahap) == '' ? 'selected' : '' }}>-- Pilih Tahap --</option>
-                    <option value="1" {{ (old('status') ?? $data_periode->tahap) == '1' ? 'selected' : '' }}>1</option>
-                    <option value="2" {{ (old('status') ?? $data_periode->tahap) == '2' ? 'selected' : '' }}>2</option>
-                    <option value="3" {{ (old('status') ?? $data_periode->tahap) == '3' ? 'selected' : '' }}>3</option>
-                    <option value="4" {{ (old('status') ?? $data_periode->tahap) == '4' ? 'selected' : '' }}>4</option>
+                    <option value="1" {{ (old('tahap') ?? $data_periode->tahap) == '1' ? 'selected' : '' }}>1</option>
+                    <option value="2" {{ (old('tahap') ?? $data_periode->tahap) == '2' ? 'selected' : '' }}>2</option>
+                    <option value="3" {{ (old('tahap') ?? $data_periode->tahap) == '3' ? 'selected' : '' }}>3</option>
+                    <option value="4" {{ (old('tahap') ?? $data_periode->tahap) == '4' ? 'selected' : '' }}>4</option>
                 </select>
                 @error('tahap')
                         <div class="invalid-feedback">{{ $message }}</div>
-                    @else
-                        <div class="invalid-feedback">Kode wajib dipilih</div>
                 @enderror
             </div>
+            <!-- kss -->
+            <div class="col-md-6 mt-3">
+                <label>Status</label>
+                <select name="status" id="status" class="form-input @error('status') is-invalid @enderror" required>
+                    <option value="" disabled {{ (old('status') ?? $data_periode->status) == '' ? 'selected' : '' }}>-- Pilih Tahap --</option>
+                    <option value="buka" {{ (old('status') ?? $data_periode->status) == 'buka' ? 'selected' : '' }}>buka</option>
+                    <option value="tutup" {{ (old('status') ?? $data_periode->status) == 'tutup' ? 'selected' : '' }}>tutup</option>
+                </select>
+                @error('status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
         </div>
 
         <button class="btn btn-primary mt-3 mb-3">

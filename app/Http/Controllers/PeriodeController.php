@@ -71,6 +71,36 @@ class PeriodeController extends Controller
         return view('periode.edit', compact('data_periode'));
     }
 
+    public function update(Request $request, $id)
+    {
+        // 1. Validasi input dari form edit
+        $validatedData = $request->validate([
+        'tahun'  => 'required|integer|digits:4',
+        'tahap'  => 'required|in:1,2,3,4',
+        'status' => 'required|in:buka,tutup',
+        ], [
+            // Kustomisasi pesan error (Opsional)
+            'tahun' => 'Kode instansi wajib diisi.',
+            'tahap'      => 'Nama instansi wajib diisi.',
+            'status'      => 'Nama instansi wajib diisi.',
+        ]);
+
+        // 2. Cari data lama berdasarkan ID
+        $periode = Periode::findOrFail($id);
+
+        // 3. Perbarui data di database menggunakan Mass Assignment
+        $periode->update([
+            'opd_id' => $request->opd_id,
+            'tahun' => $validatedData['tahun'],
+            'tahap'      => $validatedData['tahap'],
+            'status'      => $validatedData['status'],
+        ]);
+
+        // 4. Alihkan halaman kembali dengan pesan sukses
+        return redirect()->route('dashboard')->with('success', 'Data berhasil diupdate');
+    }
+
+
 
     public function destroy($id)
     {
