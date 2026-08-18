@@ -76,6 +76,8 @@
     <input type="hidden" name="created_by" value="{{ auth()->user()->id }}">
     <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
     <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
+    <input type="hidden" name="periode_id" value="{{ $periodes->id }}">
+
 
 
 
@@ -127,7 +129,7 @@
 
             <div class="col-md-6 mt-3">
                         <label>Tahap</label>
-                        <input type="text" name="tahap" value="{{ session('periodes') }}" class="form-control" disabled>
+                        <input type="text" name="periode" value="{{ $periodes->tahap }} - {{ $periodes->status }} " class="form-control" disabled>
 
             </div>
 

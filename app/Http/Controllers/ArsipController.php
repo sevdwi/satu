@@ -10,6 +10,7 @@ use App\Models\Arsip;
 use App\Models\MasterKode;
 use App\Models\Rak_Arsip;
 use App\Models\Dus_Arsip;
+use App\Models\Periode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -339,6 +340,7 @@ class ArsipController extends Controller
        
         // Filter OPD agar HANYA menampilkan OPD si user saja
         $opds = Opd::where('id', $userUnit)->get();
+        $periodes = Periode::where('opd_id', $userUnit)->latest('id')->first();
         $opdinduks = Opd_Induk::where('id', $userOpdId)->get();
 
 
@@ -364,7 +366,8 @@ class ArsipController extends Controller
             'opdinduks',
             'masterKodes',
             'dus_arsips',
-            'rak_arsips'
+            'rak_arsips',
+            'periodes'
         ));
     }
 
@@ -395,7 +398,7 @@ class ArsipController extends Controller
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
                 'tahun' => $request->tahun,
-                'tahap' => $request->tahap,
+                'periode' => $request->periode,
                 'tanggal' => $request->tanggal,
                 'tanggal_musnah' => $tanggalMusnah,
                 'master_kode_id' => $request->master_kode_id,
@@ -483,6 +486,13 @@ class ArsipController extends Controller
 
     public function edit($id)
     { 
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        $userUnit = $user->opd_id;
+
+        $periodes = Periode::where('opd_id', $userUnit)->latest('id')->first();
+
         $data = Arsip::with([
             'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'opd_induk:id,kode_instansi,instansi',
@@ -498,6 +508,7 @@ class ArsipController extends Controller
         return view('arsip.edit', compact('id',
             'data',
             'opds',
+            'periodes',
             'masterKodes'
         ));
     }
@@ -550,9 +561,25 @@ class ArsipController extends Controller
     {
         $arsip = Arsip::findOrFail($id); 
 
+        // 1. Ambil data dari form
+        $tanggal = $request->tanggal;
+        $aktif = (int) $request->aktif;
+        $inaktif = (int) $request->inaktif;
+
+        // 2. Hitung total tahun retensi
+        $totalTahun = $aktif + $inaktif;
+
+        // 3. Kalkulasi tanggal musnah menggunakan Carbon
+        // Tambahkan pengkondisian jika retensi permanen/tidak ada tanggal
+        $tanggalMusnah = null;
+        if ($tanggal) {
+            $tanggalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
+        }
+
+
         // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
         $dataToUpdate = $request->only([
-            'judul', 'deskripsi','tahun','tahap', 'tanggal','tanggal_musnah', 'master_kode_id', 
+            'judul', 'deskripsi','tahun','periode_id', 'tanggal','tanggal_musnah', 'master_kode_id', 
             'opd_id', 'opd_induk_id', 'aktif','inaktif', 'nomor', 
             'status', 'pemusnahan', 'dus_arsip_id', 'rak_arsip_id'
         ]);

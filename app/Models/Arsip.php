@@ -13,7 +13,7 @@ class Arsip extends Model
         'deskripsi',
         'file',
         'tahun',
-        'tahap',
+        'periode_id',
         'tanggal',
         'tanggal_musnah',
         'master_kode_id',
@@ -70,6 +70,13 @@ class Arsip extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    // periode
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class, 'periode_id');
+    }
+
 
     /*
     |--------------------------------------------------------------------------

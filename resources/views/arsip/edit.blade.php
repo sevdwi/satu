@@ -1,6 +1,9 @@
 @extends('layouts.head_customer')
 
-@section('content')
+@section('content') 
+<?php 
+use Carbon\Carbon;
+?>
 <nav class="navbar-custom">
   <div class="navbar-inner">
 
@@ -62,6 +65,8 @@
         <input type="hidden" name="id" value="{{$id}}">
         <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
         <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
+        <input type="hidden" name="periode_id" value="{{ $periodes->id }}">
+
 
 
         <div class="row">
@@ -83,7 +88,7 @@
 
             <div class="col-md-6 mt-3">
                 <label>Tahap</label>
-                <input type="text" name="tahap" value="{{ session('periodes') }}" class="form-control" disabled>
+                <input type="text" name="tahap" value="{{ $periodes->tahap }} - {{ $periodes->status }}" class="form-control" disabled>
             </div>
 
 
@@ -145,14 +150,28 @@
                     class="form-control"
                     value="{{$data->tanggal}}">
             </div>
+            <?php 
+            $tanggal = $data->tanggal;
+            $aktif = (int) $data->aktif;
+            $inaktif = (int) $data->inaktif;
 
+            // 2. Hitung total tahun retensi
+            $totalTahun = $aktif + $inaktif;
+
+            // 3. Kalkulasi tanggal musnah menggunakan Carbon
+            // Tambahkan pengkondisian jika retensi permanen/tidak ada tanggal
+            $totalMusnah = null;
+            if ($tanggal) {
+                $totalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
+            }
+    ?>
             <div class="col-md-6 mt-3">
                 <label>Tanggal Musnah</label>
 
                 <input type="date"
                     name="tanggal_musnah"
                     class="form-control"
-                    value="{{$data->tanggal_musnah}}">
+                    value="{{$data->tanggal_musnah ?? $totalMusnah }}">
             </div>
 
                 <!-- Dropdown Retensi Aktif -->
