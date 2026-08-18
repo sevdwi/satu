@@ -79,14 +79,14 @@ class ArsipController extends Controller
             'chartColors'
         ));
     } 
-    public function index($periode=null)
+    // public function index($periode=null)
+    public function index()
+
     {
         // Jika URL tidak ada parameter, gunakan tahun-bulan saat ini sebagai default
-        if (!$periode) {
-            $periode = date('Y-m'); 
-        }
+        // if (!$periode) { $periode = date('Y-m'); }
         // 1. Simpan ke session
-        session(['periodes' => $periode]);
+        // session(['periodes' => $periode]);
 
         // 2. Cek apakah data berhasil disimpan
         // dd(session('periodes')); 
@@ -561,8 +561,7 @@ class ArsipController extends Controller
     {
         $arsip = Arsip::findOrFail($id); 
 
-        // 1. Ambil data dari form
-        $tanggal = $request->tanggal;
+      $tanggal = $request->tanggal;
         $aktif = (int) $request->aktif;
         $inaktif = (int) $request->inaktif;
 

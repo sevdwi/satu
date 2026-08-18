@@ -67,8 +67,6 @@ use Carbon\Carbon;
         <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
         <input type="hidden" name="periode_id" value="{{ $periodes->id }}">
 
-
-
         <div class="row">
 
             <div class="col-md-6 mt-3">
@@ -302,30 +300,22 @@ use Carbon\Carbon;
         const selectInaktif = document.getElementById('inaktif');
         const inputPemusnahan = document.getElementById('pemusnahan');
 
-        // 1. Buat fungsi khusus untuk mengisi data
-        function isiDataOtomatis() {
-            // Dapatkan opsi yang sedang dipilih oleh user atau sistem (saat edit)
-            const selectedOption = selectMasterKode.options[selectMasterKode.selectedIndex];
+        selectMasterKode.addEventListener('change', function() {
+            // Dapatkan opsi yang sedang dipilih oleh user
+            const selectedOption = this.options[this.selectedIndex];
 
-            if (selectedOption) {
-                // Ambil data atribut dari opsi terpilih
-                const valAktif = selectedOption.getAttribute('data-aktif');
-                const valInaktif = selectedOption.getAttribute('data-inaktif');
-                const valKeterangan = selectedOption.getAttribute('data-keterangan');
+            // Ambil data atribut dari opsi terpilih
+            const valAktif = selectedOption.getAttribute('data-aktif');
+            const valInaktif = selectedOption.getAttribute('data-inaktif');
+            const valKeterangan = selectedOption.getAttribute('data-keterangan');
 
-                // Tetapkan nilai ke masing-masing elemen target
-                selectAktif.value = valAktif ? valAktif : "0";
-                selectInaktif.value = valInaktif ? valInaktif : "0";
-                inputPemusnahan.value = valKeterangan ? valKeterangan : "";
-            }
-        }
-
-        // 2. JALANKAN PERTAMA KALI SAAT HALAMAN EDIT DIMUAT
-        isiDataOtomatis();
-
-        // 3. JALANKAN SAAT USER MENGUBAH PILIHAN KODE
-        selectMasterKode.addEventListener('change', isiDataOtomatis);
+            // Tetapkan nilai ke masing-masing elemen target
+            selectAktif.value = valAktif ? valAktif : "0";
+            selectInaktif.value = valInaktif ? valInaktif : "0";
+            inputPemusnahan.value = valKeterangan ? valKeterangan : "";
+        });
     });
+
 </script>
 
 <script>

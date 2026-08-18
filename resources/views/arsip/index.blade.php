@@ -94,7 +94,7 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Master Kode ID </th>
+                    <!-- <th>Master Kode ID </th> -->
                     <th>Nomor Sementara</th>
                     <th>Nomor Definitif</th>
                     <th>Kode</th>
@@ -121,9 +121,9 @@
                             {{ $loop->iteration }}
                         </td>
 
-                        <td>
+                        <!-- <td>
                             {{ $item->master_kode_id }}
-                        </td>
+                        </td> -->
 
                         <td>
                             {{ $item->id }} - {{ auth()->user()->id }} 
@@ -325,7 +325,10 @@
 <script>
     $(document).ready(function () {
         $('#arsipTable').DataTable({
-            responsive: true,
+            scrollX: true,
+            scrollY: "500px", /* Tentukan batas tinggi tabel */
+            scrollCollapse: true,
+            responsive: false, /* Matikan fungsi responsive untuk mengizinkan gulir horizontal */
             pageLength: 10,
             ordering: true,
             language: {
