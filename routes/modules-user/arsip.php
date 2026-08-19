@@ -16,6 +16,8 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
 
 
     Route::get('/{id}/kartu', [ArsipController::class, 'kartu'])->name('kartu');
+    Route::get('/kosong', [ArsipController::class, 'kosong'])->name('kosong');
+
 
 
 
@@ -24,6 +26,9 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
 
     // 3. Menyimpan data baru yang dikirim dari form
     Route::post('/', [ArsipController::class, 'store'])->name('store');
+
+    Route::post('/nomor-definitif', [ArsipController::class, 'nomor_definitif'])->name('nomor-definitif');
+
 
     // 4. Menampilkan detail dari satu data spesifik
     // Route::get('/{id}', [ArsipController::class, 'show'])->name('show');

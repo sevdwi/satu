@@ -230,13 +230,13 @@
             </div> 
 
             <div class="col-md-6 mt-3">
-                <label>Korektor</label>
+                <label>file</label>
 
                 <input type="text"
-                    name="korektor"
+                    name="file"
                     class="form-control"
-                    placeholder="Belum ada"
-                    value="Belum ada">
+                    placeholder="masukkan link drive file surat"
+                    value="{{ old('file') }}">
             </div>
 
         </div>

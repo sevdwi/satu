@@ -727,7 +727,7 @@ body {
 
   /* ── TABLE ───────────────────────────────────── */
   /* .table-wrap { overflow-x: auto; } */
-  .table-wrap { overflow: visible; }
+  .table-wrap { overflow: hidden; }
 
   .tbl {
     width: 100%;

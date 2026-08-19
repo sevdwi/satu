@@ -91,12 +91,12 @@ use Carbon\Carbon;
 
 
             <div class="col-md-6 mt-3">
-                <label>Korektor</label>
+                <label>File</label>
 
                 <input type="text"
-                    name="korektor"
+                    name="file"
                     class="form-control"
-                    value="{{$data->korektor}}">
+                    value="{{$data->file}}">
             </div>
 
             <div class="col-md-6 mt-3">

@@ -117,10 +117,15 @@ class ArsipController extends Controller
         }
             // Eksekusi data
         $data = $data_filter->latest()->get(); 
-        
         // ->latest()->get(); 
 
-        return view('arsip.index', compact('data','userid'
+        // Hitung jumlah arsip yang belum memiliki nomor definitif
+        $arsipBelumDefinitif = Arsip::where('opd_induk_id',$userOpdId)
+        ->whereNull('nomor')
+        ->count();
+
+
+        return view('arsip.index', compact('data','userid','arsipBelumDefinitif'
         ));
     }
 
@@ -171,6 +176,7 @@ class ArsipController extends Controller
 
         // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
+
                
         $data_filter = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -187,6 +193,7 @@ class ArsipController extends Controller
         }
             // Eksekusi data
         $data = $data_filter->latest()->get(); 
+        
         
         // ->latest()->get(); 
         
@@ -378,23 +385,22 @@ class ArsipController extends Controller
     public function store(Request $request)
     { 
         // 1. Ambil data dari form
-    $tanggal = $request->tanggal;
-    $aktif = (int) $request->aktif;
-    $inaktif = (int) $request->inaktif;
+        $tanggal = $request->tanggal;
+        $aktif = (int) $request->aktif;
+        $inaktif = (int) $request->inaktif;
 
-    // 2. Hitung total tahun retensi
-    $totalTahun = $aktif + $inaktif;
+        // 2. Hitung total tahun retensi
+        $totalTahun = $aktif + $inaktif;
 
-    // 3. Kalkulasi tanggal musnah menggunakan Carbon
-    // Tambahkan pengkondisian jika retensi permanen/tidak ada tanggal
-    $tanggalMusnah = null;
-    if ($tanggal) {
-        $tanggalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
-    }
-        $filePath = null;
-        try { 
-            $data = Arsip::create([
-                'korektor' => $request->korektor,
+        // 3. Kalkulasi tanggal musnah menggunakan Carbon
+        // Tambahkan pengkondisian jika retensi permanen/tidak ada tanggal
+        $tanggalMusnah = null;
+        if ($tanggal) {
+            $tanggalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
+        }
+
+            Arsip::create([
+                'korektor' => $request->korektor ?: null,
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
                 'tahun' => $request->tahun,
@@ -410,16 +416,13 @@ class ArsipController extends Controller
                 'status' => $request->status ?? 'input',
                 'pemusnahan' => $request->pemusnahan,
                 'created_by' => auth()->id(),
-                'file' => $filePath,               
+                'file' => $request->file,               
                 'dus_arsip_id' => $request->dus_arsip_id ?: null, 
                 'rak_arsip_id' => $request->rak_arsip_id ?: null, 
             ]);
             
             return redirect()->route('arsip.home')
                 ->with('success', 'Data berhasil ditambahkan!');  
-        } catch (\Throwable $e) {
-            dd($e->getMessage());
-        } 
     } 
 
     public function uploads(Request $request){
@@ -522,6 +525,31 @@ class ArsipController extends Controller
         ));
     }
 
+    public function nomor_definitif(Request $request)
+    {
+        // 1. Validasi input
+        // Pastikan input 'nomor' ada dan berbentuk array
+        $request->validate([
+            'nomor' => 'required|array',
+            'nomor.*' => 'nullable|numeric' 
+        ]);
+
+        // 2. Lakukan perulangan array
+        // $id adalah kunci (key), $nomorDefinitif adalah nilai (value)
+        foreach ($request->nomor as $id => $nomorDefinitif) {
+            
+            // 3. Perbarui baris data spesifik
+            // Update kolom 'nomor' pada tabel Arsip yang memiliki id sesuai dengan kunci
+            Arsip::where('id', $id)->update([
+                'nomor' => $nomorDefinitif
+            ]);
+            
+        }
+
+        // 4. Kembalikan pengguna ke halaman sebelumnya
+        return redirect()->back()->with('success', 'Nomor definitif berhasil diperbarui secara massal!');
+    }
+
     public function edit_status($id)
     { 
         $data = Arsip::select('id', 'status')->findOrFail($id);
@@ -561,7 +589,7 @@ class ArsipController extends Controller
     {
         $arsip = Arsip::findOrFail($id); 
 
-      $tanggal = $request->tanggal;
+        $tanggal = $request->tanggal;
         $aktif = (int) $request->aktif;
         $inaktif = (int) $request->inaktif;
 
@@ -575,17 +603,16 @@ class ArsipController extends Controller
             $tanggalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
         }
 
-
         // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
         $dataToUpdate = $request->only([
             'judul', 'deskripsi','tahun','periode_id', 'tanggal','tanggal_musnah', 'master_kode_id', 
             'opd_id', 'opd_induk_id', 'aktif','inaktif', 'nomor', 
-            'status', 'pemusnahan', 'dus_arsip_id', 'rak_arsip_id'
+            'status', 'pemusnahan', 'file', 'dus_arsip_id', 'rak_arsip_id'
         ]);
 
         // 2. Filter data: Hanya update kolom yang benar-benar dikirim dari Form (mencegah NULL tidak sengaja)
         $dataToUpdate = array_filter($dataToUpdate, function ($value, $key) use ($request) {
-            // Khusus untuk input 'nomor', jika dikosongkan (string kosong), kita tetap loloskan agar terupdate jadi NULL di DB
+            // Khusus untuk input 'nomor', jika dikosongkan (string kosong), tetap loloskan agar terupdate jadi NULL di DB
             if ($key === 'nomor') {
                 return true; 
             }
@@ -609,7 +636,7 @@ class ArsipController extends Controller
         $dataToUpdate = $request->only([
             'judul', 'deskripsi', 'tanggal','tanggal_musnah', 'master_kode_id', 
             'opd_id', 'opd_induk_id', 'retensi', 'nomor', 
-            'status', 'pemusnahan', 'dus_arsip_id', 'rak_arsip_id'
+            'status', 'pemusnahan', 'file', 'dus_arsip_id', 'rak_arsip_id'
         ]);
 
         // 2. Filter data: Hanya update kolom yang benar-benar dikirim dari Form (mencegah NULL tidak sengaja)
@@ -680,5 +707,12 @@ class ArsipController extends Controller
             'masterKodes'
         ));
     }
+
+    public function kosong()
+    { 
+        return view('arsip.surat-kosong');
+
+    }
+
 
 }

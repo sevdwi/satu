@@ -117,13 +117,17 @@
                             {{ $item->id }} - {{ auth()->user()->id }} 
                         </td>
 
-                        <td>
+                        <!-- <td>
                             {{ $item->nomor?? '-' }} - 
                             <a href="{{ route('arsip.edit-nomor', $item->id) }}"
                             class="btn btn-warning btn-sm mb-2">
                                 Edit nomor
                             </a>
 
+                        </td> -->
+                        <!-- Kolom Nomor Definitif -->
+                        <td>
+                            <input type="number" name="nomor[{{ $item->id }}]" class="form-control input-nomor" value="{{ $item->nomor }}">
                         </td>
 
                         <!-- Kode Master (Aman) -->
@@ -194,24 +198,6 @@
                             class="btn btn-warning btn-sm mb-2">
                                 Kartu
                             </a>
-
-
-                            <form action="{{ route('arsip.destroy', $item->id) }}"
-                                method="POST"
-                                class="d-inline">
-
-                                @csrf
-                                @method('DELETE')
-
-                                <button class="btn btn-danger btn-sm mb-2"
-                                        onclick="return confirm('Hapus data?')">
-
-                                    Hapus
-
-                                </button>
-
-                            </form>
-
                         </td>
 
                     </tr>
@@ -230,6 +216,20 @@
 
         </table> 
         </div>
+
+        <!-- Tombol Pemicu di luar tabel -->
+        <div class="p-3 text-end">
+            <button type="button" id="btnSimpanMassal" class="btn btn-success px-4">
+                Simpan Perubahan Nomor
+            </button>
+        </div>
+
+        <!-- Form Tersembunyi Khusus Proses Simpan -->
+        <form id="formSimpanNomor" action="{{ route('arsip.nomor-definitif') }}" method="POST" class="d-none">
+            @csrf
+            <!-- JavaScript akan menyuntikkan data ke sini -->
+        </form>
+
         <div class="modal fade" id="pdfModal" tabindex="-1">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -257,7 +257,10 @@
     $(document).ready(function () {
         // Simpan inisialisasi DataTables ke dalam variabel 't'
         var t = $('#arsipTable').DataTable({
-            responsive: true,
+            scrollX: true,
+            scrollY: "500px", /* Tentukan batas tinggi tabel */
+            scrollCollapse: true,
+            responsive: false, /* Matikan fungsi responsive untuk mengizinkan gulir horizontal */
             pageLength: 10,
             
             // Nonaktifkan fitur pengurutan pada kolom No (indeks 0)
@@ -270,7 +273,7 @@
             ],
             
             // Pengurutan awal (indeks 1 = Master Kode, indeks 7 = Tanggal)
-            order: [[1, 'asc'], [7, 'asc']], 
+            order: [[1, 'asc'], [5, 'asc']], 
             
             language: {
                 search: "Cari:",
@@ -287,13 +290,49 @@
             }
         });
 
-        // Hitung ulang nomor urut pada kolom indeks 0 setiap kali tabel diurutkan atau dicari
-        t.on('order.dt search.dt', function () {
+            // Event listener untuk pengurutan dan pencarian
+            t.on('order.dt search.dt', function () {
+            // Hitung ulang teks pada kolom No (Indeks 0)
             let i = 1;
             t.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
                 this.data(i++);
             });
+
+            // Isi otomatis input pada kolom Nomor Definitif (Indeks 3)
+            let j = 1;
+            t.cells(null, 3, { search: 'applied', order: 'applied' }).every(function (cell) {
+                $(this.node()).find('.input-nomor').val(j++);
+            });
         }).draw();
+
+        // Event listener untuk tombol simpan massal
+        $('#btnSimpanMassal').on('click', function () {
+            let btn = $(this);
+            let form = $('#formSimpanNomor');
+            
+            // 1. Blokir tombol dan tampilkan animasi loading
+            btn.prop('disabled', true);
+            btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan Data...');
+
+            // 2. Bersihkan sisa input dari proses sebelumnya jika ada
+            form.find('.input-dinamis').remove();
+
+            // 3. Ekstrak SEMUA elemen '.input-nomor' dari API DataTables
+            t.$('.input-nomor').each(function () {
+                
+                // Salin setiap nilai ke dalam input tipe hidden
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: $(this).attr('name'),
+                    value: $(this).val(),
+                    class: 'input-dinamis'
+                }).appendTo(form);
+
+            });
+
+            // 4. Eksekusi pengiriman formulir tersembunyi ke server
+            form.submit();
+        });
     });
 </script>
 @endsection

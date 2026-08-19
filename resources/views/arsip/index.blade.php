@@ -71,9 +71,12 @@
                 <div class="card-subtitle">Kelola seluruh data arsip</div>
                 </div>
             </div>
+            
+            @if($arsipBelumDefinitif>0)
             <a href="{{ route('arsip.manuver') }}" class="btn-manuver">
                 <i class="bi bi-list-check"></i> Manuver
             </a>
+            @endif
 
             <a href="{{ route('arsip.create') }}" class="btn-add">
                 <i class="bi bi-plus-lg"></i> Tambah Arsip
@@ -104,7 +107,7 @@
                     <th>Unit</th>
                     <th>Nomor RAK</th>
                     <th>Nomor Dus</th>
-                    <th>Korektor</th>
+                    <th>File</th>
                     <th>Status</th>
                     <!-- <th>File</th> -->
                     <th width="180">Aksi</th>
@@ -130,11 +133,8 @@
                         </td>
 
                         <td>
-                            {{ $item->nomor?? '-' }} - 
-                            <a href="{{ route('arsip.edit-nomor', $item->id) }}"
-                            class="btn btn-warning btn-sm mb-2">
-                                Edit nomor
-                            </a>
+                            {{ $item->nomor?? '-' }} 
+                            <!-- <a href="{{ route('arsip.edit-nomor', $item->id) }}" class="btn btn-warning btn-sm mb-2">Edit nomor </a> -->
 
                         </td>
 
@@ -176,7 +176,9 @@
                         </td>
 
                         <td>
-                            {{ $item->korektor ?? '-' }}
+                            <a href="{{ $item->file ?? route('arsip.kosong')}}"target="_blank" rel="noopener noreferrer" class="d-inline-flex flex-column align-items-center text-decoration-none">
+                                <i class="bi bi-link me-1"></i> <span>Link Surat</span> 
+                            </a>                         
                         </td>
                         
                         <td>
