@@ -71,7 +71,7 @@
                 <div class="card-subtitle">Kelola seluruh data arsip</div>
                 </div>
             </div>
-            
+
             @if($arsipBelumDefinitif>0)
             <a href="{{ route('arsip.manuver') }}" class="btn-manuver">
                 <i class="bi bi-list-check"></i> Manuver
@@ -103,7 +103,7 @@
                     <th>Kode</th>
                     <th>Redaksi</th>
                     <th>Deskripsi</th>
-                    <th>Tanggal</th>
+                    <th>Tanggal Arsip</th>
                     <th>Unit</th>
                     <th>Nomor RAK</th>
                     <th>Nomor Dus</th>

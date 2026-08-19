@@ -12,13 +12,11 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
     Route::get('/data', [ArsipController::class, 'index'])->name('home');
     Route::get('/manuver', [ArsipController::class, 'manuver'])->name('manuver');
     Route::get('/musnah', [ArsipController::class, 'musnah'])->name('musnah');
-
+    Route::get('/permanen', [ArsipController::class, 'permanen'])->name('permanen');
 
 
     Route::get('/{id}/kartu', [ArsipController::class, 'kartu'])->name('kartu');
     Route::get('/kosong', [ArsipController::class, 'kosong'])->name('kosong');
-
-
 
 
     // 2. Menampilkan form untuk membuat data baru
@@ -50,6 +48,9 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
     Route::post('/uploads',[ArsipController::class, 'uploads_post'])->name('uploads');
     
     Route::get('/search', [ArsipController::class, 'search'])->name('search');
+
+    Route::get('/export/excel', [ArsipController::class, 'exportExcel'])->name('export');
+
  
     // Route::get('/dashbord', [ArsipController::class, 'dashbord'])->name('index');; 
     // Route::resource('/', ArsipController::class);

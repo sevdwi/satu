@@ -83,16 +83,16 @@
                 <tr>
                     <th>No</th>
                     <th>Tanggal Musnah </th>
+                    <th>After</th>
                     <th>Sisa</th>
                     <th>Nomor Definitif</th>
                     <th>Kode</th>
-                    <th>Tanggal</th>
+                    <th>Tanggal Arsip</th>
                     <th>Redaksi</th>
                     <th>Deskripsi</th>
                     <th>Unit</th>
                     <th>Nomor RAK</th>
                     <th>Nomor Dus</th>
-                    <th>Korektor</th>
                     <th>Status</th>
                     <!-- <th>File</th> -->
                     <th width="180">Aksi</th>
@@ -111,6 +111,10 @@
 
                         <td>
                             {{ $item->tanggal_musnah }}
+                        </td>
+
+                        <td>
+                            {{ $item->pemusnahan ?? '-' }}
                         </td>
 
                         <td>
@@ -185,10 +189,6 @@
                         <!-- Dus (Aman) -->
                         <td>
                             {{ $item->dus_arsip->nomor_dus ?? '-' }}
-                        </td>
-
-                        <td>
-                            {{ $item->korektor ?? '-' }}
                         </td>
                         
                         <td>
@@ -270,9 +270,11 @@
     $(document).ready(function () {
         // Simpan inisialisasi DataTables ke dalam variabel 't'
         var t = $('#arsipTable').DataTable({
-            responsive: true,
-            pageLength: 10,
-            
+            scrollX: true,
+            scrollY: "500px", /* Tentukan batas tinggi tabel */
+            scrollCollapse: true,
+            responsive: false, /* Matikan fungsi responsive untuk mengizinkan gulir horizontal */
+            pageLength: 10,        
             // Nonaktifkan fitur pengurutan pada kolom No (indeks 0)
             columnDefs: [
                 {

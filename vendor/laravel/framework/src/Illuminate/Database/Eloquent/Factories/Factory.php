@@ -230,7 +230,7 @@ abstract class Factory
     /**
      * Configure the factory.
      *
-     * @return $this
+     * @return static
      */
     public function configure()
     {
@@ -493,6 +493,10 @@ abstract class Factory
         $madeCollection = $made instanceof Collection
             ? $made
             : $this->newModel()->newCollection([$made]);
+
+        if ($madeCollection->isEmpty()) {
+            return;
+        }
 
         $model = $madeCollection->first();
 

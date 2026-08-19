@@ -5,44 +5,33 @@ namespace Maatwebsite\Excel\Cache;
 use Illuminate\Support\Facades\Cache;
 use Psr\SimpleCache\CacheInterface;
 
+/**
+ * Used when psr/simple-cache is ^1.0 or ^2.0.
+ *
+ * CacheInterface method signatures must stay untyped so they remain compatible
+ * with all supported psr/simple-cache major versions. Do not add native types here.
+ */
 class BatchCacheDeprecated implements CacheInterface
 {
     /**
-     * @var CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var MemoryCacheDeprecated
-     */
-    protected $memory;
-
-    /**
-     * @var null|int|\DateTimeInterface|callable
+     * @var null|int|\DateInterval|\DateTimeInterface|callable
      */
     protected $defaultTTL = null;
 
-    /**
-     * @param  CacheInterface  $cache
-     * @param  MemoryCacheDeprecated  $memory
-     * @param  int|\DateTimeInterface|callable|null  $defaultTTL
-     */
     public function __construct(
-        CacheInterface $cache,
-        MemoryCacheDeprecated $memory,
-        $defaultTTL = null
+        protected CacheInterface $cache,
+        protected MemoryInterface $memory,
+        int|\DateInterval|\DateTimeInterface|callable|null $defaultTTL = null
     ) {
-        $this->cache      = $cache;
-        $this->memory     = $memory;
         $this->defaultTTL = $defaultTTL;
     }
 
-    public function __sleep()
+    public function __sleep(): array
     {
         return ['memory'];
     }
 
-    public function __wakeup()
+    public function __wakeup(): void
     {
         $this->cache = Cache::driver(
             config('excel.cache.illuminate.store')
@@ -62,7 +51,9 @@ class BatchCacheDeprecated implements CacheInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param  string  $key
+     * @param  mixed  $value
+     * @param  null|int|\DateInterval  $ttl
      */
     public function set($key, $value, $ttl = null)
     {
@@ -103,12 +94,24 @@ class BatchCacheDeprecated implements CacheInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param  iterable<string>  $keys
+     * @return iterable<string, mixed>
      */
     public function getMultiple($keys, $default = null)
     {
         // Check if all keys are still in memory
-        $memory              = $this->memory->getMultiple($keys, $default);
-        $actualItemsInMemory = count(array_filter($memory));
+        $memory = $this->memory->getMultiple($keys, $default);
+        if (is_array($memory)) {
+            $actualItemsInMemory = count(array_filter($memory));
+        } else {
+            $actualItemsInMemory = 0;
+            foreach ($memory as $value) {
+                if ($value) {
+                    $actualItemsInMemory++;
+                }
+            }
+        }
 
         if ($actualItemsInMemory === count($keys)) {
             return $memory;
@@ -121,7 +124,7 @@ class BatchCacheDeprecated implements CacheInterface
 
         // Add missing values from cache.
         foreach ($this->cache->getMultiple($keys, $default) as $key => $value) {
-            if (null !== $value) {
+            if ($value !== null) {
                 $memory[$key] = $value;
             }
         }
@@ -130,7 +133,8 @@ class BatchCacheDeprecated implements CacheInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param  iterable<string, mixed>  $values
+     * @param  null|int|\DateInterval  $ttl
      */
     public function setMultiple($values, $ttl = null)
     {
@@ -149,6 +153,8 @@ class BatchCacheDeprecated implements CacheInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param  iterable<string>  $keys
      */
     public function deleteMultiple($keys)
     {

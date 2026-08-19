@@ -15,6 +15,8 @@ Route::prefix('arsip_admin')->name('arsip_admin.')->group(function () {
     ->name('home-admin');
 
     Route::get('/musnah', [ArsipController::class, 'musnah_admin'])->name('musnah-admin');
+    Route::get('/permanen', [ArsipController::class, 'permanen_admin'])->name('permanen-admin');
+
 
     Route::get('/data/{opd_induk_id}/', [ArsipController::class, 'detail_admin'])
     ->name('detail-admin');
@@ -41,5 +43,7 @@ Route::prefix('arsip_admin')->name('arsip_admin.')->group(function () {
 
     // Route::post('/upload/{id}', [ArsipController::class, 'upload'])
     Route::post('/uploads',[ArsipController::class, 'uploads_post'])->name('uploads');
+
+    Route::get('/export/excel', [ArsipController::class, 'exportExcel_admin'])->name('export-admin');
 
 });

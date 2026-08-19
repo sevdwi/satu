@@ -284,7 +284,10 @@
 <script>
     $(document).ready(function () {
         $('#arsipTable').DataTable({
-            responsive: true,
+            scrollX: true,
+            scrollY: "500px", /* Tentukan batas tinggi tabel */
+            scrollCollapse: true,
+            responsive: false, /* Matikan fungsi responsive untuk mengizinkan gulir horizontal */
             pageLength: 10,
             ordering: true,
             language: {

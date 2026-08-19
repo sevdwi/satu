@@ -14,6 +14,8 @@ use App\Models\Periode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Exports\ArsipExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class ArsipController extends Controller
@@ -176,7 +178,6 @@ class ArsipController extends Controller
 
         // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
-
                
         $data_filter = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -185,24 +186,55 @@ class ArsipController extends Controller
             'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        ->where('opd_induk_id', $userOpdId); // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('pemusnahan', 'musnah'); // filter kolom pemusnahan
         // Cek kondisi Unit Kerja user
         // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
         if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
             $data_filter->where('opd_id', $user->opd_id); 
         }
             // Eksekusi data
-        $data = $data_filter->latest()->get(); 
-        
-        
+        $data = $data_filter->latest()->get();    
         // ->latest()->get(); 
-        
-
+    
         return view('arsip.index-musnah', compact('data','userid'
         ));
     }
 
+    public function permanen()
+    {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        // $user = auth()->user(); 
+        $user = auth()->user()->opd; // load('opd'); 
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
 
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+               
+        $data_filter = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('pemusnahan', 'permanen'); // filter kolom pemusnahan
+        // Cek kondisi Unit Kerja user
+        // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }
+            // Eksekusi data
+        $data = $data_filter->latest()->get();    
+        // ->latest()->get(); 
+    
+        return view('arsip.index-permanen', compact('data','userid'
+        ));
+    }
 
     public function index_admin()
     {
@@ -241,7 +273,7 @@ class ArsipController extends Controller
             'rak_arsip:id,nomor_rak'
         ])
         ->where('opd_induk_id', $opd_induk_id) // Menyaring berdasarkan OPD Induk
-        ->where('status', '!=', 'inaktif')
+        // ->where('status', '!=', 'inaktif')
         ->latest()
         ->get();
 
@@ -264,11 +296,33 @@ class ArsipController extends Controller
             'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        // ->where('status', '!=', 'inaktif')
+        ->where('pemusnahan', 'musnah') // filter kolom pemusnahan
         ->latest()->get(); 
 
         return view('arsip.index-musnah-admin', compact('user', 'data','opd_induk'));
     }
+
+    public function permanen_admin()
+    {
+        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+
+        $opd_induk = Opd_Induk::orderBy('instansi')->get(); // sesuaikan nama kolom
+
+
+        $data = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('pemusnahan', 'permanen') // filter kolom pemusnahan
+        ->latest()->get(); 
+
+        return view('arsip.index-permanen-admin', compact('user', 'data','opd_induk'));
+    }
+
 
 
 
@@ -712,6 +766,11 @@ class ArsipController extends Controller
     { 
         return view('arsip.surat-kosong');
 
+    }
+
+    public function exportExcel_admin()
+    {
+        return Excel::download(new ArsipExport, 'data_arsip_lengkap.xlsx');
     }
 
 

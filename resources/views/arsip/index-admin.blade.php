@@ -23,6 +23,11 @@
           <i class="bi bi-house"></i> Kembali
         </a>
       </li>
+      <li>
+        <a href="{{ route('arsip_admin.export-admin')}}" class="active">
+          <i class="bi bi-file-earmark-spreadsheet"></i> export
+        </a>
+      </li>
 
     </ul>
 

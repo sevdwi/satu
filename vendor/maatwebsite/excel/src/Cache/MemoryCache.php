@@ -2,27 +2,19 @@
 
 namespace Maatwebsite\Excel\Cache;
 
+use DateInterval;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use Psr\SimpleCache\CacheInterface;
 
-class MemoryCache implements CacheInterface
+class MemoryCache implements MemoryInterface
 {
     /**
-     * @var int|null
+     * @var array<string, mixed>
      */
-    protected $memoryLimit;
+    protected array $cache = [];
 
-    /**
-     * @var array
-     */
-    protected $cache = [];
-
-    /**
-     * @param  int|null  $memoryLimit
-     */
-    public function __construct(?int $memoryLimit = null)
-    {
-        $this->memoryLimit = $memoryLimit;
+    public function __construct(
+        protected ?int $memoryLimit = null,
+    ) {
     }
 
     /**
@@ -93,7 +85,7 @@ class MemoryCache implements CacheInterface
     /**
      * {@inheritdoc}
      */
-    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
     {
         $this->cache[$key] = $value;
 
@@ -102,6 +94,8 @@ class MemoryCache implements CacheInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param  iterable<string, mixed>  $values
      */
     public function setMultiple($values, $ttl = null): bool
     {
@@ -112,13 +106,10 @@ class MemoryCache implements CacheInterface
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function reachedMemoryLimit(): bool
     {
         // When no limit is given, we'll never reach any limit.
-        if (null === $this->memoryLimit) {
+        if ($this->memoryLimit === null) {
             return false;
         }
 
@@ -126,7 +117,7 @@ class MemoryCache implements CacheInterface
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function flush(): array
     {

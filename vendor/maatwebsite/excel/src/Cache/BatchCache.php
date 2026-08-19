@@ -2,47 +2,34 @@
 
 namespace Maatwebsite\Excel\Cache;
 
+use DateInterval;
 use Illuminate\Support\Facades\Cache;
 use Psr\SimpleCache\CacheInterface;
 
 class BatchCache implements CacheInterface
 {
     /**
-     * @var CacheInterface
+     * @var null|int|DateInterval|callable
      */
-    protected $cache;
+    protected $defaultTTL;
 
-    /**
-     * @var MemoryCache
-     */
-    protected $memory;
-
-    /**
-     * @var null|int|\DateInterval|callable
-     */
-    protected $defaultTTL = null;
-
-    /**
-     * @param  CacheInterface  $cache
-     * @param  MemoryCache  $memory
-     * @param  null|int|\DateInterval|callable  $defaultTTL
-     */
     public function __construct(
-        CacheInterface $cache,
-        MemoryCache $memory,
-        null|int|\DateInterval|callable $defaultTTL = null
+        protected CacheInterface $cache,
+        protected MemoryInterface $memory,
+        null|int|DateInterval|callable $defaultTTL = null
     ) {
-        $this->cache      = $cache;
-        $this->memory     = $memory;
         $this->defaultTTL = $defaultTTL;
     }
 
-    public function __sleep()
+    /**
+     * @return list<string>
+     */
+    public function __sleep(): array
     {
         return ['memory'];
     }
 
-    public function __wakeup()
+    public function __wakeup(): void
     {
         $this->cache = Cache::driver(
             config('excel.cache.illuminate.store')
@@ -64,7 +51,7 @@ class BatchCache implements CacheInterface
     /**
      * {@inheritdoc}
      */
-    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
     {
         if (func_num_args() === 2) {
             $ttl = value($this->defaultTTL);
@@ -107,8 +94,17 @@ class BatchCache implements CacheInterface
     public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         // Check if all keys are still in memory
-        $memory              = $this->memory->getMultiple($keys, $default);
-        $actualItemsInMemory = count(array_filter($memory));
+        $memory = $this->memory->getMultiple($keys, $default);
+        if (is_array($memory)) {
+            $actualItemsInMemory = count(array_filter($memory));
+        } else {
+            $actualItemsInMemory = 0;
+            foreach ($memory as $value) {
+                if ($value) {
+                    $actualItemsInMemory++;
+                }
+            }
+        }
 
         if ($actualItemsInMemory === count($keys)) {
             return $memory;
@@ -121,7 +117,7 @@ class BatchCache implements CacheInterface
 
         // Add missing values from cache.
         foreach ($this->cache->getMultiple($keys, $default) as $key => $value) {
-            if (null !== $value) {
+            if ($value !== null) {
                 $memory[$key] = $value;
             }
         }
@@ -131,8 +127,10 @@ class BatchCache implements CacheInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param  iterable<string, mixed>  $values
      */
-    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
+    public function setMultiple(iterable $values, null|int|DateInterval $ttl = null): bool
     {
         if (func_num_args() === 1) {
             $ttl = value($this->defaultTTL);

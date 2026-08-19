@@ -29,6 +29,7 @@
         <div class="dropdown-menu-custom">
           <a href="{{route('arsip_admin.home-admin')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
           <a href="{{route('arsip_admin.musnah-admin')}}"><i class="bi bi-trash"></i> Daftar Arsip Musnah</a>
+          <a href="{{route('arsip_admin.permanen-admin')}}"><i class="bi bi-trash"></i> Daftar Arsip Permanen</a>
         </div>
       </li>
       <li>

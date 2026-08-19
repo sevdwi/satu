@@ -36,11 +36,12 @@
       </li>
       <li>
         <a href="">
-          <i class="bi bi-trash3"></i> Arsip Musnah
+          <i class="bi bi-trash3"></i> Arsip M/P
           <i class="bi bi-chevron-down nav-caret"></i>
         </a>
         <div class="dropdown-menu-custom">
           <a href="{{route('arsip.musnah')}}"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
+          <a href="{{route('arsip.permanen')}}"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Permanen</a>
         </div>
       </li>
       <li>
