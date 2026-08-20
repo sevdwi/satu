@@ -11,14 +11,8 @@ class ArsipExport implements FromCollection, WithHeadings
 {
     public function collection(): Collection
     {
-        $user = auth()->user(); // load('opd'); 
         // Pilih kolom spesifik untuk mengurangi beban memori
-        $data_filter = Arsip::select('id', 'nomor', 'judul', 'tanggal')->where('opd_induk_id', $user->opd_induk_id);
-        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
-            $data_filter->where('opd_id', $user->opd_id); 
-        }
-        return $data_filter->latest()->get(); 
-
+        return Arsip::select('id', 'nomor', 'judul', 'tanggal')->get();
     }
 
     public function headings(): array

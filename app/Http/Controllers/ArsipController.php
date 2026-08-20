@@ -770,8 +770,14 @@ class ArsipController extends Controller
 
     public function exportExcel_admin()
     {
+        return Excel::download(new ArsipExportAdmin, 'data_arsip_lengkap.xlsx');
+    }
+
+    public function exportExcel()
+    {
         return Excel::download(new ArsipExport, 'data_arsip_lengkap.xlsx');
     }
+
 
 
 }

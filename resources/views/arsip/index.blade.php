@@ -25,8 +25,13 @@
         <a href="{{route('dashboard')}}" class="active">
           <i class="bi bi-house"></i> Kembali
         </a>
-
       </li>
+      <li>
+        <a href="{{ route('arsip.export')}}" class="active">
+          <i class="bi bi-file-earmark-spreadsheet"></i> export
+        </a>
+      </li>
+
       <!-- <li>
       <a href="{{route('dashboard')}}" class="active">
           <i class="bi bi-house"></i> Beranda
