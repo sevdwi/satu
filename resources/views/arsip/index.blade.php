@@ -110,6 +110,7 @@
                     <th>Deskripsi</th>
                     <th>Tanggal Arsip</th>
                     <th>Unit</th>
+                    <th>Tahap</th>
                     <th>Nomor RAK</th>
                     <th>Nomor Dus</th>
                     <th>File</th>
@@ -169,6 +170,11 @@
                                 -
                             @endif
                         </td>
+
+                        <td>
+                            {{ $item->periode?->tahap ?? '-' }} - {{ $item->periode?->tahun ?? '-' }}
+                        </td>
+
 
                         <!-- Rak (Aman) -->
                         <td>

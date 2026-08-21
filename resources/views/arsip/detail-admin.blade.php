@@ -87,6 +87,7 @@
                     <th>Deskripsi</th>
                     <th>OPD</th>
                     <th>OPD id</th>
+                    <th>Tahap</th>
                     <th>Nomor RAK</th>
                     <th>Nomor Dus</th>
                     <th>Korektor</th>
@@ -124,6 +125,9 @@
                             {{ $item->opd->id }}
                         </td>
 
+                        <td>
+                            {{ $item->periode?->tahap ?? '-' }} - {{ $item->periode?->tahun ?? '-' }}
+                        </td>
 
                         <td>
                             {{ $item->rak_arsip->nomor_rak ?? '-'  }}

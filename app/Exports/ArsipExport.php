@@ -13,7 +13,21 @@ class ArsipExport implements FromCollection, WithHeadings
     {
         $user = auth()->user(); // load('opd'); 
         // Pilih kolom spesifik untuk mengurangi beban memori
-        $data_filter = Arsip::select('id', 'nomor', 'judul', 'tanggal')->where('opd_induk_id', $user->opd_induk_id);
+        $data_filter = Arsip::select(
+            'id', 
+            'judul',
+            'deskripsi',
+            'file',
+            'tahun',
+            'periode_id',
+            'tanggal',
+            'tanggal_musnah',
+            'aktif',
+            'inaktif',
+            'nomor',
+            'status',
+            'pemusnahan'   
+        )->where('opd_induk_id', $user->opd_induk_id);
         if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
             $data_filter->where('opd_id', $user->opd_id); 
         }
@@ -24,10 +38,19 @@ class ArsipExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'ID Sistem',
-            'Nomor Definitif',
-            'Judul Arsip',
-            'Tanggal Buat',
+            'id', 
+            'judul',
+            'deskripsi',
+            'file',
+            'tahun',
+            'periode_id',
+            'tanggal',
+            'tanggal_musnah',
+            'aktif',
+            'inaktif',
+            'nomor',
+            'status',
+            'pemusnahan'   
         ];
     }
 }

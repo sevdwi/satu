@@ -27,6 +27,12 @@ class Periode extends Model
     //     return $this->hasMany(User::class, 'opd_id');
     // }
 
+    public function arsips()
+    {
+        return $this->hasMany(Arsip::class, 'periode_id');
+    }
+
+
     public function opd()
     {
         return $this->belongsTo(Opd::class, 'opd_id');

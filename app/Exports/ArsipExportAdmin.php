@@ -7,21 +7,44 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class ArsipExport implements FromCollection, WithHeadings
+class ArsipExportAdmin implements FromCollection, WithHeadings
 {
     public function collection(): Collection
     {
         // Pilih kolom spesifik untuk mengurangi beban memori
-        return Arsip::select('id', 'nomor', 'judul', 'tanggal')->get();
+        return Arsip::select(
+            'id', 
+            'judul',
+            'deskripsi',
+            'file',
+            'tahun',
+            'periode_id',
+            'tanggal',
+            'tanggal_musnah',
+            'aktif',
+            'inaktif',
+            'nomor',
+            'status',
+            'pemusnahan'   
+        )->get();
     }
 
     public function headings(): array
     {
         return [
-            'ID Sistem',
-            'Nomor Definitif',
-            'Judul Arsip',
-            'Tanggal Buat',
+            'id', 
+            'judul',
+            'deskripsi',
+            'file',
+            'tahun',
+            'periode_id',
+            'tanggal',
+            'tanggal_musnah',
+            'aktif',
+            'inaktif',
+            'nomor',
+            'status',
+            'pemusnahan'   
         ];
     }
 }

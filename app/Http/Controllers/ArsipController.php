@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Exports\ArsipExport;
+use App\Exports\ArsipExportAdmin;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -109,7 +110,8 @@ class ArsipController extends Controller
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus',
-            'rak_arsip:id,nomor_rak'
+            'rak_arsip:id,nomor_rak',
+            'periode:id,tahun,tahap,status'
         ])
         ->where('opd_induk_id', $userOpdId); // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
         // Cek kondisi Unit Kerja user
@@ -270,7 +272,8 @@ class ArsipController extends Controller
             'masterKode:id,kode,nama',
             'user:id,name,email',
             'dus_arsip:id,nomor_dus',
-            'rak_arsip:id,nomor_rak'
+            'rak_arsip:id,nomor_rak',
+            'periode:id,tahun,tahap,status'
         ])
         ->where('opd_induk_id', $opd_induk_id) // Menyaring berdasarkan OPD Induk
         // ->where('status', '!=', 'inaktif')
