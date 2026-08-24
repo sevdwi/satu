@@ -163,121 +163,15 @@
 
                         </td>
 
-                        <!-- <td>
-                            @if($item->file)
-
-                                <button class="btn btn-info btn-sm form-control btn-view-pdf"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#pdfModal"
-                                        data-file="{{ asset('arsip/'.$item->file) }}">
-                                    <i class="fa fa-book"></i> Lihat File
-                                </button>
-
-                                <button class="btn btn-primary btn-sm form-control btn-upload"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#uploadModal"
-                                        data-id="{{ $item->id }}">
-                                    <i class="fa fa-upload"></i>
-                                </button>
-
-                            @else
-
-                                <button class="btn btn-primary btn-sm form-control btn-upload"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#uploadModal"
-                                        data-id="{{ $item->id }}">
-                                    <i class="fa fa-upload"></i>
-                                </button>
-
-                            @endif
-                        </td>  -->
-
-                        <!-- <td>
-                            <a href="{{ route('arsip_admin.edit', $item->id) }}"
-                            class="btn btn-warning btn-sm mb-2">
-                                Edit
-                            </a>
-
-                            <form action="{{ route('arsip_admin.destroy', $item->id) }}"
-                                method="POST"
-                                class="d-inline">
-
-                                @csrf
-                                @method('DELETE')
-
-                                <button class="btn btn-danger btn-sm mb-2"
-                                        onclick="return confirm('Hapus data?')">
-
-                                    Hapus
-
-                                </button>
-
-                            </form>
-
-                        </td> -->
-
                     </tr>
 
                 @empty
-
-                    <!-- <tr>
-                        <td colspan="11" class="text-center">
-                            Data kosong
-                        </td>
-                    </tr> -->
 
                 @endforelse
 
             </tbody>
 
         </table> 
-        </div>
-        <div class="modal fade" id="pdfModal" tabindex="-1">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Preview File</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body p-0" style="height: 80vh;">
-                        <iframe id="pdfFrame"
-                                src=""
-                                width="100%"
-                                height="100%"
-                                style="border:none;">
-                        </iframe>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="uploadModal" tabindex="-1">
-            <div class="modal-dialog">
-                <form action="{{ route('arsip_admin.uploads') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <input type="hidden" name="id" id="upload_id">
-
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h5 class="modal-title">Upload Dokumen</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <input type="file" name="file" class="form-control" required>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-success">Upload</button>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>

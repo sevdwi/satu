@@ -97,7 +97,7 @@
             <div class="col-md-6 mt-3">
                 <label>Status</label>
                 <select name="status" id="status" class="form-input @error('status') is-invalid @enderror" required>
-                    <option value="" disabled {{ (old('status') ?? $data_periode->status) == '' ? 'selected' : '' }}>-- Pilih Tahap --</option>
+                    <option value="" disabled {{ (old('status') ?? $data_periode->status) == '' ? 'selected' : '' }}>-- Pilih Status --</option>
                     <option value="buka" {{ (old('status') ?? $data_periode->status) == 'buka' ? 'selected' : '' }}>buka</option>
                     <option value="tutup" {{ (old('status') ?? $data_periode->status) == 'tutup' ? 'selected' : '' }}>tutup</option>
                 </select>

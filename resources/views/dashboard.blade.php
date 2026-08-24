@@ -58,7 +58,7 @@
       <!-- <li style="color:#4A9CC7;font-size: .75rem;" >
       </li> -->
       <li>
-        <a href="{{ route('periode.edit', auth()->guard('web')->user()->opd_id) }}">
+        <a href="{{ route('periode.index') }}">
           <i class="bi bi-bar-chart-steps"></i> Tahap 
           <!-- <i class="bi bi-chevron-down nav-caret"></i> -->
         </a>
@@ -167,6 +167,13 @@
       <div>
         <div class="stat-num">{{ $total_lewat}} arsip</div>
         <div class="stat-label">Usul Musnah</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon green"><i class="bi bi-ladder"></i></div>
+      <div>
+        <div class="stat-num"> Tahap -  {{ $periodes->tahap}}</div>
+        <div class="stat-label">Periode</div>
       </div>
     </div>
     <div class="stat-item">

@@ -31,12 +31,6 @@
           <i class="bi bi-file-earmark-spreadsheet"></i> export
         </a>
       </li>
-
-      <!-- <li>
-      <a href="{{route('dashboard')}}" class="active">
-          <i class="bi bi-house"></i> Beranda
-        </a>
-      </li> -->
     </ul>
     
 
@@ -208,35 +202,6 @@
                             @endswitch
                         </td>
 
-                        <!-- <td>
-                            @if($item->file)
-
-                                <button class="btn btn-info btn-sm form-control btn-view-pdf"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#pdfModal"
-                                        data-file="{{ asset('arsip/'.$item->file) }}">
-                                    <i class="fa fa-book"></i> Lihat File
-                                </button>
-
-                                <button class="btn btn-primary btn-sm form-control btn-upload"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#uploadModal"
-                                        data-id="{{ $item->id }}">
-                                    <i class="fa fa-upload"></i>
-                                </button>
-
-                            @else
-
-                                <button class="btn btn-primary btn-sm form-control btn-upload"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#uploadModal"
-                                        data-id="{{ $item->id }}">
-                                    <i class="fa fa-upload"></i>
-                                </button>
-
-                            @endif
-                        </td>  -->
-
                         <td>
 
                             <a href="{{ route('arsip.edit', $item->id) }}"
@@ -272,64 +237,11 @@
 
                 @empty
 
-                    <tr>
-                        <td colspan="11" class="text-center">
-                            Data kosong
-                        </td>
-                    </tr>
-
                 @endforelse
 
             </tbody>
 
         </table> 
-        </div>
-        <div class="modal fade" id="pdfModal" tabindex="-1">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Preview File</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body p-0" style="height: 80vh;">
-                        <iframe id="pdfFrame"
-                                src=""
-                                width="100%"
-                                height="100%"
-                                style="border:none;">
-                        </iframe>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="uploadModal" tabindex="-1">
-            <div class="modal-dialog">
-                <form action="{{ route('arsip.uploads') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <input type="hidden" name="id" id="upload_id">
-
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h5 class="modal-title">Upload Dokumen</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <input type="file" name="file" class="form-control" required>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-success">Upload</button>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>

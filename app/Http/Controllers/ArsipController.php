@@ -137,7 +137,7 @@ class ArsipController extends Controller
     {
         // Ambil data user yang sedang login beserta id OPD-nya
         // $user = auth()->user(); 
-        $user = auth()->user()->opd; // load('opd'); 
+        $user = auth()->user(); // load('user'); 
         
         // ambil id user untuk kode sementara
         $userid = auth()->id();
@@ -171,8 +171,7 @@ class ArsipController extends Controller
     public function musnah()
     {
         // Ambil data user yang sedang login beserta id OPD-nya
-        // $user = auth()->user(); 
-        $user = auth()->user()->opd; // load('opd'); 
+        $user = auth()->user(); // load('user'); 
         
         // ambil id user untuk kode sementara
         $userid = auth()->id();
@@ -206,8 +205,7 @@ class ArsipController extends Controller
     public function permanen()
     {
         // Ambil data user yang sedang login beserta id OPD-nya
-        // $user = auth()->user(); 
-        $user = auth()->user()->opd; // load('opd'); 
+        $user = auth()->user(); // load('user'); 
         
         // ambil id user untuk kode sementara
         $userid = auth()->id();

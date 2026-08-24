@@ -110,7 +110,7 @@
                         </td>
 
                         <td>
-                            {{ $item->tanggal_musnah }}
+                            {{ $item->tanggal_musnah ?? '-' }}
                         </td>
 
                         <td>
@@ -160,22 +160,22 @@
                         </td>
 
                         <td>
-                            {{ $item->tanggal }}
+                            {{ $item->tanggal ?? '-'}}
                         </td>
 
 
                         <td>
-                            {{ $item->judul }}
+                            {{ $item->judul ?? '-' }}
                         </td>
 
                         <td>
-                            {{ $item->deskripsi }}
+                            {{ $item->deskripsi ?? '-' }}
                         </td>
 
                         <!-- OPD (Sudah Diperbaiki & Aman dari null) -->
                         <td>
                             @if($item->opd)
-                                {{ $item->opd->singkatan_uk }} - {{ $item->opd->singkatan_instansi }}
+                                {{ $item->opd->singkatan_uk ?? '-'}} - {{ $item->opd->singkatan_instansi ?? '-'}}
                             @else
                                 -
                             @endif
@@ -231,38 +231,11 @@
 
                 @empty
 
-                    <tr>
-                        <td colspan="11" class="text-center">
-                            Data kosong
-                        </td>
-                    </tr>
-
                 @endforelse
 
             </tbody>
 
         </table> 
-        </div>
-        <div class="modal fade" id="pdfModal" tabindex="-1">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Preview File</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body p-0" style="height: 80vh;">
-                        <iframe id="pdfFrame"
-                                src=""
-                                width="100%"
-                                height="100%"
-                                style="border:none;">
-                        </iframe>
-                    </div>
-
-                </div>
-            </div>
         </div>
     </div>
 </div>

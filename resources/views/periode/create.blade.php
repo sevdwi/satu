@@ -54,50 +54,71 @@
 
     <h3>Tambah Tahap Arsip</h3>
 
-    <form action="{{ route('rak_arsip.store') }}"
+    <form action="{{ route('periode.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf 
 
-        <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
+        <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
+        
+      <div class="row mt-3 ms-2 me-2">
 
-        <div class="mb-3">
-            <label>Unit Kerja</label>
-
-            <select name="opd_id" class="form-control  ">
-
-                <option value="0">-- Pilih --</option>
-                @foreach($opds as $opd)
-
-                <option value="{{ $opd->id }}">
-                {{ $opd->unit_kerja }}
-                </option>
-                
-                @endforeach
-
-            </select>
+        <div class="col-md-6 mt-3">
+            <label>Unit</label>
+            <input type="text" name="opd_id" value="{{ auth()->user()->opd_id }}" class="form-control" disabled>
         </div>
 
-        <div class="mb-3">
-            <label>Nomor Rak</label>
-
-            <input type="text"
-                   name="nomor_rak"
-                   class="form-control">
+        <div class="col-md-6 mt-3">
+            <label>Unit</label>
+            <input type="text" name="opd_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
         </div>  
 
-        <button class="btn btn-primary">
-            Simpan
-        </button>
+        <div class="col-md-6 mt-3">
+            <label>Unit</label>
+            <input type="text" name="opd_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
+        </div>  
 
-        <a href="{{ route('rak_arsip.index') }}"
-           class="btn btn-secondary">
+        <div class="col-md-6 mt-3">
+            <label>Tahun</label>
+            <input type="text" name="tahun" value="{{ date('Y'); }}" class="form-control" readonly>
+        </div>
 
-            Kembali
+        <div class="col-md-6 mt-3">
+            <label>Tahap</label>
+            <select name="tahap" id="tahap" class="form-input @error('tahap') is-invalid @enderror" required>
+                <option value="" disabled {{ old('tahap') == '' ? 'selected' : '' }}>-- Pilih Tahap --</option>
+                <option value="1" {{ old('tahap') == '1' ? 'selected' : '' }}>1</option>
+                <!-- <option value="2" {{ old('tahap') == '2' ? 'selected' : '' }}>2</option>
+                <option value="3" {{ old('tahap') == '3' ? 'selected' : '' }}>3</option>
+                <option value="4" {{ old('tahap') == '4' ? 'selected' : '' }}>4</option> -->
+            </select>
+            @error('tahap')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
-        </a>
+        <!-- kss -->
+        <div class="col-md-6 mt-3">
+            <label>Status</label>
+            <select name="status" id="status" class="form-input @error('status') is-invalid @enderror" required>
+                <option value="" disabled {{ old('status') == '' ? 'selected' : '' }}>-- Pilih Status --</option>
+                <option value="buka" {{ old('status') == 'buka' ? 'selected' : '' }}>buka</option>
+                <!-- <option value="tutup" {{ old('status') == 'tutup' ? 'selected' : '' }}>tutup</option> -->
+            </select>
+            @error('status')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
+        <div class="mt-5 mb-5 ">
+            <button class="btn btn-primary">
+                Simpan
+            </button>
+        </div>
+
+
+      </div>
     </form>
 
 </div>
@@ -109,57 +130,4 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-$(document).ready(function () {  
-    /*
-    |--------------------------------------------------------------------------
-    | SELECT OPD
-    |--------------------------------------------------------------------------
-    */
-
-    $('.select-opd').select2({
-
-    placeholder: 'Cari OPD...',
-    allowClear: true,
-    minimumInputLength: 3,
-
-    ajax: {
-
-        url: "{{ route('opd.search') }}",
-
-        type: 'GET',
-
-        dataType: 'json',
-
-        delay: 250,
-
-        data: function (params) {
-
-            return {
-                q: params.term,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            };
-        },
-
-        processResults: function (data) {
-
-            return {
-                results: $.map(data, function(item) {
-
-                    return {
-                        id: item.id,
-                        text: item.unit_kerja + ' - ' + item.instansi
-                    }
-
-                })
-            };
-        },
-
-        cache: true
-    }
-
-});
-
-});
-</script>
 @endsection

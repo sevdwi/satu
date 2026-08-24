@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Opd;
 use App\Models\Arsip;
+use App\Models\Periode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,9 +24,12 @@ class CustomerController extends Controller
     
     // Ambil id user untuk kode sementara
     $userid = auth()->id();
+    $user = auth()->user(); 
 
     // Pastikan nama kolom 'opd_id' sesuai di tabel users
     $userOpdId = $userfilter->opd_induk_id; 
+
+    $periodes = Periode::where('opd_id', $user->opd_id)->latest('id')->first();
            
     $data_filter = Arsip::with([
         'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -66,7 +70,7 @@ class CustomerController extends Controller
 
 
     // Kirim variabel 'labels' dan 'totals' ke view
-    return view('dashboard', compact('user','data', 'userid', 'labels', 'totals','jumlah_data','total_lewat'));
+    return view('dashboard', compact('user','data', 'userid', 'labels', 'totals','jumlah_data','total_lewat','periodes'));
     }
 
     public function edit(User $user)

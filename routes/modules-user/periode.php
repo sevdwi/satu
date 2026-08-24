@@ -7,7 +7,7 @@ use App\Http\Controllers\PeriodeController;
 Route::prefix('periode')->name('periode.')->group(function () {
 
     // 1. Menampilkan halaman utama (daftar data)
-    // Route::get('/', [PeriodeController::class, 'index'])->name('index');
+    Route::get('/', [PeriodeController::class, 'index'])->name('index');
 
     // Route::get('/data/{periode?}', [PeriodeController::class, 'index'])->name('home');
     // Route::get('/manuver', [PeriodeController::class, 'manuver'])->name('manuver');

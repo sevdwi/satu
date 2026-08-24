@@ -65,9 +65,6 @@
                 <div class="card-subtitle">Kelola seluruh data arsip</div>
                 </div>
             </div>
-            <!-- <a href="{{ route('arsip.create') }}" class="btn-add">
-                <i class="bi bi-plus-lg"></i> Tambah Arsip
-            </a> -->
         </div>
 
 
@@ -119,64 +116,17 @@
 
                 @empty
 
-                    <tr>
+                    <!-- <tr>
                         <td colspan="11" class="text-center">
                             Data kosong
                         </td>
-                    </tr>
+                    </tr> -->
 
                 @endforelse
 
             </tbody>
 
         </table> 
-        </div>
-        <div class="modal fade" id="pdfModal" tabindex="-1">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Preview File</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body p-0" style="height: 80vh;">
-                        <iframe id="pdfFrame"
-                                src=""
-                                width="100%"
-                                height="100%"
-                                style="border:none;">
-                        </iframe>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="uploadModal" tabindex="-1">
-            <div class="modal-dialog">
-                <form action="{{ route('arsip.uploads') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <input type="hidden" name="id" id="upload_id">
-
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h5 class="modal-title">Upload Dokumen</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <input type="file" name="file" class="form-control" required>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-success">Upload</button>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>

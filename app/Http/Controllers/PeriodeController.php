@@ -10,10 +10,20 @@ class PeriodeController extends Controller
 {
     public function index()
     {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+        // $userUnit = $user->opd_id;
+
+
         // Mengambil semua data periode beserta nama OPD-nya
-        $periodes = Periode::with([
-            'opd:id,nama_opd' // WAJIB sertakan id tabel induk agar bisa dicocokkan dengan opd_id
-        ])->get();
+        $data_filter = Periode::with([
+            'opd:id,unit_kerja' // WAJIB sertakan id tabel induk agar bisa dicocokkan dengan opd_id
+        ]);
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }        
+        $periodes = $data_filter->latest('id')->get();    
+
     
         return view('periode.index', compact('periodes'));
     }
@@ -23,7 +33,7 @@ class PeriodeController extends Controller
         // $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
         // $opd_induks = Opd_Induk::all();
         $opds = Opd::all();
-        return view('opd_induk.create', compact('opds','opd_induks'));
+        return view('periode.create', compact('opds'));
     }
 
     public function store(Request $request)
