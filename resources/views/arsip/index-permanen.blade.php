@@ -146,12 +146,7 @@
                         
 
                         <td>
-                            {{ $item->nomor?? '-' }} - 
-                            <a href="{{ route('arsip.edit-nomor', $item->id) }}"
-                            class="btn btn-warning btn-sm mb-2">
-                                Edit nomor
-                            </a>
-
+                            {{ $item->nomor?? '-' }}
                         </td>
 
                         <!-- Kode Master (Aman) -->
