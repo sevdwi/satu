@@ -42,6 +42,10 @@ class AdminUserController extends Controller
 
         return redirect()->route('login-admin');
     }
+    public function show(User $user)
+    {
+        return view('admin.users.show', compact('user'));
+    }
 
     // form edit
     public function edit(User $user)
