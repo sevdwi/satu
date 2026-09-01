@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dus_arsip;
-use App\Models\Rak_arsip;
+use App\Models\Dus_Arsip;
+use App\Models\Rak_Arsip;
 use App\Models\Opd;
+use App\Models\Opd_Induk;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class DusArsipController extends Controller
 {
@@ -14,9 +18,19 @@ class DusArsipController extends Controller
      */
     public function index()
     {
-        $data = Dus_arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
-        ])->latest()->get(); 
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+
+        $data = Dus_Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi,kode_instansi',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('opd_induk_id', $userOpdId)
+        ->get(); 
 
         return view('dus_arsip.index', compact('data'
         ));
@@ -26,7 +40,7 @@ class DusArsipController extends Controller
 
         $q = $request->q;
  
-        $data = Dus_arsip::with([
+        $data = Dus_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'rak_arsip:id,nomor_rak'
         ])
@@ -46,9 +60,28 @@ class DusArsipController extends Controller
 
         return response()->json($data);
     }
+    public function search2(Request $request){
+
+        $q = $request->q;
+ 
+        $data = Dus_Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('nomor_dus', 'like', "%{$q}%")
+        ->orWhere('opd_id', 'like', "%{$q}%")
+        ->orWhereHas('rak_arsip', function ($query) use ($q) {
+            $query->where('nomor_rak', 'like', "%{$q}%"); 
+        })
+        ->limit(20)
+        ->get();
+
+        return response()->json($data);
+    }
+
     public function dashbord()
     {
-        $data = Dus_arsip::with([
+        $data = Dus_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
         ])->latest()->get(); 
 
@@ -62,7 +95,16 @@ class DusArsipController extends Controller
      */
     public function create()
     {
-        $opds = Opd::all(); 
+        $user = auth()->user();
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+
+        $opds = Opd::where('opd_induk_id', $userOpdId)->get();;
 
         return view('dus_arsip.create', compact(
             'opds' 
@@ -75,10 +117,12 @@ class DusArsipController extends Controller
     public function store(Request $request)
     { 
         try { 
-            $data = Dus_arsip::create([
-                'nomor_rak' => $request->nomor_rak, 
+            $data = Dus_Arsip::create([
+                'rak_arsip_id' => $request->rak_arsip_id, 
                 'nomor_dus' => $request->nomor_dus, 
                 'opd_id' => $request->opd_id, 
+                'opd_induk_id' => $request->opd_induk_id, 
+
             ]);
             return redirect()->route('dus_arsip.index')
                 ->with('success', 'Data berhasil ditambahkan!');  
@@ -105,21 +149,33 @@ class DusArsipController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Dus_arsip $dus_arsip)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find data by ID, will return 404 error if not found
+            $dus = Dus_Arsip::findOrFail($id);
+            
+            // Delete data from database
+            $dus->delete();
+    
+            return redirect()->route('dus_arsip.index')
+                ->with('success', 'Data berhasil dihapus!');  
+        } catch (\Throwable $e) {
+            // Display error message if delete process fails
+            dd($e->getMessage());
+        }
     }
     public function edit($id)
     { 
-        $data = Dus_arsip::with([ 
+        $data = Dus_Arsip::with([ 
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'rak_arsip:id,nomor_rak,opd_id'
         ])->findOrFail($id);
 
         $opds       = Opd::all(); 
-        $rak_arsips = Rak_arsip::with([ 
+        $rak_arsips = Rak_Arsip::with([ 
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi', 
-        ])->latest()->get(); 
+        ])->get(); 
 
         return view('dus_arsip.edit', compact('id',
             'data',
@@ -133,7 +189,7 @@ class DusArsipController extends Controller
      */
     public function update(Request $request, $id)
     { 
-        $arsip = Dus_arsip::findOrFail($id); 
+        $arsip = Dus_Arsip::findOrFail($id); 
         $arsip->update([ 
                 'nomor_dus' => $request->nomor_dus, 
                 'nomor_rak' => $request->nomor_rak, 

@@ -3,26 +3,23 @@
 namespace Maatwebsite\Excel\Cache;
 
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use Psr\SimpleCache\CacheInterface;
 
-class MemoryCacheDeprecated implements CacheInterface
+/**
+ * Used when psr/simple-cache is ^1.0 or ^2.0.
+ *
+ * CacheInterface method signatures must stay untyped so they remain compatible
+ * with all supported psr/simple-cache major versions. Do not add native types here.
+ */
+class MemoryCacheDeprecated implements MemoryInterface
 {
     /**
-     * @var int|null
+     * @var array<string, mixed>
      */
-    protected $memoryLimit;
+    protected array $cache = [];
 
-    /**
-     * @var array
-     */
-    protected $cache = [];
-
-    /**
-     * @param  int|null  $memoryLimit
-     */
-    public function __construct(?int $memoryLimit = null)
-    {
-        $this->memoryLimit = $memoryLimit;
+    public function __construct(
+        protected ?int $memoryLimit = null,
+    ) {
     }
 
     /**
@@ -47,6 +44,8 @@ class MemoryCacheDeprecated implements CacheInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param  iterable<string>  $keys
      */
     public function deleteMultiple($keys)
     {
@@ -71,6 +70,9 @@ class MemoryCacheDeprecated implements CacheInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param  iterable<string>  $keys
+     * @return iterable<string, mixed>
      */
     public function getMultiple($keys, $default = null)
     {
@@ -91,7 +93,9 @@ class MemoryCacheDeprecated implements CacheInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param  string  $key
+     * @param  mixed  $value
+     * @param  null|int|\DateInterval  $ttl
      */
     public function set($key, $value, $ttl = null)
     {
@@ -101,7 +105,8 @@ class MemoryCacheDeprecated implements CacheInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param  iterable<string, mixed>  $values
+     * @param  null|int|\DateInterval  $ttl
      */
     public function setMultiple($values, $ttl = null)
     {
@@ -112,22 +117,16 @@ class MemoryCacheDeprecated implements CacheInterface
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function reachedMemoryLimit(): bool
     {
         // When no limit is given, we'll never reach any limit.
-        if (null === $this->memoryLimit) {
+        if ($this->memoryLimit === null) {
             return false;
         }
 
         return count($this->cache) >= $this->memoryLimit;
     }
 
-    /**
-     * @return array
-     */
     public function flush(): array
     {
         $memory = $this->cache;

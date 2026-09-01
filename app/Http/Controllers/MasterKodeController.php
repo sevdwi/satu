@@ -16,18 +16,30 @@ class MasterKodeController extends Controller
 
         return view('master-kodes.index', compact('data'));
     }
-    public function search2(Request $request)
-    {
-        $q = $request->q; 
+    // public function search2(Request $request)
+    // {
+    //     $q = $request->q; 
 
+    //     $data = MasterKode::where('kode', 'like', "%$q%")
+    //         ->orWhere('nama', 'like', "%$q%")
+    //         ->orWhere('keterangan', 'like', "%$q%") 
+    //         ->limit(20)
+    //         ->get();
+
+    //     return response()->json($data);
+    // }
+    public function search(Request $request)
+    {
+        $q = $request->q;
+ 
         $data = MasterKode::where('kode', 'like', "%$q%")
             ->orWhere('nama', 'like', "%$q%")
-            ->orWhere('keterangan', 'like', "%$q%") 
             ->limit(20)
             ->get();
 
         return response()->json($data);
     }
+
     public function edit($id)
     {
         $data = MasterKode::findOrFail($id);
@@ -43,25 +55,26 @@ class MasterKodeController extends Controller
 
         return view('master-kodes.create', compact('data','parents'));
     } 
-    public function search(Request $request)
-    {
-        $q = $request->q;
-        $currentId = $request->current_id;
+    // public function search(Request $request)
+    // {
+    //     $q = $request->q;
+    //     $currentId = $request->current_id;
 
-        $query = MasterKode::query()
-            ->select('id', 'kode', 'nama')
-            ->where(function ($x) use ($q) {
-                $x->where('nama', 'like', "%{$q}%")
-                  ->orWhere('kode', 'like', "%{$q}%");
-            });
+    //     $query = MasterKode::query()
+    //         ->select('id', 'kode', 'nama')
+    //         ->where(function ($x) use ($q) {
+    //             $x->where('nama', 'like', "%{$q}%")
+    //               ->orWhere('kode', 'like', "%{$q}%");
+    //         });
 
-        // ❌ jangan tampilkan dirinya sendiri saat edit
-        if ($currentId) {
-            $query->where('id', '!=', $currentId);
-        }
+    //     // ❌ jangan tampilkan dirinya sendiri saat edit
+    //     if ($currentId) {
+    //         $query->where('id', '!=', $currentId);
+    //     }
 
-        return $query->limit(20)->get();
-    }
+    //     return $query->limit(20)->get();
+    // }
+    
     public function getdataajax()
     {
         $data = MasterKode::with('parent', 'children')
@@ -241,4 +254,54 @@ class MasterKodeController extends Controller
             'message' => 'Data berhasil dihapus'
         ]);
     }
+
+    public function import()
+    {
+        return view('master-kodes.import');
+    }
+
+    public function store_import(Request $request)
+    {
+        // Sistem memvalidasi fail masukan
+        $request->validate([
+            'file' => 'required|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('file');
+        $fileHandle = fopen($file->getRealPath(), 'r');
+
+        // Program melewati baris pertama jika CSV memiliki tajuk (header)
+        fgetcsv($fileHandle);
+
+        // Program mengulang setiap baris data
+        // Program mengulang setiap baris data
+        while (($row = fgetcsv($fileHandle, 1000, ',')) !== false) {
+            // Program menyiapkan array asosiatif tanpa kolom id
+            $data = [
+                'is_parent'  => $row[1],
+                'parent_id'  => (empty($row[2]) || $row[2] == 0) ? null : (int) $row[2],
+                'level'      => empty($row[3]) ? 0 : (int) $row[3],
+                'kode'       => $row[4],
+                'nama'       => $row[5],
+                'aktif'      => empty($row[6]) ? null : (int) $row[6],
+                'inaktif'    => empty($row[7]) ? null : (int) $row[7],
+                'keterangan' => empty($row[8]) ? null : $row[8],
+            ];
+
+            // Program memvalidasi eksistensi data ID pada baris CSV
+            $id = empty($row[0]) ? null : (int) $row[0];
+
+            // Program menyisipkan kunci id hanya jika data tersedia
+            if ($id !== null) {
+                $data['id'] = $id;
+            }
+
+            // Sistem menyimpan data ke pangkalan data MySQL
+            MasterKode::create($data);
+        }
+        return back()->with('success', 'Sistem berhasil mengimpor data CSV ke MySQL.');
+    }
+
+
+
 }

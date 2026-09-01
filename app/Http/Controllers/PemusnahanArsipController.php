@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pemusnahan_arsip;
+use App\Models\Pemusnahan_Arsip;
 use App\Models\Opd;
 use App\Models\Arsip;
 use App\Models\MasterKode;
@@ -16,7 +16,7 @@ class PemusnahanArsipController extends Controller
      */
     public function index()
     {
-        $data = Pemusnahan_arsip::with([
+        $data = Pemusnahan_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email'
@@ -36,7 +36,7 @@ class PemusnahanArsipController extends Controller
                 'file_ba' => 'required|mimes:pdf|max:51200', // 50 MB
             ]);
 
-            $data = Pemusnahan_arsip::findOrFail($request->id);
+            $data = Pemusnahan_Arsip::findOrFail($request->id);
 
             $file = $request->file('file_ba');
 
@@ -110,7 +110,7 @@ class PemusnahanArsipController extends Controller
     {
         // $opds = Opd::all();
         $arsip = Arsip::all();
-        $data = Pemusnahan_arsip::with([
+        $data = Pemusnahan_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
@@ -146,7 +146,7 @@ class PemusnahanArsipController extends Controller
                 ->with('error', 'wajib ada nomoor arsip!'); 
             }
             // dd($request->all()); 
-            $dataa = Pemusnahan_arsip::create([
+            $dataa = Pemusnahan_Arsip::create([
                 'id_arsip'  => $data->id,
                 'pemusnahan'=> $request->tanggal_pemusnahan,
                 'no_ba'     => $request->no_ba,
@@ -186,7 +186,7 @@ class PemusnahanArsipController extends Controller
      */
     public function show($id)
     {  
-        $data = Pemusnahan_arsip::with([
+        $data = Pemusnahan_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email'

@@ -1,0 +1,193 @@
+@extends('layouts.head')
+@section('content')
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+
+ <nav class="navbar-custom">
+  <div class="navbar-inner">
+
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('dashboard-admin')}}" class="active">
+          <i class="bi bi-house"></i> Kembali
+        </a>
+      </li>
+      <li>
+        <a href="{{ route('arsip_admin.export-admin')}}" class="active">
+          <i class="bi bi-file-earmark-spreadsheet"></i> export
+        </a>
+      </li>
+
+    </ul>
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('admin')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <!-- <a href="#"><i class="bi bi-person"></i> Profil Saya</a>
+        <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a> -->
+        <form action="{{ route('logout-admin') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="card-custom">
+        <!-- Card Header -->
+        <div class="card-top">
+            <div class="card-top-left">
+                <div class="card-icon"><i class="bi bi-archive"></i></div>
+                <div>
+                <div class="card-subtitle">Kelola seluruh data arsip</div>
+                </div>
+            </div>
+        </div>
+
+
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+    
+        <!-- Table -->
+        <div class="table-wrap mt-2 p-2 ">
+        <table id="arsipTable" class="tbl table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>OPD id</th>
+                    <th>instansi</th>
+                    <th width="180">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody id="tableBody">
+
+                @forelse($opd_induk as $item)
+
+                    <tr>
+
+                        <td>{{ $loop->iteration }}</td>
+
+                        <td>
+                            {{ $item->id }}
+                        </td>
+
+                        <td>
+                            {{ $item->instansi }}
+                        </td>
+
+                        <td>
+                            <a href="{{ route('arsip_admin.detail-admin', $item->id) }}"
+                            class="btn btn-warning btn-sm mb-2">
+                                Daftar Lengkap
+                            </a>
+                            <!-- <button class="btn btn-secondary btn-sm mb-2" disabled>Tidak Ada OPD</button> -->
+                       
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <!-- <tr>
+                        <td colspan="11" class="text-center">
+                            Data kosong
+                        </td>
+                    </tr> -->
+
+                @endforelse
+
+            </tbody>
+
+        </table> 
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#arsipTable').DataTable({
+            responsive: true,
+            pageLength: 10,
+            ordering: true,
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Data tidak ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                infoEmpty: "Tidak ada data",
+                paginate: {
+                    first: "Awal",
+                    last: "Akhir",
+                    next: "→",
+                    previous: "←"
+                }
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+
+    // OPEN PDF
+    document.querySelectorAll('.btn-view-pdf').forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            let file = this.dataset.file;
+
+            document.getElementById('pdfFrame').src = file;
+
+        });
+    });
+
+    // OPEN UPLOAD
+    document.querySelectorAll('.btn-upload').forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            let id = this.dataset.id;
+
+            document.getElementById('upload_id').value = id;
+
+        });
+    });
+
+    // CLEAN IFRAME
+    document.getElementById('pdfModal')
+        .addEventListener('hidden.bs.modal', function () {
+
+            document.getElementById('pdfFrame').src = '';
+
+        });
+
+});
+</script>
+
+@endsection

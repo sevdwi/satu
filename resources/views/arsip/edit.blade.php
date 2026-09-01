@@ -1,188 +1,264 @@
-@extends('layouts.administrator')
+@extends('layouts.head_customer')
 
-@section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@section('content') 
+<?php 
+use Carbon\Carbon;
+?>
+<nav class="navbar-custom">
+  <div class="navbar-inner">
 
-</head>
-<body>
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('arsip.home')}}" class="active">
+          <i class="bi bi-house"></i> Kembali
+        </a>
+
+      </li>
+    </ul>
+    
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <i class="bi">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+        </i>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
+</nav>
 
 <div class="container mt-4">
 
-    <h3>Tambah Arsip</h3>
+    <h3>Edit Arsip</h3>
 
     <form action="{{ route('arsip.update',$id) }}"
           method="POST"
           enctype="multipart/form-data">
 
         @csrf
+        @method('PUT')
+
+        <input type="hidden" name="id" value="{{$id}}">
+        <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
+        <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
+        <input type="hidden" name="periode_id" value="{{ $periodes->id }}">
+
         <div class="row">
 
-        <div class="col-md-6">
-            <label>Kode Arsip</label>
-            <input type="hidden" name="id" value="{{$id}}">
+            <div class="col-md-6 mt-3">
+                <label>OPD</label>
+                <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd_induk?->instansi }}" class="form-control" disabled>
+            </div>
 
-            <select name="master_kode_id" class="form-control  select-master-kode">
+            <div class="col-md-6 mt-3">
+                <label>Unit</label>
+                <input type="text" name="opd_induk_id" value="{{ auth()->user()->opd?->unit_kerja }}" class="form-control" disabled>
+            </div>
 
-                <option value="">-- Pilih Kode --</option>
+            <div class="col-md-6 mt-3">
+                <label>Tahun</label>
+                <input type="text" name="tahun" value="{{ date('Y'); }}" class="form-control" disabled>
+            </div>
 
-                @foreach($masterKodes as $kode)
+            <div class="col-md-6 mt-3">
+                <label>Tahap</label>
+                <input type="text" name="tahap" value="{{ $periodes->tahap }} - {{ $periodes->status }}" class="form-control" disabled>
+            </div>
 
-                    <option value="{{ $kode->id }}" <?php if($kode->id==$data->master_kode_id){?>selected<?php }?>>
 
-                        {{ $data->masterKode->kode }} - {{ $data->masterKode->nama }}
+            <div class="col-md-6 mt-3">
+                <label>File</label>
 
-                    </option>
+                <input type="text"
+                    name="file"
+                    class="form-control"
+                    value="{{$data->file}}">
+            </div>
 
-                @endforeach
+            <div class="col-md-6 mt-3">
+                <label>Redaksi</label>
 
-            </select>
+                <input type="text"
+                    name="judul"
+                    class="form-control"
+                    value="{{$data->judul}}">
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Nomor Arsip</label>
+
+                <input type="text"
+                    name="nomor"
+                    class="form-control"
+                    value="{{$data->nomor}}">
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Kode Klasifikasi</label>
+                <select name="master_kode_id" id="master_kode_id" class="form-select form-select-sm  @error('master_kode_id') is-invalid @enderror"  required aria-label="Large select example"> 
+                    <option value="" data-aktif="0" data-inaktif="0" data-keterangan="">-- Pilih Kode --</option> 
+                    @foreach($masterKodes as $kode) 
+                        <option value="{{ $kode->id }}" 
+                                data-aktif="{{ $kode->aktif }}" 
+                                data-inaktif="{{ $kode->inaktif }}" 
+                                data-keterangan="{{ $kode->keterangan }}"
+                                @selected($kode->id == (old('master_kode_id') ?? $data->master_kode_id))> 
+                            {{ $kode->kode }} - {{ $kode->nama }} 
+                        </option> 
+                    @endforeach 
+                </select>
+                    @error('master_kode_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @else
+                        <div class="invalid-feedback">Kode wajib dipilih</div>
+                    @enderror
+            
+            </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Tanggal</label>
+
+                <input type="date"
+                    name="tanggal"
+                    class="form-control"
+                    value="{{$data->tanggal}}">
+            </div>
+            <?php 
+            $tanggal = $data->tanggal;
+            $aktif = (int) $data->aktif;
+            $inaktif = (int) $data->inaktif;
+
+            // 2. Hitung total tahun retensi
+            $totalTahun = $aktif + $inaktif;
+
+            // 3. Kalkulasi tanggal musnah menggunakan Carbon
+            // Tambahkan pengkondisian jika retensi permanen/tidak ada tanggal
+            $totalMusnah = null;
+            if ($tanggal) {
+                $totalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
+            }
+    ?>
+            <div class="col-md-6 mt-3">
+                <label>Tanggal Musnah</label>
+
+                <input type="date"
+                    name="tanggal_musnah"
+                    class="form-control"
+                    value="{{$data->tanggal_musnah ?? $totalMusnah }}">
+            </div>
+
+                <!-- Dropdown Retensi Aktif -->
+                <div class="col-md-6 mt-3"> 
+                    <label>Retensi Aktif</label> 
+                    <select name="aktif" id="aktif" class="form-control" readonly style="pointer-events: none;"> 
+                        <option value="0">pilih data</option> 
+                        @for($a=1;$a<=10;$a++) 
+                            <option value="{{$a}}">{{$a}} Tahun</option> 
+                        @endfor 
+                    </select> 
+                </div> 
+
+                <!-- Dropdown Retensi Inaktif -->
+                <div class="col-md-6 mt-3"> 
+                    <label>Retensi Inaktif</label> 
+                    <select name="inaktif" id="inaktif" class="form-control" readonly style="pointer-events: none;"> 
+                        <option value="0">pilih data</option> 
+                        @for($a=1;$a<=10;$a++) 
+                            <option value="{{$a}}">{{$a}} Tahun</option> 
+                        @endfor 
+                    </select> 
+                </div> 
+
+                <!-- Input Pemusnahan/Keterangan -->
+                <div class="col-md-6 mt-3"> 
+                    <label>Pemusnahan (Keterangan)</label> 
+                    <!-- Tipe input diubah ke 'text' menyesuaikan isi data string 'Permanen' atau 'Musnah' -->
+                    <input type="text" name="pemusnahan" id="pemusnahan" class="form-control" readonly> 
+                </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Status</label>
+
+                <select name="status" class="form-control"> 
+                    <option value="input" <?php if($data->status=='input'){?> selected<?php }?>>Input</option>
+                    <option value="draft" <?php if($data->status=='draft'){?> selected<?php }?>>Draft</option>
+
+                </select>
+            </div>
+
+
+            <div class="col-md-6 mt-3">
+                <label>Deskripsi</label>
+
+                <textarea name="deskripsi"
+                        class="form-control">{{$data->deskripsi}}</textarea>
+            </div> 
+        </div>
+        <div class="row"> 
+            <div class="col-md-6 mt-3"> 
+                <label>Nomor RAK</label>
+
+                <select name="rak_arsip_id" class="form-control select-rak_arsip">
+
+                    <option value="">-- Pilih Rak --</option>
+
+                    @if($data['rak_arsip'])
+                        <option value="{{ $data->rak_arsip_id }}" selected>
+                            {{ $data->rak_arsip->nomor_rak }}
+                        </option>
+                    @endif
+
+                </select> 
+            </div> 
+            <div class="col-md-6 mt-3">
+                <label>Nomor Dus</label>
+
+                <select name="dus_arsip_id" class="form-control  select-dus_arsip">
+
+                    <option value="">-- Pilih Dus --</option>
+                    @if($data['dus_arsip'])
+                    <option value="{{ $data->dus_arsip_id }}" selected> 
+                            {{ $data->dus_arsip->nomor_dus }}
+                    </option> 
+                    @endif
+                </select>
+            </div> 
         </div>
 
-        <div class="col-md-6">
-            <label>OPD</label>
-
-            <select name="opd_id" class="form-control  select-opd">
-
-                <option value="0">-- Pilih OPD --</option>
-                <option value="{{ $data->opd_id }}" selected> 
-                        {{ $data->opd->singkatan_uk }} - {{ $data->opd->singkatan_instansi }}
-                </option>  
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label>Korektor</label>
-
-            <input type="text"
-                   name="korektor"
-                   class="form-control"
-                   value="{{$data->korektor}}">
-        </div>
-
-        <div class="col-md-6">
-            <label>Judul</label>
-
-            <input type="text"
-                   name="judul"
-                   class="form-control"
-                   value="{{$data->judul}}">
-        </div>
-
-        <div class="col-md-6">
-            <label>Nomor Sementara</label>
-
-            <input type="text"
-                   name="nomor_sementara"
-                   class="form-control"
-                   value="{{$data->nomor_sementara}}">
-        </div>
-
-        <div class="col-md-6">
-            <label>Nomor</label>
-
-            <input type="text"
-                   name="nomor"
-                   class="form-control"
-                   value="{{$data->nomor}}">
-        </div>
-
-        <div class="col-md-6">
-            <label>Tanggal</label>
-
-            <input type="date"
-                   name="tanggal"
-                   class="form-control"
-                   value="{{$data->tanggal}}">
-        </div>
-
-        <div class="col-md-6">
-            <label>Retensi Aktif</label>
-            <select name="retensi" class="form-control">
-                <option value="0">pilih data</option>
-                @for($a=1;$a<=10;$a++)
-                <option value="{{$a}}" <?php if($a==$data->retensi){?>selected<?php }?>>{{$a}} Tahun</option>
-                @endfor
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label>Retensi Inaktif</label>
-            <select name="retensiinaktif" class="form-control">
-                <option value="0">pilih data</option>
-                @for($a=1;$a<=10;$a++)
-                <option value="{{$a}}"  <?php if($a==$data->retensiinaktif){?>selected<?php }?>>{{$a}} Tahun</option>
-                @endfor
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label>Status</label>
-
-            <select name="status" class="form-control"> 
-                <option value="aktif" <?php if($data->status=='aktif'){?> selected<?php }?>>Aktif</option>
-                <option value="nonaktif" <?php if($data->status=='nonaktif'){?> selected<?php }?>>Nonaktif</option>
-
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label>Pemusnahan</label>
-
-            <input type="date"
-                   name="pemusnahan"
-                   class="form-control"
-                   value="{{$data->pemusnahan}}">
-        </div>
-
-        <div class="col-md-6">
-            <label>Deskripsi</label>
-
-            <textarea name="deskripsi"
-                      class="form-control">{{$data->deskripsi}}</textarea>
-        </div> 
-    </div>
-    <div class="row"> 
-        <div class="col-md-6"> 
-            <label>Nomor RAK</label>
-
-            <select name="nomor_rak" class="form-control select-rak_arsip">
-
-                <option value="0">-- Pilih Rak --</option>
-
-                @if($data['rak_arsip'])
-                    <option value="{{ $data->nomor_rak }}" selected>
-                        {{ $data->rak_arsip->nomor_rak }}
-                    </option>
-                @endif
-
-            </select> 
-        </div> 
-        <div class="col-md-6">
-            <label>Nomor Dus</label>
-
-            <select name="nomor_dus" class="form-control  select-dus_arsip">
-
-                <option value="0">-- Pilih Dus --</option>
-                @if($data['dus_arsip'])
-                <option value="{{ $data->nomor_dus }}" selected> 
-                        {{ $data->dus_arsip->nomor_dus }}
-                </option> 
-                @endif
-            </select>
-        </div> 
-    </div>
-
-        <button class="btn btn-primary">
+        <button class="btn btn-primary mt-3 mb-3">
             Simpan
         </button>
 
-        <a href="{{ route('arsip.home') }}"
-           class="btn btn-secondary">
-
-            Kembali
-
-        </a>
+        <!-- <a href="{{ route('arsip.home') }}"
+           class="btn btn-secondary mt-3 mb-3">
+            Kembali 
+        </a> -->
 
     </form>
 
@@ -195,6 +271,53 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleksi formulir yang memerlukan validasi kustom Bootstrap
+        const forms = document.querySelectorAll('.needs-validation');
+
+        // Berikan penanganan kejadian 'submit' pada setiap formulir
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                // Hentikan pengiriman jika formulir tidak valid secara aturan HTML5
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                // Tambahkan kelas indikator ke formulir untuk memunculkan gaya error
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectMasterKode = document.getElementById('master_kode_id');
+        const selectAktif = document.getElementById('aktif');
+        const selectInaktif = document.getElementById('inaktif');
+        const inputPemusnahan = document.getElementById('pemusnahan');
+
+        selectMasterKode.addEventListener('change', function() {
+            // Dapatkan opsi yang sedang dipilih oleh user
+            const selectedOption = this.options[this.selectedIndex];
+
+            // Ambil data atribut dari opsi terpilih
+            const valAktif = selectedOption.getAttribute('data-aktif');
+            const valInaktif = selectedOption.getAttribute('data-inaktif');
+            const valKeterangan = selectedOption.getAttribute('data-keterangan');
+
+            // Tetapkan nilai ke masing-masing elemen target
+            selectAktif.value = valAktif ? valAktif : "0";
+            selectInaktif.value = valInaktif ? valInaktif : "0";
+            inputPemusnahan.value = valKeterangan ? valKeterangan : "";
+        });
+    });
+
+</script>
+
 <script>
 $(document).ready(function () {
 
@@ -211,7 +334,7 @@ $(document).ready(function () {
         minimumInputLength: 3,
 
         ajax: {
-            url: "{{ route('master-kodes.search') }}", 
+            url: "{{ route('master_kodes.search') }}", 
 
             dataType: 'json',
 
@@ -248,10 +371,10 @@ $(document).ready(function () {
 
         placeholder: 'Cari kode arsip...',
         allowClear: true,
-        minimumInputLength: 3,
+        minimumInputLength: 1,
 
         ajax: { 
-            url: "{{ route('dus_arsip.search') }}", 
+            url: "{{ route('dus_arsip.search2') }}", 
 
             dataType: 'json',
 
@@ -272,7 +395,7 @@ $(document).ready(function () {
                             id: item.id,
                             text: item.nomor_dus + ' - ' +
                                   (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
+                                    ? item.opd.singkatan_uk 
                                     : '-')
                         };
                     })
@@ -288,7 +411,7 @@ $(document).ready(function () {
 
         placeholder: 'Cari kode arsip...',
         allowClear: true,
-        minimumInputLength: 3,
+        minimumInputLength: 1,
 
         ajax: { 
             url: "{{ route('rak_arsip.search') }}", 
@@ -312,7 +435,7 @@ $(document).ready(function () {
                             id: item.id,
                             text: item.nomor_rak + ' - ' +
                                   (item.opd
-                                    ? item.opd.singkatan_uk + ' - ' + item.opd.singkatan_instansi
+                                    ? item.opd.singkatan_uk
                                     : '-')
                         };
                     })
@@ -370,6 +493,50 @@ $(document).ready(function () {
     }
 
 });
+
+$('.select-opd_induk').select2({
+
+placeholder: 'Cari OPD...',
+allowClear: true,
+minimumInputLength: 3,
+
+ajax: {
+
+    url: "{{ route('opd_induk.search') }}",
+
+    type: 'GET',
+
+    dataType: 'json',
+
+    delay: 250,
+
+    data: function (params) {
+
+        return {
+            q: params.term,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        };
+    },
+
+    processResults: function (data) {
+
+        return {
+            results: $.map(data, function(item) {
+
+                return {
+                    id: item.id,
+                    text: item.kode_instansi + ' - ' + item.instansi
+                }
+
+            })
+        };
+    },
+
+    cache: true
+}
+
+});
+
 
 });
 </script>

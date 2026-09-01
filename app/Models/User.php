@@ -25,6 +25,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        // 'opd',
+        'opd_id',
+        'opd_induk_id',
         'email',
         'role',
         'status',
@@ -60,4 +63,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function opd_induk()
+    {
+        return $this->belongsTo(Opd_Induk::class, 'opd_induk_id');
+    }
+
+    // OPD
+    public function opd()
+    {
+        return $this->belongsTo(Opd::class, 'opd_id');
+    }
+    
+
+
+
 }

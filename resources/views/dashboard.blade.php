@@ -1,70 +1,254 @@
-@extends('layouts.head')
+@extends('layouts.head_customer')
 @section('content')
-<!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-        <div class="container px-5">
-            <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                    <li class="nav-item"><a class="btn px-4 btn-logout-purple me-3" href="{{route('arsip.index')}}">Kelola Arsip</a></li>
-                    <!-- <li class="nav-item"><a class="btn px-4 btn-logout-blue me-3" href="{{route('users.index')}}">Kelola Users</a></li> -->
-                    <li class="nav-item">
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn px-4 btn-logout-red">
-                                <i class="bi bi-box-arrow-right me-1"></i> Logout
-                            </button>
-                        </form>
-                    </li>
+<!-- ═══════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════════ -->
+<nav class="navbar-custom">
+  <div class="navbar-inner">
 
+    <!-- Brand -->
+    <a href="{{route('dashboard')}}" class="nav-brand">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
 
-                </ul>
-            </div>
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('dashboard')}}" class="active">
+          <i class="bi bi-house"></i> Beranda
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bi bi-archive"></i> Arsip Inaktif
+          <i class="bi bi-chevron-down nav-caret"></i>
+        </a>
+        <div class="dropdown-menu-custom">
+          <a href="{{route('arsip.home')}}"><i class="bi bi-list-ul"></i> Daftar Arsip Inaktif</a>
+          <!-- <div class="dropdown-divider-custom"></div> -->
+          <!-- <a href="{{route('arsip.home',1)}}"><i class="bi bi-list-ul"></i> 1</a> -->
         </div>
+      </li>
+      <li>
+        <a href="">
+          <i class="bi bi-trash3"></i> Arsip M/P
+          <i class="bi bi-chevron-down nav-caret"></i>
+        </a>
+        <div class="dropdown-menu-custom">
+          <a href="{{route('arsip.musnah')}}"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Musnah</a>
+          <a href="{{route('arsip.permanen')}}"><i class="bi bi-file-earmark-plus"></i> Daftar Usul Permanen</a>
+        </div>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bi bi-building-lock"></i> Nomor Rak & Dus
+          <i class="bi bi-chevron-down nav-caret"></i>
+        </a>
+        <div class="dropdown-menu-custom">
+          <a href="{{route('rak_arsip.index')}}"><i class="bi bi-send"></i> Buat Nomor Rak</a>
+          <!-- <div class="dropdown-divider-custom"></div> -->
+          <a href="{{route('dus_arsip.index')}}"><i class="bi bi-archive-fill"></i> Buat Nomor Dus</a>
+        </div>
+      </li>
+      <!-- <li style="color:#4A9CC7;font-size: .75rem;" >
+      </li> -->
+      <li>
+        <a href="{{ route('periode.index') }}">
+          <i class="bi bi-bar-chart-steps"></i> Tahap 
+          <!-- <i class="bi bi-chevron-down nav-caret"></i> -->
+        </a>
+      </li>
+
+
+
+    </ul>
+
+    <!-- tanggal -->
+    <div style="color:#4A9CC7;font-size: .70rem;">
+    <?php 
+           $timezone = new DateTimeZone('Asia/Jakarta');
+           $hari_ini = new DateTime('now', $timezone); 
+
+
+          $fmt = new IntlDateFormatter(
+          'id_ID', // Kode bahasa Indonesia
+          IntlDateFormatter::FULL, // Format tanggal lengkap dengan nama hari
+          IntlDateFormatter::NONE, // Tidak menampilkan jam
+          'Asia/Jakarta'
+            );
+
+            echo  $fmt->format($hari_ini);
+    ?>
+    </div>
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <!-- <a href="#"><i class="bi bi-person"></i> Profil Saya</a> -->
+        <!-- <a href="#"><i class="bi bi-key"></i> Ubah Kata Sandi</a> -->
+        <i class="bi">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+        </i>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
 </nav>
 
-<div style="background: #6495ED; min-height: 100vh; padding: 2rem;">
-    <div style="max-width: 900px; margin: 0 auto;">
-        <div class="card shadow-sm" style="border-radius: 16px; border: 1px solid #e0dbff;">
-            <div class="card-body p-4">
-                <div class="justify-between">
-                {{-- Header --}}
-                <h4 class="fw-semibold mb-4" style="color: #3C3489;">
-                    <i class="bi bi-people-fill me-2" style="color: #6495ED;"></i>
-                    Beranda
-                </h4>
 
-                <h4 class="fw-semibold mb-4" style="color: #3C3489;">
-                    <i class="bi bi-people-fill me-2" style="color: #6495ED;"></i>
-                    {{ auth()->guard('web')->user()->name }}
-                </h4>
-                </div>
-                {{-- Tombol Tambah --}}
-                <a href="{{ route('users.create') }}"
-                   class="btn mb-4 px-4"
-                   style="background: #6495ED; color: #fff; border-radius: 8px; font-size: 14px;">
-                    <i class="bi bi-plus-lg me-1"></i> Tambah User
-                </a>
-
-                {{-- Tabel --}}
-                <table class="table align-middle" style="font-size: 14px;">
-                    <thead style="background: #6495ED;">
-                        <tr>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">ID</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Name</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">OPD</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Email</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Number</th>
-                            <th style="color: #3C3489; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;">Aksi</th>
-                        </tr>
-                    </thead>
-                </table>
-
-            </div>
-        </div>
+<!-- ═══════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <i class="bi bi-circle-fill" style="font-size:.4rem;color:#A8D8F0;"></i>
+        Sistem Aktif — Tahun Anggaran 2026
+      </div>
+      <h1 class="hero-heading">
+        Pengelolaan <em>Arsip Daerah</em><br>Terpadu &amp; Terstruktur
+      </h1>
+      <p class="hero-sub">
+        Platform terpusat untuk pencatatan, pengelolaan, dan pemusnahan arsip
+        inaktif, musnah, dan statis di lingkungan pemerintah daerah.
+      </p>
+      <!-- <div class="hero-actions">
+        <a href="#modul" class="btn-hero-primary">
+          <i class="bi bi-grid-1x2-fill"></i> Masuk ke Modul
+        </a>
+        <a href="#" class="btn-hero-ghost">
+          <i class="bi bi-question-circle"></i> Panduan Penggunaan
+        </a>
+      </div> -->
     </div>
+
+    <!-- Folder Stack Illustration -->
+    <!-- Bungkus Canvas dengan DIV yang memiliki ukuran tinggi (Height) yang jelas -->
+    <div style="width: 800px; margin: auto;">
+          <canvas id="arsipChart"></canvas>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     STAT BAR
+════════════════════════════════════════════════ -->
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-item">
+      <div class="stat-icon blue"><i class="bi bi-archive"></i></div>
+      <div>
+        <div class="stat-num">{{ $jumlah_data }}</div>
+        <div class="stat-label">Arsip Inaktif</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon amber"><i class="bi bi-trash3"></i></div>
+      <div>
+        <div class="stat-num">{{ $total_lewat}} arsip</div>
+        <div class="stat-label">Usul Musnah</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon green"><i class="bi bi-ladder"></i></div>
+      <div>
+        <div class="stat-num"> Tahap -  {{ $periodes->tahap}}</div>
+        <div class="stat-label">Periode</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon green"><i class="bi bi-building-lock"></i></div>
+      <div>
+        <div class="stat-num">comming soon</div>
+        <div class="stat-label">Arsip Statis</div>
+      </div>
+    </div>
+  </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════════
+     MAIN: MODULE CARDS
+════════════════════════════════════════════════ -->
+<div class="main-wrap" id="modul">
+
+  
+</div><!-- /main-wrap -->
+
+    <script>
+        // Ambil data dari Controller Laravel
+        const labels = @json($labels);
+        const dataJumlah = @json($totals);
+
+        // Konfigurasi Chart.js
+        const ctx = document.getElementById('arsipChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Sumbu X: Nama OPD Induk / Instansi
+                datasets: [{
+                    label: 'Jumlah Data Arsip',
+                    data: dataJumlah, // Sumbu Y: Jumlah Arsip
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Unit Kerja'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1 // Pastikan angka pada sumbu Y berupa bilangan bulat
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jumlah Arsip'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Statistik Arsip Berdasarkan Unit Kerja'
+                    }
+                }
+            }
+        });
+    </script>
+
+
 @endsection
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════ -->

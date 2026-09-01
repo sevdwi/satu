@@ -56,52 +56,227 @@
 }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-        <div class="container px-5">
-            <a class="navbar-brand" href="{{route('dashboard')}}"><span class="fw-bolder" style="color: #7944B8;">SATU</span><img src="{{ asset('images/arsip.png') }}" width="40" class="mb-3"></a>
+<nav class="navbar-custom">
+  <div class="navbar-inner">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                    <li class="nav-item"><a class="btn px-4 btn-logout-green me-3" href="{{route('users.index')}}">Kembali</a></li>
-                </ul>
-            </div>
-        </div>
+    <!-- Brand -->
+    <a href="#" class="nav-brand">
+      <img src="{{ asset('images/arsip2.png') }}" width="40" class="mb-3">
+      <div class="nav-brand-text">
+        <strong>SATU</strong>
+        <small>Sistem Informasi Kearsipan Terpadu</small>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="nav-links">
+      <li>
+        <a href="{{route('dashboard-admin')}}" class="active">
+          <i class="bi bi-house"></i> Kembali
+        </a>
+      </li>
+    </ul>
+
+    <!-- Account -->
+    <div class="nav-account">
+      <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
+      <div>
+        <div class="account-name">{{ auth()->guard('admin')->user()->name }}</div>
+        <div class="account-role">Akun yang digunakan</div>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>
+      <div class="account-dropdown">
+        <form action="{{ route('logout-admin') }}" method="POST">
+            @csrf
+            <button type="submit" class="logout btn px-4 btn-logout-red">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+      </div>
+    </div>
+
+    <button class="nav-mobile-toggle"><i class="bi bi-list"></i></button>
+  </div>
 </nav>
 
-<div style="background: #6495ED; min-height: 100vh; padding: 2rem;">
-    <div style="max-width: 900px; margin: 0 auto;">
-        <div class="card shadow-sm card-edit-user">
-            <div class="card-body p-4">
-
-                <h1>
-                    <i class="bi bi-pencil-square me-2"></i>
-                    Edit User
-                </h1>
-
-                <form action="{{ route('users.update', $user) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-
-                    <input type="text" name="name" value="{{ $user->name }}"
-                        class="form-control mb-3"
-                        placeholder="Nama">
-
-                    <input type="email" name="email" value="{{ $user->email }}"
-                        class="form-control mb-3"
-                        placeholder="Email">
-
-                    <input type="text" name="phone_number" value="{{ $user->phone_number }}"
-                        class="form-control mb-4"
-                        placeholder="Nomor Telepon">
-
-                    <button type="submit" class="btn px-4 btn-update-yellow">
-                        <i class="bi bi-check-lg me-1"></i> Update
-                    </button>
-
-                </form>
-            </div>
-        </div>
+<div class="page-wrap">
+ 
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-custom">
+    <a href="#"><i class="bi bi-house"></i></a>
+    <i class="bi bi-chevron-right"></i>
+    <a href="#">Data Pengguna</a>
+    <i class="bi bi-chevron-right"></i>
+    <span class="current">Edit User</span>
+  </div>
+ 
+  <div class="card-custom">
+ 
+    <!-- Card Header -->
+    <div class="card-top">
+      <div class="card-icon"><i class="bi bi-pencil-square"></i></div>
+      <div>
+        <div class="card-title">Edit User</div>
+        <div class="card-subtitle">Perbarui data pengguna yang dipilih</div>
+      </div>
     </div>
+ 
+    <!-- User Identity Strip -->
+    <div class="user-strip">
+      <div class="user-avatar-lg">AD</div>
+      <div>
+        <div class="user-strip-name">{{ $user->role }}</div>
+        <div class="user-strip-label">ID <span>{{ $user->id }}</span>---<span>{{ $user->status }}</span></div>
+      </div>
+      <span class="user-strip-badge">
+        <i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aktif
+      </span>
+    </div>
+ 
+    <!-- Form -->
+    <div class="card-body-form">
+ 
+      {{-- Ganti action="{{ route('users.update', $user) }}" dan value="{{ $user->xxx }}" sesuai Blade --}}
+    <form action="{{ route('users.update', $user) }}" method="POST">
+    @csrf
+    @method('PUT')
+
+    <div class="section-label">Informasi Pengguna</div>
+
+    <!-- Nama -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-person"></i> Nama Pengguna <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-person input-icon"></i>
+        <input type="text" name="name" class="form-input @error('name') is-invalid @enderror" 
+              value="{{ old('name') ?? $user->name }}" placeholder="Nama pengguna" required />
+      </div>
+      @error('name')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
+        </div>
+      @enderror
+    </div>
+
+    <!-- Role -->
+    <div class="form-group">
+      <label class="form-label-custom" for="role">
+        <i class="bi bi-shield-lock"></i> Role <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-shield-lock input-icon"></i>
+        <select name="role" id="role" class="form-input @error('role') is-invalid @enderror" required>
+          <option value="" disabled {{ (old('role') ?? $user->role) == '' ? 'selected' : '' }}>-- Pilih Role --</option>
+          <option value="admin" {{ (old('role') ?? $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+          <option value="pengolah" {{ (old('role') ?? $user->role) == 'pengolah' ? 'selected' : '' }}>Pengolah</option>
+          <option value="sekretariat" {{ (old('role') ?? $user->role) == 'sekretariat' ? 'selected' : '' }}>Sekretariat</option>
+          <option value="customer" {{ (old('role') ?? $user->role) == 'customer' ? 'selected' : '' }}>Customer</option>
+        </select>
+      </div>
+      @error('role')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
+        </div>
+      @enderror
+    </div>
+
+    <!-- Status -->
+    <div class="form-group">
+      <label class="form-label-custom" for="status">
+        <i class="bi bi-toggle-on"></i> Status <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-toggle-on input-icon"></i>
+        <select name="status" id="status" class="form-input @error('status') is-invalid @enderror" required>
+          <option value="" disabled {{ (old('status') ?? $user->status) == '' ? 'selected' : '' }}>-- Pilih Status --</option>
+          <option value="active" {{ (old('status') ?? $user->status) == 'active' ? 'selected' : '' }}>Active</option>
+          <option value="banned" {{ (old('status') ?? $user->status) == 'banned' ? 'selected' : '' }}>Banned</option>
+          <option value="verify" {{ (old('status') ?? $user->status) == 'verify' ? 'selected' : '' }}>Verify</option>
+        </select>
+      </div>
+      @error('status')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
+        </div>
+      @enderror
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-envelope"></i> Alamat Email <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-envelope input-icon"></i>
+        <input type="email" name="email" class="form-input @error('email') is-invalid @enderror" 
+              value="{{ old('email') ?? $user->email }}" placeholder="contoh@email.com" required />
+      </div>
+      @error('email')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
+        </div>
+      @enderror
+    </div>
+
+    <!-- Nomor Telepon -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-telephone"></i> Nomor Telepon <span class="required">*</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-telephone input-icon"></i>
+        <input type="text" name="phone_number" class="form-input @error('phone_number') is-invalid @enderror" 
+              value="{{ old('phone_number') ?? $user->phone_number }}" placeholder="08xxxxxxxxxx" required />
+      </div>
+      <div class="form-hint">
+        <i class="bi bi-info-circle"></i> Format: diawali 08, tanpa tanda hubung.
+      </div>
+      @error('phone_number')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
+        </div>
+      @enderror
+    </div>
+
+    <!-- Password (Opsional saat update) -->
+    <div class="form-group">
+      <label class="form-label-custom">
+        <i class="bi bi-key"></i> Password Baru <span class="text-muted" style="font-size: 0.8rem;">(Kosongkan jika tidak ingin mengubah)</span>
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-key input-icon"></i>
+        <input type="password" name="password" class="form-input @error('password') is-invalid @enderror" 
+              placeholder="Minimal 4 karakter" />
+      </div>
+      @error('password')
+        <div class="invalid-feedback text-danger small mt-1">
+          <i class="bi bi-exclamation-circle"></i> {{ $message }}
+        </div>
+      @enderror
+    </div>
+
+    {{-- Field Tersembunyi (Sesuai database pada method store) --}}
+    <input type="hidden" name="opd_id" value="{{ old('opd_id') ?? $user->opd_id }}">
+    <input type="hidden" name="opd_induk_id" value="{{ old('opd_induk_id') ?? $user->opd_induk_id }}">
+
+    <hr class="form-divider" />
+
+    <!-- Action Buttons -->
+    <div class="action-row">
+      <a href="{{route('users.index')}}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Kembali
+      </a>
+      <button type="submit" class="btn-update">
+        <i class="bi bi-check-lg"></i> Simpan Perubahan
+      </button>
+    </div>
+
+</form>
+
+    </div>
+ 
+  </div>
 </div>
 @endsection

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pemusnahan_arsip extends Model
+class Pemusnahan_Arsip extends Model
 {
     //
     protected $table = 'pemusnahan_arsips';

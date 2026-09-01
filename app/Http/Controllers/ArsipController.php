@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Opd;
+use App\Models\Opd_Induk;
 use App\Models\Arsip;
 use App\Models\MasterKode;
+use App\Models\Rak_Arsip;
+use App\Models\Dus_Arsip;
+use App\Models\Periode;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use App\Exports\ArsipExport;
+use App\Exports\ArsipExportAdmin;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ArsipController extends Controller
 {
@@ -71,21 +82,250 @@ class ArsipController extends Controller
             'chartColors'
         ));
     } 
+    // public function index($periode=null)
     public function index()
+
     {
-        $data = Arsip::with([
+        // Jika URL tidak ada parameter, gunakan tahun-bulan saat ini sebagai default
+        // if (!$periode) { $periode = date('Y-m'); }
+        // 1. Simpan ke session
+        // session(['periodes' => $periode]);
+
+        // 2. Cek apakah data berhasil disimpan
+        // dd(session('periodes')); 
+
+        // Ambil data user yang sedang login beserta id OPD-nya
+        // $user = auth()->user(); 
+        $user = auth()->user(); // load('opd'); 
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+               
+        $data_filter = Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
-            'rak_arsip:id,nomor_rak'
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak',
+            'periode:id,tahun,tahap,status'
         ])
-        ->where('status', '!=', 'inaktif')
-        ->latest()->get(); 
+        ->where('opd_induk_id', $userOpdId); // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        // Cek kondisi Unit Kerja user
+        // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }
+            // Eksekusi data
+        $data = $data_filter->latest()->get(); 
+        // ->latest()->get(); 
 
-        return view('arsip.index', compact('data'
+        // Hitung jumlah arsip yang belum memiliki nomor definitif
+        $arsipBelumDefinitif = Arsip::where('opd_induk_id',$userOpdId)
+        ->whereNull('nomor')
+        ->count();
+
+
+        return view('arsip.index', compact('data','userid','arsipBelumDefinitif'
         ));
     }
+
+    public function manuver()
+    {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        // $user = auth()->user(); 
+        $user = auth()->user(); // load('user'); 
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+               
+        $data_filter = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('opd_induk_id', $userOpdId); // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        // Cek kondisi Unit Kerja user
+        // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }
+            // Eksekusi data
+        $data = $data_filter->latest()->get(); 
+        
+        // ->latest()->get(); 
+
+        return view('arsip.index-manuver', compact('data','userid'
+        ));
+    }
+
+    public function musnah()
+    {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); // load('user'); 
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+               
+        $data_filter = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('pemusnahan', 'musnah'); // filter kolom pemusnahan
+        // Cek kondisi Unit Kerja user
+        // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }
+            // Eksekusi data
+        $data = $data_filter->latest()->get();    
+        // ->latest()->get(); 
+    
+        return view('arsip.index-musnah', compact('data','userid'
+        ));
+    }
+
+    public function permanen()
+    {
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); // load('user'); 
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+               
+        $data_filter = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('pemusnahan', 'permanen'); // filter kolom pemusnahan
+        // Cek kondisi Unit Kerja user
+        // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }
+            // Eksekusi data
+        $data = $data_filter->latest()->get();    
+        // ->latest()->get(); 
+    
+        return view('arsip.index-permanen', compact('data','userid'
+        ));
+    }
+
+    public function index_admin()
+    {
+        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+
+        $opd_induk = Opd_Induk::orderBy('instansi')->get(); // sesuaikan nama kolom
+
+
+        $data = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        // ->where('status', '!=', 'inaktif')
+        ->latest()->get(); 
+
+        return view('arsip.index-admin', compact('user', 'data','opd_induk'));
+    }
+
+
+    public function detail_admin($opd_induk_id)
+    {        
+                // 1. Ambil data OPD Induk yang dipilih untuk menampilkan judul halaman
+        $opd_induk = Opd_Induk::findOrFail($opd_induk_id);
+
+        // 2. Ambil data arsip yang HANYA memiliki opd_induk_id sesuai tombol yang diklik
+        $data_arsip = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak',
+            'periode:id,tahun,tahap,status'
+        ])
+        ->where('opd_induk_id', $opd_induk_id) // Menyaring berdasarkan OPD Induk
+        // ->where('status', '!=', 'inaktif')
+        ->latest()
+        ->get();
+
+        // 3. Kirim data ke halaman view baru (misal: arsip/detail-admin.blade.php)
+        return view('arsip.detail-admin', compact('opd_induk', 'data_arsip'));
+    }
+
+    public function musnah_admin()
+    {
+        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+
+        $opd_induk = Opd_Induk::orderBy('instansi')->get(); // sesuaikan nama kolom
+
+
+        $data = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('pemusnahan', 'musnah') // filter kolom pemusnahan
+        ->latest()->get(); 
+
+        return view('arsip.index-musnah-admin', compact('user', 'data','opd_induk'));
+    }
+
+    public function permanen_admin()
+    {
+        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+
+        $opd_induk = Opd_Induk::orderBy('instansi')->get(); // sesuaikan nama kolom
+
+
+        $data = Arsip::with([
+            'opd:id,kode_instansi,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])
+        ->where('pemusnahan', 'permanen') // filter kolom pemusnahan
+        ->latest()->get(); 
+
+        return view('arsip.index-permanen-admin', compact('user', 'data','opd_induk'));
+    }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -133,7 +373,8 @@ class ArsipController extends Controller
         $q = $request->q;
  
         $data = Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,instansi'
         ])
         ->where('judul', 'like', "%{$q}%")
         ->orWhere('nomor', 'like', "%{$q}%")
@@ -151,53 +392,94 @@ class ArsipController extends Controller
     }
     public function create()
     {
-        $opds = Opd::all();
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        // Pastikan nama kolom 'opd_induk_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+
+        $userUnit = $user->opd_id;
+       
+        // Filter OPD agar HANYA menampilkan OPD si user saja
+        $opds = Opd::where('id', $userUnit)->get();
+        $periodes = Periode::where('opd_id', $userUnit)->latest('id')->first();
+        $opdinduks = Opd_Induk::where('id', $userOpdId)->get();
+
+
         $data = Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
-            'masterKode:id,kode,nama',
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama,aktif,inaktif,keterangan',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
+            'dus_arsip:id,nomor_dus,rak_arsip_id',
             'rak_arsip:id,nomor_rak'
         ])->latest()->get();  
+
         $masterKodes = MasterKode::all();
+
+        // Filter Rak dan Dus berdasarkan OPD si user (Asumsi tabel rak & dus punya kolom opd_id)
+        $dus_arsips = Dus_Arsip::where('opd_induk_id', $userOpdId)->get();
+        $rak_arsips = Rak_Arsip::where('opd_induk_id', $userOpdId)->get();
+
+
 
         return view('arsip.create', compact(
             'data',
             'opds',
-            'masterKodes'
+            'opdinduks',
+            'masterKodes',
+            'dus_arsips',
+            'rak_arsips',
+            'periodes'
         ));
     }
 
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     { 
-        $filePath = null;
-        try { 
-            $data = Arsip::create([
-                'korektor' => $request->korektor,
+        // 1. Ambil data dari form
+        $tanggal = $request->tanggal;
+        $aktif = (int) $request->aktif;
+        $inaktif = (int) $request->inaktif;
+
+        // 2. Hitung total tahun retensi
+        $totalTahun = $aktif + $inaktif;
+
+        // 3. Kalkulasi tanggal musnah menggunakan Carbon
+        // Tambahkan pengkondisian jika retensi permanen/tidak ada tanggal
+        $tanggalMusnah = null;
+        if ($tanggal) {
+            $tanggalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
+        }
+
+            Arsip::create([
+                'korektor' => $request->korektor ?: null,
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
+                'tahun' => $request->tahun,
+                'periode' => $request->periode,
                 'tanggal' => $request->tanggal,
+                'tanggal_musnah' => $tanggalMusnah,
                 'master_kode_id' => $request->master_kode_id,
                 'opd_id' => $request->opd_id,
-                'retensi' => $request->retensi,
-                'retensiinaktif' => $request->retensiinaktif,
+                'opd_induk_id' => $request->opd_induk_id,
+                'aktif' => $request->aktif,
+                'inaktif' => $request->inaktif,
                 'nomor' => $request->nomor,
-                'status' => $request->status ?? 'aktif',
+                'status' => $request->status ?? 'input',
                 'pemusnahan' => $request->pemusnahan,
                 'created_by' => auth()->id(),
-                'file' => $filePath,
-                'nomor_dus' => $request->nomor_dus,
-                'nomor_rak' => $request->nomor_rak, 
+                'file' => $request->file,               
+                'dus_arsip_id' => $request->dus_arsip_id ?: null, 
+                'rak_arsip_id' => $request->rak_arsip_id ?: null, 
             ]);
+            
             return redirect()->route('arsip.home')
                 ->with('success', 'Data berhasil ditambahkan!');  
-        } catch (\Throwable $e) {
-            dd($e->getMessage());
-        } 
     } 
+
     public function uploads(Request $request){
         try{ 
             if ($request->hasFile('file')) {
@@ -239,13 +521,42 @@ class ArsipController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit_admin($id)
     { 
         $data = Arsip::with([
-            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,kode_instansi,instansi',
             'masterKode:id,kode,nama',
             'user:id,name,email',
-            'dus_arsip:id,nomor_dus,nomor_rak',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])->findOrFail($id);
+
+        $opds = Opd::all();
+        $masterKodes = MasterKode::all();
+
+        return view('arsip.edit-admin', compact('id',
+            'data',
+            'opds',
+            'masterKodes'
+        ));
+    }
+
+    public function edit($id)
+    { 
+        // Ambil data user yang sedang login beserta id OPD-nya
+        $user = auth()->user(); 
+
+        $userUnit = $user->opd_id;
+
+        $periodes = Periode::where('opd_id', $userUnit)->latest('id')->first();
+
+        $data = Arsip::with([
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,kode_instansi,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])->findOrFail($id);
 
@@ -255,14 +566,59 @@ class ArsipController extends Controller
         return view('arsip.edit', compact('id',
             'data',
             'opds',
+            'periodes',
             'masterKodes'
         ));
     }
 
+    public function edit_nomor($id)
+    { 
+        $data = Arsip::select('id', 'nomor')->findOrFail($id);
+
+        return view('arsip.edit-nomor', compact('id',
+            'data'
+        ));
+    }
+
+    public function nomor_definitif(Request $request)
+    {
+        // 1. Validasi input
+        // Pastikan input 'nomor' ada dan berbentuk array
+        $request->validate([
+            'nomor' => 'required|array',
+            'nomor.*' => 'nullable|numeric' 
+        ]);
+
+        // 2. Lakukan perulangan array
+        // $id adalah kunci (key), $nomorDefinitif adalah nilai (value)
+        foreach ($request->nomor as $id => $nomorDefinitif) {
+            
+            // 3. Perbarui baris data spesifik
+            // Update kolom 'nomor' pada tabel Arsip yang memiliki id sesuai dengan kunci
+            Arsip::where('id', $id)->update([
+                'nomor' => $nomorDefinitif
+            ]);
+            
+        }
+
+        // 4. Kembalikan pengguna ke halaman sebelumnya
+        return redirect()->back()->with('success', 'Nomor definitif berhasil diperbarui secara massal!');
+    }
+
+    public function edit_status($id)
+    { 
+        $data = Arsip::select('id', 'status')->findOrFail($id);
+
+        return view('arsip.edit-status', compact('id',
+            'data'
+        ));
+    }
+
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function updateTahan(Request $request, $id)
     {
         $arsip = Arsip::findOrFail($id); 
         $arsip->update([
@@ -271,23 +627,158 @@ class ArsipController extends Controller
             'tanggal' => $request->tanggal,
             'master_kode_id' => $request->master_kode_id,
             'opd_id' => $request->opd_id,
+            'opd_induk_id' => $request->opd_induk_id,
             'retensi' => $request->retensi,
             'nomor' => $request->nomor,
             'status' => $request->status,
             'pemusnahan' => $request->pemusnahan, 
-            'nomor_dus' => $request->nomor_dus,
-            'nomor_rak' => $request->nomor_rak, 
+            'dus_arsip_id' => $request->dus_arsip_id,
+            'rak_arsip_id' => $request->rak_arsip_id, 
         ]);
 
         return redirect()->route('arsip.home')
             ->with('success', 'Data berhasil diupdate');
     }
 
+    public function update(Request $request, $id)
+    {
+        $arsip = Arsip::findOrFail($id); 
+
+        $tanggal = $request->tanggal;
+        $aktif = (int) $request->aktif;
+        $inaktif = (int) $request->inaktif;
+
+        // 2. Hitung total tahun retensi
+        $totalTahun = $aktif + $inaktif;
+
+        // 3. Kalkulasi tanggal musnah menggunakan Carbon
+        // Tambahkan pengkondisian jika retensi permanen/tidak ada tanggal
+        $tanggalMusnah = null;
+        if ($tanggal) {
+            $tanggalMusnah = Carbon::parse($tanggal)->addYears($totalTahun)->format('Y-m-d');
+        }
+
+        // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
+        $dataToUpdate = $request->only([
+            'judul', 'deskripsi','tahun','periode_id', 'tanggal','tanggal_musnah', 'master_kode_id', 
+            'opd_id', 'opd_induk_id', 'aktif','inaktif', 'nomor', 
+            'status', 'pemusnahan', 'file', 'dus_arsip_id', 'rak_arsip_id'
+        ]);
+
+        // 2. Filter data: Hanya update kolom yang benar-benar dikirim dari Form (mencegah NULL tidak sengaja)
+        $dataToUpdate = array_filter($dataToUpdate, function ($value, $key) use ($request) {
+            // Khusus untuk input 'nomor', jika dikosongkan (string kosong), tetap loloskan agar terupdate jadi NULL di DB
+            if ($key === 'nomor') {
+                return true; 
+            }
+            
+            // Kolom lainnya hanya diupdate jika memang ada inputnya di form Blade
+            return $request->has($key);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        // 3. Eksekusi perubahan ke database
+        $arsip->update($dataToUpdate);
+
+        return redirect()->route('arsip.home')
+            ->with('success', 'Data berhasil diupdate');
+    }
+
+    public function update_admin(Request $request, $id)
+    {
+        $arsip = Arsip::findOrFail($id); 
+
+        // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
+        $dataToUpdate = $request->only([
+            'judul', 'deskripsi', 'tanggal','tanggal_musnah', 'master_kode_id', 
+            'opd_id', 'opd_induk_id', 'retensi', 'nomor', 
+            'status', 'pemusnahan', 'file', 'dus_arsip_id', 'rak_arsip_id'
+        ]);
+
+        // 2. Filter data: Hanya update kolom yang benar-benar dikirim dari Form (mencegah NULL tidak sengaja)
+        $dataToUpdate = array_filter($dataToUpdate, function ($value, $key) use ($request) {
+            // Khusus untuk input 'nomor', jika dikosongkan (string kosong), kita tetap loloskan agar terupdate jadi NULL di DB
+            if ($key === 'status') {
+                return true; 
+            }
+            
+            // Kolom lainnya hanya diupdate jika memang ada inputnya di form Blade
+            return $request->has($key);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        // 3. Eksekusi perubahan ke database
+        $arsip->update($dataToUpdate);
+
+        return redirect()->route('arsip_admin.home-admin')
+            ->with('success', 'Data berhasil diupdate');
+    }
+
+
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            // 1. Cari data arsip berdasarkan ID, jika tidak ada akan otomatis error/404
+            $arsip = Arsip::findOrFail($id);
+    
+            // 2. [Opsional] Hapus file PDF fisik dari storage jika filenya ada
+            if ($arsip->file && file_exists(public_path('arsip/' . $arsip->file))) {
+                unlink(public_path('arsip/' . $arsip->file));
+            }
+    
+            // 3. Hapus data dari database
+            $arsip->delete();
+    
+            // 4. Kembali ke halaman utama dengan pesan sukses
+            return redirect()->route('arsip.home')
+                ->with('success', 'Data arsip dan file terkait berhasil dihapus!');
+    
+        } catch (\Throwable $e) {
+            // Jika gagal, tangkap errornya dan kembalikan dengan pesan error
+            return redirect()->route('arsip.home')
+                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
+
+    public function kartu($id)
+    { 
+        $data = Arsip::with([
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,kode_instansi,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak'
+        ])->findOrFail($id);
+
+        $opds = Opd::all();
+        $masterKodes = MasterKode::all();
+
+        return view('arsip.kartu', compact('id',
+            'data',
+            'opds',
+            'masterKodes'
+        ));
+    }
+
+    public function kosong()
+    { 
+        return view('arsip.surat-kosong');
+
+    }
+
+    public function exportExcel_admin()
+    {
+        return Excel::download(new ArsipExportAdmin, 'data_arsip_lengkap.xlsx');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ArsipExport, 'data_arsip_lengkap.xlsx');
+    }
+
+
+
 }

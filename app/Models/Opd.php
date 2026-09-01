@@ -13,11 +13,31 @@ class Opd extends Model
         'unit_kerja',
         'singkatan_uk',
         'instansi',
-        'singkatan_instansi' 
+        // 'singkatan_instansi',
+        'opd_induk_id',
     ]; 
 
     public function arsips()
     {
         return $this->hasMany(Arsip::class, 'opd_id');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'opd_id');
+    }
+
+    public function opd_induk()
+    {
+        return $this->belongsTo(Opd_Induk::class, 'opd_induk_id');
+    }
+
+    public function periode()
+    {
+        return $this->hasMany(Periode::class, 'opd_id');
+    }
+
+
+
+
 }
