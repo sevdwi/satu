@@ -66,11 +66,16 @@
             <div class="card-top-left">
                 <div class="card-icon"><i class="bi bi-archive"></i></div>
                 <div>
-                <div class="card-title">Data Arsip tahap {{ session('periodes') }} - {{ auth()->user()->opd?->unit_kerja }}</div>
+                <div class="card-title">Data Arsip tahap - {{ session('periodes') }} - {{ auth()->user()->opd?->unit_kerja }}</div>
                 <div class="card-subtitle">Kelola seluruh data arsip</div>
                 </div>
             </div>
 
+            @if($arsipBelumDefinitif>0)
+            <a href="{{ route('arsip.manuver',session('periodes')) }}" class="btn-manuver">
+                <i class="bi bi-list-check"></i> Manuver
+            </a>
+            @endif
             <div class="dropdown">               
                 <!-- Tombol Pemicu Dropdown -->
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -107,9 +112,10 @@
                 </ul>
             </div>
 
-            <a href="{{ route('arsip.create') }}" class="btn-add">
+
+            <!-- <a href="{{ route('arsip.create') }}" class="btn-add">
                 <i class="bi bi-plus-lg"></i> Tambah Arsip
-            </a>
+            </a> -->
         </div>
 
 
@@ -125,7 +131,7 @@
 
             <thead>
                 <tr>
-                    <th>No</th>
+                    <!-- <th>No</th> -->
                     <!-- <th>Master Kode ID </th> -->
                     <!-- <th>Nomor Sementara</th> -->
                     <th>Nomor Definitif</th>
@@ -150,9 +156,9 @@
 
                     <tr>
 
-                        <td>
+                        <!-- <td>
                             {{ $loop->iteration }}
-                        </td>
+                        </td> -->
 
                         <!-- <td>
                             {{ $item->master_kode_id }}
@@ -196,7 +202,7 @@
                         </td>
 
                         <td>
-                            {{ $item->tahap ?? '-' }} - {{ $item->tahun ?? '-' }}
+                            {{ $item->periode?->tahap ?? '-' }} - {{ $item->periode?->tahun ?? '-' }}
                         </td>
 
 

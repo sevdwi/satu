@@ -60,9 +60,12 @@
     <div class="d-flex justify-content-between mb-3">
         <h3>Data periode tahap Opd <span><h5>Jika belum ada silahkan buat periode dahulu</h5></span></h3>
 
+        @if($periodeBelum>0)
         <a href="{{ route('periode.create') }}" class="btn btn-primary">
             Buat <br> Periode
         </a> 
+        @endif
+
     </div>
 
     @if(session('success'))
@@ -75,7 +78,6 @@
 
         <thead>
             <tr>
-                <th>No</th>
                 <th>Unit</th>
                 <th>Tahun</th>
                 <th>Tahap</th> 
@@ -86,7 +88,6 @@
         <tbody>
             @forelse($periodes as $item)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
                         <td>
                             <!-- {{ $item->opd->singkatan_uk.'-'.$item->opd->singkatan_instansi ?? '-' }} -->                             
                             {{ $item->opd->unit_kerja ?? '-' }} - {{ $item->opd->instansi ?? '-' }}
@@ -102,7 +103,7 @@
                             <a href="{{ route('periode.edit', auth()->guard('web')->user()->opd_id) }}" title="Ubah Data Periode"
                                class="btn btn-warning btn-sm"> 
                                <i class="bi bi-pen"></i>
-                               Ubah Periode
+                               Update Periode
                             </a> 
 
                         </td> 

@@ -77,6 +77,8 @@
     <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
     <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
     <input type="hidden" name="periode_id" value="{{ $periodes->id }}">
+    <input type="hidden" name="tahap" value="{{ $periodes->tahap }}">
+
 
 
 
