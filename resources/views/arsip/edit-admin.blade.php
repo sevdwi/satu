@@ -11,7 +11,7 @@
 
     <h3>Tambah Arsip</h3>
 
-    <form action="{{ route('arsip_admin.update',$id) }}"
+    <form action="{{ route('arsip_admin.update-admin',$id) }}"
           method="POST"
           enctype="multipart/form-data">
 
@@ -185,7 +185,7 @@
             Simpan
         </button>
 
-        <a href="{{ route('arsip_admin.home') }}"
+        <a href="{{ route('arsip_admin.home-admin') }}"
            class="btn btn-secondary mt-3 mb-3">
 
             Kembali
@@ -219,7 +219,7 @@ $(document).ready(function () {
         minimumInputLength: 3,
 
         ajax: {
-            url: "{{ route('master_kodes.search') }}", 
+            url: "{{ route('master-kodes.search') }}", 
 
             dataType: 'json',
 

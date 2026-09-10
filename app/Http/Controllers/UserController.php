@@ -15,7 +15,6 @@ class UserController extends Controller
     // list semua user
     public function index()
     {
-        // $users = User::all();
         $users = User::with('opd_induk')->get();
         return view('users.index', compact('users'));
     }
@@ -23,7 +22,7 @@ class UserController extends Controller
     // form create dan show daftar opd saat register
     public function create()
     {
-        $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
+        $opds = Opd::orderBy('instansi')->get();
         $opd_induks = Opd_Induk::all();
         return view('users.create', compact('opds','opd_induks'));
     }
@@ -44,7 +43,6 @@ class UserController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'phone_number'   => $request->phone_number,
-            // 'opd'     => $request->opd,
             'opd_id'     => $request->opd_id,
             'opd_induk_id'     => $request->opd_induk_id,
             'role' => $request->role,
@@ -61,23 +59,6 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    // update
-    public function updatetahan2(Request $request, User $user)
-    {
-        $request->validate([
-            'name'  => 'required',
-            'email' => 'required|email',
-        ]);
-
-        $user->update([
-            'name'   => $request->name,
-            'email'  => $request->email,
-            'phone_number' => $request->phone_number,
-        ]);
-
-        return redirect()->route('users.index');
-    }
-
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -89,10 +70,8 @@ class UserController extends Controller
             'role'          => 'required',
         ]);
 
-        // Mengambil semua input kecuali password
         $data = $request->except('password');
 
-        // Update password hanya jika user mengisi input password baru
         if ($request->filled('password')) {
             $data['password'] = $request->password; // auto hash tetap berjalan oleh model
         }
@@ -125,69 +104,32 @@ class UserController extends Controller
     {
 
         $request->validate([
-            // 'name'   => 'required',
             'phone_number'   => 'required',
             'password' => 'required',
-            // 'g-recaptcha-response' => 'required',
         ], [
-            // 'name.required' => 'Nomor harus diisi',
             'phone_number.required' => 'Nomor harus diisi',
             'password.required' => 'Password harus diisi',
-            // 'g-recaptcha-response.required' => 'Silakan centang "Saya bukan robot".',
         ]);
 
-        // CAPTCHA tidak valid
-        // if (!($result['success'] ?? false)) {
-        //     return back()
-        //         ->withInput($request->only('phone_number'))
-        //         ->withErrors([
-        //             'g-recaptcha-response' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
-        //         ]);
-        // }
-        // // Verifikasi reCAPTCHA ke Google
-        // $response = Http::asForm()->post(
-        //     'https://www.google.com/recaptcha/api/siteverify',
-        //     [
-        //         'secret' => config('services.recaptcha.secret_key'),
-        //         'response' => $request->input('g-recaptcha-response'),
-        //         'remoteip' => $request->ip(),
-        //     ]
-        // );
-
-        // $result = $response->json(); 
-
         $credentials = [
-            // 'name' => $request->name,
             'phone_number' => $request->phone_number,
             'password' => $request->password
         ];
-        // dd($credentials);
-        // dd($request->remember);
 
-
-        // Cukup gunakan Auth::attempt standar (otomatis menggunakan guard 'web' dan tabel 'users')
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            // Ambil data hak akses/role dari user yang berhasil login
-            $role = Auth::user()->role; // <-- GANTI 'role' SESUAI NAMA KOLOM DI DATABASE ANDA
+            $role = Auth::user()->role;
 
-            // Arahkan ke dashboard masing-masing sesuai perannya
             if ($role === 'admin') {
                 return redirect()->intended('/app/dashboard-admin'); 
-            } 
-            
-            if ($role === 'pengolah') {
-                return redirect()->intended('/app/dashboard'); // Sesuaikan URL-nya
-            }   
-            // Jika rolenya tidak dikenali, lempar ke halaman default
-            return redirect()->intended('/');
-        }
+            }
 
-        // Jika email/password salah
-        // return back()->withErrors([
-        //     'email' => 'Email atau password yang Anda masukkan salah.',
-        // ])->onlyInput('email');
+            // Semua role lain (pengolah, sekretariat, staff, customer) memakai
+            // dashboard yang sama; CustomerController::index() sudah menyesuaikan
+            // tampilan berdasarkan opd/unit_kerja user yang login.
+            return redirect()->intended('/app/dashboard');
+        }
 
         return back()
             ->withInput()

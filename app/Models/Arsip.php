@@ -14,7 +14,6 @@ class Arsip extends Model
         'file',
         'tahun',
         'periode_id',
-        'tahap',
         'tanggal',
         'tanggal_musnah',
         'master_kode_id',
@@ -28,7 +27,7 @@ class Arsip extends Model
         'inaktif',
         'nomor',
         'status',
-        'pemusnahan',
+        'nasib_akhir',
     ];
 
     /*
@@ -37,7 +36,6 @@ class Arsip extends Model
     |--------------------------------------------------------------------------
     */
 
-    // OPD
     public function dus_arsip()
     {
         return $this->belongsTo(Dus_Arsip::class, 'dus_arsip_id');
@@ -47,37 +45,71 @@ class Arsip extends Model
         return $this->belongsTo(Rak_Arsip::class, 'rak_arsip_id');
     }
 
-    // OPD
     public function opd()
     {
         return $this->belongsTo(Opd::class, 'opd_id');
     }
 
-    // OPD Induk
     public function opd_induk()
     {
         return $this->belongsTo(Opd_Induk::class, 'opd_induk_id');
     }
-    
 
-    // Master Kode
     public function masterKode()
     {
         return $this->belongsTo(MasterKode::class, 'master_kode_id');
     }
 
-    // User (pembuat arsip)
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // periode
     public function periode()
     {
         return $this->belongsTo(Periode::class, 'periode_id');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | SCOPE
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Eager-load relasi standar yang dipakai berulang di ArsipController.
+     */
+    public function scopeLengkap($query)
+    {
+        return $query->with([
+            'opd:id,opd_induk_id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'opd_induk:id,kode_instansi,instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak',
+            'periode:id,tahun,tahap,status',
+        ]);
+    }
+
+    /**
+     * Batasi query hanya ke data milik instansi induk user yang login, dan
+     * kalau bukan sekretariat, batasi lagi ke bidang (opd) miliknya sendiri.
+     * Menggantikan pengecekan unit_kerja==='sekretariat' yang tadinya
+     * diduplikasi di banyak controller (lihat AUDIT-KODE-SATU.md 4.3).
+     */
+    public function scopeMilikUser($query, $user = null)
+    {
+        $user = $user ?: auth()->user();
+
+        $query->where('opd_induk_id', $user->opd_induk_id);
+
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $query->where('opd_id', $user->opd_id);
+        }
+
+        return $query;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -85,17 +117,20 @@ class Arsip extends Model
     |--------------------------------------------------------------------------
     */
 
-    // cek apakah arsip aktif
+    /**
+     * Arsip dianggap aktif selama belum punya keputusan akhir (musnah/permanen).
+     * Sebelumnya membandingkan status dengan 'aktif', padahal enum status
+     * hanya berisi verify/input/draft — nilai itu tidak pernah tercapai.
+     */
     public function isActive()
     {
-        return $this->status === 'aktif';
+        return is_null($this->nasib_akhir);
     }
 
-    // cek apakah sudah masuk masa pemusnahan
     public function isExpired()
     {
-        if (!$this->pemusnahan) return false;
+        if (!$this->tanggal_musnah) return false;
 
-        return now()->greaterThan($this->pemusnahan);
+        return now()->greaterThan($this->tanggal_musnah);
     }
 }

@@ -6,6 +6,7 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>SATU (Sistem Informasi Kearsipan Terpadu)</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <link rel="icon" href="{{ asset('images/arsip.png') }}" type="image/png">

@@ -105,7 +105,7 @@ $(document).ready(function () {
         minimumInputLength: 3, // ⭐ minimal 3 karakter
 
         ajax: {
-            url: '/master-kodes/search?current_id={{ $data->id ?? '' }}',
+            url: "{{ route('master-kodes.search') }}?current_id={{ $data->id ?? '' }}",
             dataType: 'json',
             delay: 250,
 

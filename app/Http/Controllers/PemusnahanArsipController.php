@@ -8,6 +8,7 @@ use App\Models\Arsip;
 use App\Models\MasterKode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PemusnahanArsipController extends Controller
 {
@@ -29,8 +30,6 @@ class PemusnahanArsipController extends Controller
     public function uploadBA(Request $request)
     {
         try {
-            // dd($request->all());
-
             $request->validate([
                 'id' => 'required|exists:pemusnahan_arsips,id',
                 'file_ba' => 'required|mimes:pdf|max:51200', // 50 MB
@@ -74,41 +73,12 @@ class PemusnahanArsipController extends Controller
                 ->with('error', $e->getMessage());
         }
     }
-    public function uploadBAa(Request $request){ 
-        try{ 
-            if ($request->hasFile('file_ba')) {
-
-                $file = $request->file('file_ba');
-
-                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-
-                // Bersihkan nama file
-                $safeName = Str::slug($originalName);
-
-                // Ambil ekstensi asli
-                $extension = $file->getClientOriginalExtension();
-
-                // Nama final
-                $fileName = time() . '_' . $safeName . '.' . $extension;
-                // echo $fileName;die();
-
-                // $file->move(public_path('arsip'), $fileName);
-                $filePath = $request->file('file_ba')
-                ->store('ba_pemusnahan', 'public');
-                // dd($filePath);
-            }
-        }
-        catch (\Throwable $e) {
-            dd($e->getMessage());
-        }
-    }
 
     /**
      * Show the form for creating a new resource.
      */ 
     public function create()
     {
-        // $opds = Opd::all();
         $arsip = Arsip::all();
         $data = Pemusnahan_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
@@ -117,7 +87,6 @@ class PemusnahanArsipController extends Controller
             'dus_arsip:id,nomor_dus,nomor_rak',
             'rak_arsip:id,nomor_rak'
         ])->latest()->get();  
-        // $masterKodes = MasterKode::all();
 
         return view('pemusnahan_arsip.create', compact(
             'data','arsip'
@@ -131,7 +100,7 @@ class PemusnahanArsipController extends Controller
     {
         try {  
             DB::beginTransaction();
-            $id_arsip=$request->input('id_arsip');  
+            $id_arsip = $request->input('id_arsip');
             $data = Arsip::with([
                 'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
                 'masterKode:id,kode,nama',
@@ -139,14 +108,8 @@ class PemusnahanArsipController extends Controller
                 'dus_arsip:id,nomor_dus,nomor_rak',
                 'rak_arsip:id,nomor_rak'
             ])->findOrFail($id_arsip);
-            if($data){
 
-            }else{
-                return redirect()->route('pemusnahan_arsip.create')
-                ->with('error', 'wajib ada nomoor arsip!'); 
-            }
-            // dd($request->all()); 
-            $dataa = Pemusnahan_Arsip::create([
+            Pemusnahan_Arsip::create([
                 'id_arsip'  => $data->id,
                 'pemusnahan'=> $request->tanggal_pemusnahan,
                 'no_ba'     => $request->no_ba,
@@ -157,17 +120,19 @@ class PemusnahanArsipController extends Controller
                 'master_kode_id'=> $data->master_kode_id,
                 'created_by'=> auth()->id(),
                 'opd_id'    => $data->opd_id,
-                'retensi'   => $data->retensi,
                 'nomor'     => $data->nomor,
                 'status'    => 'inaktif', 
                 'korektor'  => $data->korektor, 
             ]);
 
-            // hapus arsip asli
-            // $arsip->delete();
+            // Tandai arsip asli sudah masuk proses pemusnahan.
+            // CATATAN: enum arsips.status ('verify','input','draft') belum menampung
+            // nilai pasca-pemusnahan, jadi status TIDAK diubah di sini — cukup andalkan
+            // keberadaan baris pemusnahan_arsips (id_arsip) sebagai penanda.
+            // nasib_akhir default 'musnah' sampai form pemusnahan menyediakan pilihan
+            // musnah/permanen (lihat AUDIT-KODE-SATU.md Bagian 4.2 — perbaikan tampilan menyusul).
             $data->update([
-                'status'    => 'inaktif',
-                'pemusnahan'=> now()
+                'nasib_akhir' => $request->nasib_akhir ?? 'musnah',
             ]);
 
             DB::commit();
@@ -175,9 +140,8 @@ class PemusnahanArsipController extends Controller
                 ->with('success', 'Data berhasil ditambahkan!');  
         } catch (\Throwable $e) {
             DB::rollBack();
-            // return redirect()->route('pemusnahan_arsip.create')
-            // ->with('error', 'wajib ada nomoor arsip!'); 
-            dd($e->getMessage());
+            return redirect()->route('pemusnahan_arsip.create')
+                ->with('error', 'Gagal menyimpan data pemusnahan: ' . $e->getMessage());
         } 
     }
 
@@ -205,24 +169,24 @@ class PemusnahanArsipController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Pemusnahan_arsip $pemusnahan_arsip)
+    public function edit($id)
     {
-        //
+        abort(404);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Pemusnahan_arsip $pemusnahan_arsip)
+    public function update(Request $request, $id)
     {
-        //
+        abort(404);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pemusnahan_arsip $pemusnahan_arsip)
+    public function destroy($id)
     {
-        //
+        abort(404);
     }
 }

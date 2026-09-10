@@ -114,21 +114,7 @@
 
                         </a>
 
-                        <form action="{{ route('arsip.destroy', $item->id) }}"
-                              method="POST"
-                              class="d-inline">
-
-                            @csrf
-                            @method('DELETE')
-
-                            <button class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Hapus data?')">
-
-                                Hapus
-
-                            </button>
-
-                        </form>
+<!-- Tombol hapus pemusnahan_arsips dibuang: sebelumnya salah sasaran menghapus baris arsips (lihat AUDIT-KODE-SATU.md 2.5). Tidak ada fitur hapus untuk log pemusnahan. -->
 
                     </td>
 

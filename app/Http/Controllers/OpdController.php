@@ -14,7 +14,7 @@ class OpdController extends Controller
         $data_opd = Opd::with([
             'opd_induk:id,instansi'
         ])
-        ->where('opd_induk_id', $opd_induk_id) // Menyaring berdasarkan OPD Induk
+        ->where('opd_induk_id', $opd_induk_id)
         ->latest()
         ->get();
 
@@ -31,11 +31,12 @@ class OpdController extends Controller
     {
         $q = $request->q;
  
-        $data = Opd::where('unit_kerja', 'like', "%$q%")
-            ->orWhere('kode_instansi', 'like', "%$q%")
-            ->orWhere('singkatan_uk', 'like', "%$q%")
-            ->orWhere('instansi', 'like', "%$q%")
-            ->orWhere('singkatan_instansi', 'like', "%$q%")
+        $data = Opd::where(function ($query) use ($q) {
+            $query->where('unit_kerja', 'like', "%$q%")
+                ->orWhere('kode_instansi', 'like', "%$q%")
+                ->orWhere('singkatan_uk', 'like', "%$q%")
+                ->orWhere('instansi', 'like', "%$q%");
+        })
             ->limit(20)
             ->get();
 
@@ -43,34 +44,26 @@ class OpdController extends Controller
     }
     public function store(Request $request)
     {
-        // 1. Validasi input dari form
         $validatedData = $request->validate([
             'kode_instansi'      => 'required|string|max:255',
             'unit_kerja'           => 'required|string|max:255',
             'singkatan_uk' => 'required|string|max:255',
             'instansi'           => 'required|string|max:255',
-            // 'singkatan_instansi' => 'required|string|max:255',
         ], [
-            // Kustomisasi pesan error (Opsional)
             'kode_instansi.required' => 'Kode instansi wajib diisi.',
             'unit_kerja.required'      => 'unit kerja wajib diisi.',
             'singkatan_uk.required'      => 'singkatan unit kerja wajib diisi.',
 
         ]);
 
-        // 2. Simpan data ke database menggunakan Mass Assignment
         Opd::create([
             'kode_instansi'      => $validatedData['kode_instansi'],
             'unit_kerja'           => $validatedData['unit_kerja'],
             'singkatan_uk' => $validatedData['singkatan_uk'],
             'instansi'           => $validatedData['instansi'],
-            // 'singkatan_instansi' => $validatedData['singkatan_instansi'],
             'opd_induk_id' => $request->opd_induk_id,
-
-
         ]);
 
-        // 3. Alihkan halaman kembali dengan pesan sukses
         return redirect()->route('opd_induk.index')->with('success', 'Data instansi berhasil ditambahkan!');
     }
 
@@ -83,33 +76,24 @@ class OpdController extends Controller
 
     public function update(Request $request, $id)
     {
-    // 1. Validasi input dari form
-    $validatedData = $request->validate([
-        'kode_instansi'      => 'required|string|max:255',
-        'unit_kerja'         => 'required|string|max:255',
-        'singkatan_uk'       => 'required|string|max:255',
-        // 'instansi'           => 'required|string|max:255',
-        // 'singkatan_instansi' => 'required|string|max:255',
-    ], [
-        // Kustomisasi pesan error (Opsional)
-        'kode_instansi.required' => 'Kode instansi wajib diisi.',
-        'unit_kerja.required'    => 'unit kerja wajib diisi.',
-        'singkatan_uk.required'  => 'singkatan unit kerja wajib diisi.',
-    ]);
+        $validatedData = $request->validate([
+            'kode_instansi'      => 'required|string|max:255',
+            'unit_kerja'         => 'required|string|max:255',
+            'singkatan_uk'       => 'required|string|max:255',
+        ], [
+            'kode_instansi.required' => 'Kode instansi wajib diisi.',
+            'unit_kerja.required'    => 'unit kerja wajib diisi.',
+            'singkatan_uk.required'  => 'singkatan unit kerja wajib diisi.',
+        ]);
 
-    // 2. Cari data berdasarkan ID dan perbarui menggunakan Mass Assignment
-    $opd = Opd::findOrFail($id);
-    $opd->update([
-        'kode_instansi'      => $validatedData['kode_instansi'],
-        'unit_kerja'         => $validatedData['unit_kerja'],
-        'singkatan_uk'       => $validatedData['singkatan_uk'],
-        // 'instansi'           => $validatedData['instansi'],
-        // 'singkatan_instansi' => $validatedData['singkatan_instansi'],
-        // 'opd_induk_id'       => $request->opd_induk_id,
-    ]);
+        $opd = Opd::findOrFail($id);
+        $opd->update([
+            'kode_instansi'      => $validatedData['kode_instansi'],
+            'unit_kerja'         => $validatedData['unit_kerja'],
+            'singkatan_uk'       => $validatedData['singkatan_uk'],
+        ]);
 
-    // 3. Alihkan halaman kembali dengan pesan sukses
-    return redirect()->route('opd_induk.index')->with('success', 'Data instansi berhasil diperbarui!');
+        return redirect()->route('opd_induk.index')->with('success', 'Data instansi berhasil diperbarui!');
     }
 
 

@@ -100,7 +100,7 @@
                             {{ $item->tahap ?? '-' }}
                         </td> 
                         <td>
-                            <a href="{{ route('periode.edit', auth()->guard('web')->user()->opd_id) }}" title="Ubah Data Periode"
+                            <a href="{{ route('periode.edit', $item->opd_id) }}" title="Ubah Data Periode"
                                class="btn btn-warning btn-sm"> 
                                <i class="bi bi-pen"></i>
                                Update Periode

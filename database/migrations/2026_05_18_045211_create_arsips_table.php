@@ -18,11 +18,18 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
 
             $table->string('file')->nullable();
-            $table->date('tanggal')->nullable();
+            $table->year('tahun')->nullable();
 
             // =========================
-            // RELASI BENAR
+            // RELASI
             // =========================
+
+            $table->foreignId('periode_id')
+                ->nullable()
+                ->constrained('periodes');
+
+            $table->date('tanggal')->nullable();
+            $table->date('tanggal_musnah')->nullable();
 
             $table->foreignId('master_kode_id')
                 ->nullable()
@@ -39,20 +46,29 @@ return new class extends Migration
                 ->constrained('opds')
                 ->nullOnDelete();
 
+            $table->foreignId('opd_induk_id')
+                ->constrained('opd_induks');
+
+            // dus_arsip_id/rak_arsip_id sengaja TANPA foreign key constraint —
+            // mengikuti apa yang sudah berjalan di produksi (index saja),
+            // karena kedua tabel itu baru dibuat setelah arsips.
+            $table->unsignedBigInteger('dus_arsip_id')->nullable()->index();
+            $table->unsignedBigInteger('rak_arsip_id')->nullable()->index();
+
             // =========================
             // FIELD LAIN
             // =========================
 
-            $table->string('retensi')->nullable();
+            $table->integer('aktif')->nullable();
+            $table->integer('inaktif')->nullable();
             $table->string('nomor')->nullable();
+            $table->enum('status', ['verify', 'input', 'draft'])->nullable();
 
-            $table->string('status')->nullable();
+            // Menggantikan kolom 'pemusnahan' (varchar) lama yang dipakai untuk
+            // dua arti sekaligus (keterangan + tanggal) — lihat Audit 4.2/9.1.
+            $table->enum('nasib_akhir', ['musnah', 'permanen'])->nullable();
 
             $table->string('korektor')->nullable();
-
-            $table->string('retensiinaktif')->nullable();
-
-            $table->date('pemusnahan')->nullable();
 
             $table->timestamps();
         });

@@ -100,7 +100,7 @@ $(document).ready(function () {
         allowClear: true,
         minimumInputLength: 3,
         ajax: {
-            url: '/master-kodes/search',
+            url: "{{ route('master-kodes.search') }}",
             dataType: 'json',
             delay: 250,
 

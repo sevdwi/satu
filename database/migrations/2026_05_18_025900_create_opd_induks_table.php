@@ -8,19 +8,19 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * Tabel ini sebelumnya tidak punya file migrasi sama sekali meski sudah
+     * dipakai di produksi (lihat AUDIT-KODE-SATU.md Bagian 6.1) — model
+     * Opd_Induk mematikan timestamps, jadi kolom created_at/updated_at
+     * sengaja tidak disertakan di sini.
      */
     public function up(): void
     {
-        Schema::create('opds', function (Blueprint $table) {
+        Schema::create('opd_induks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('opd_induk_id')
-                ->nullable()
-                ->constrained('opd_induks');
             $table->string('kode_instansi');
-            $table->string('unit_kerja');
-            $table->string('singkatan_uk');
             $table->string('instansi');
-            $table->timestamps();
+            $table->string('singkatan_instansi');
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('opds');
+        Schema::dropIfExists('opd_induks');
     }
 };

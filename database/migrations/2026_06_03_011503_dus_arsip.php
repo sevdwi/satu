@@ -13,14 +13,18 @@ return new class extends Migration
     { 
         Schema::create('dus_arsips', function (Blueprint $table) {
             $table->id(); 
-            $table->string('nomor_dus'); 
-            $table->string('nomor_rak'); 
+            $table->string('nomor_dus')->nullable(); 
+            $table->foreignId('rak_arsip_id')
+                ->constrained('rak_arsips');
             $table->foreignId('opd_id')
                 ->nullable()
                 ->constrained('opds')
                 ->nullOnDelete();
-            });
-        //
+            $table->foreignId('opd_induk_id')
+                ->nullable()
+                ->constrained('opd_induks');
+            $table->string('qrcode')->default('');
+        });
     }
 
     /**
@@ -29,6 +33,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('dus_arsips');
-        //
     }
 };

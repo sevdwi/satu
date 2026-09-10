@@ -10,12 +10,8 @@ class PeriodeController extends Controller
 {
     public function index()
     {
-        // Ambil data user yang sedang login beserta id OPD-nya
         $user = auth()->user(); 
-        // $userUnit = $user->opd_id;
 
-
-        // Mengambil semua data periode beserta nama OPD-nya
         $data_filter = Periode::with([
             'opd:id,unit_kerja' // WAJIB sertakan id tabel induk agar bisa dicocokkan dengan opd_id
         ]);
@@ -24,61 +20,50 @@ class PeriodeController extends Controller
         }        
         $periodes = $data_filter->latest('id')->get();   
         
-        // cek jika belum ada data periode
-        $periodeBelum =  Periode::where('opd_id',$user->opd_id)->count();
+        $periodeBelum = Periode::where('opd_id', $user->opd_id)->count();
                 
-
         return view('periode.index', compact('periodes','periodeBelum'));
     }
 
     public function create()
     {
-        // $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
-        // $opd_induks = Opd_Induk::all();
         $opds = Opd::all();
         return view('periode.create', compact('opds'));
     }
 
     public function store(Request $request)
     {
-        // 1. Validasi input dari form
         $validatedData = $request->validate([
-        'tahun'  => 'required|integer|digits:4',
-        'tahap'  => 'required|in:1,2,3,4',
-        'status' => 'required|in:buka,tutup',
+            'opd_id' => 'required|exists:opds,id',
+            'tahun'  => 'required|integer|digits:4',
+            'tahap'  => 'required|in:1,2,3,4',
+            'status' => 'required|in:buka,tutup',
         ], [
-            // Kustomisasi pesan error (Opsional)
-            'tahun' => 'Kode instansi wajib diisi.',
-            'tahap'      => 'Nama instansi wajib diisi.',
-            'status'      => 'Nama instansi wajib diisi.',
+            'opd_id.required' => 'Unit kerja wajib dipilih.',
+            'tahun.required' => 'Tahun wajib diisi.',
+            'tahap.required' => 'Tahap wajib diisi.',
+            'status.required' => 'Status wajib diisi.',
         ]);
 
-        // 2. Simpan data ke database menggunakan Mass Assignment
-        // Ganti 'OpdInduk' dengan nama Model yang Anda gunakan untuk tabel ini
         Periode::create([
-            'opd_id' => $request->opd_id,
-            'tahun'      => $validatedData['kode_instansi'],
-            'tahap'           => $validatedData['instansi'],
-            'status' => $validatedData['singkatan_instansi'],
+            'opd_id' => $validatedData['opd_id'],
+            'tahun'  => $validatedData['tahun'],
+            'tahap'  => $validatedData['tahap'],
+            'status' => $validatedData['status'],
         ]);
 
-        // 3. Alihkan halaman kembali dengan pesan sukses
-        return redirect()->route('periode.index')->with('success', 'Data instansi berhasil ditambahkan!');
+        return redirect()->route('periode.index')->with('success', 'Data periode berhasil ditambahkan!');
     }
 
     public function edit($opd_id)
     {
-
-        // $periodes = Periode::findOrFail($opd_id);
         $data_periode = Periode::with([
             'opd:id,unit_kerja,instansi'
         ])
-        ->where('opd_id', $opd_id) // Menyaring berdasarkan Unit kerja
+        ->where('opd_id', $opd_id)
         ->latest('id')
-        ->first(); // Mengambil satu data terbaru sebagai objek tunggal;
-        // dd($data_periode);
-            // Jaga-jaga jika data periode untuk OPD tersebut belum ada sama sekali
-        
+        ->first();
+
         if (!$data_periode) {
             abort(404, 'Data periode untuk OPD ini belum dibuat.');
         }
@@ -88,34 +73,29 @@ class PeriodeController extends Controller
 
     public function update(Request $request, $id)
     {
-        // 1. Validasi input dari form edit
         $validatedData = $request->validate([
-        'tahun'  => 'required|integer|digits:4',
-        'tahap'  => 'required|in:1,2,3,4',
-        'status' => 'required|in:buka,tutup',
+            'opd_id' => 'required|exists:opds,id',
+            'tahun'  => 'required|integer|digits:4',
+            'tahap'  => 'required|in:1,2,3,4',
+            'status' => 'required|in:buka,tutup',
         ], [
-            // Kustomisasi pesan error (Opsional)
-            'tahun' => 'Kode instansi wajib diisi.',
-            'tahap'      => 'Nama instansi wajib diisi.',
-            'status'      => 'Nama instansi wajib diisi.',
+            'opd_id.required' => 'Unit kerja wajib dipilih.',
+            'tahun.required' => 'Tahun wajib diisi.',
+            'tahap.required' => 'Tahap wajib diisi.',
+            'status.required' => 'Status wajib diisi.',
         ]);
 
-        // 2. Cari data lama berdasarkan ID
         $periode = Periode::findOrFail($id);
 
-        // 3. Perbarui data di database menggunakan Mass Assignment
         $periode->update([
-            'opd_id' => $request->opd_id,
-            'tahun' => $validatedData['tahun'],
-            'tahap'      => $validatedData['tahap'],
-            'status'      => $validatedData['status'],
+            'opd_id' => $validatedData['opd_id'],
+            'tahun'  => $validatedData['tahun'],
+            'tahap'  => $validatedData['tahap'],
+            'status' => $validatedData['status'],
         ]);
 
-        // 4. Alihkan halaman kembali dengan pesan sukses
-        return redirect()->route('dashboard')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('periode.index')->with('success', 'Data berhasil diupdate');
     }
-
-
 
     public function destroy($id)
     {
@@ -123,8 +103,4 @@ class PeriodeController extends Controller
 
         return back()->with('success', 'tahap berhasil dihapus');
     }
-
-
-
-    
 }
