@@ -15,19 +15,14 @@ class AdminUserController extends Controller
     // list semua admin
     public function index()
     {
-        $user = Auth::guard('admin')->user(); // Mengambil data dari provider 'users'
+        $user = Auth::guard('admin')->user();
 
         $data = Arsip::with([
-            'opd_induk:id,instansi' // Pastikan kolom 'instansi' ada di tabel opd_induk
-
+            'opd_induk:id,instansi'
         ])
         ->latest()->get(); 
         $jumlah_data = $data->count();
 
-        // Lakukan debug terlebih dahulu untuk melihat apakah data sudah terisi
-        //dd($data->toArray()); 
-
-        // Kelompokkan data dan hitung jumlah arsip per opd_induk
         $rekap = $data->groupBy('opd_induk_id')->map(function ($item) {
             return [
                 'instansi' => $item->first()->opd_induk->instansi ?? 'Tidak Diketahui',
@@ -35,24 +30,18 @@ class AdminUserController extends Controller
             ];
         })->values();
 
-        // Siapkan array untuk Chart.js
         $labels = $rekap->pluck('instansi');
         $totals = $rekap->pluck('jumlah');
 
-        // arsip musnah
-
         $total_lewat = Arsip::where('tanggal_musnah', '<', now()->toDateString())->count();
 
-        // Tentukan rentang waktu saat ini hingga satu bulan ke depan
         $hariIni = Carbon::now();
         $bulanDepan = Carbon::now()->addMonth();
 
-        // Saring data berdasarkan tenggat waktu tanggal_musnah
         $data_musnah = Arsip::with(['opd_induk:id,instansi'])
                 ->whereBetween('tanggal_musnah', [$hariIni, $bulanDepan])
                 ->get();
 
-        // Kelompokkan data dan hitung kuantitas arsip per OPD Induk
         $rekapitulasi = $data_musnah->groupBy('opd_induk_id')->map(function ($grup) {
             return [
                 'instansi_musnah' => $grup->first()->opd_induk->instansi ?? 'Tidak Diketahui',
@@ -60,11 +49,8 @@ class AdminUserController extends Controller
             ];
         })->values();
 
-        // Ekstrak label dan data numerik untuk kebutuhan Chart.js
         $labelGrafik_musnah = $rekapitulasi->pluck('instansi_musnah');
         $dataGrafik_musnah = $rekapitulasi->pluck('jumlah_musnah');
-
-
 
         return view('dashboard-admin', compact('user', 'data','labels', 'totals','jumlah_data','total_lewat','labelGrafik_musnah','dataGrafik_musnah'));
     }
@@ -72,7 +58,7 @@ class AdminUserController extends Controller
     // form create dan show daftar opd saat register
     public function create()
     {
-        $opds = Opd::orderBy('instansi')->get(); // sesuaikan nama kolom
+        $opds = Opd::orderBy('instansi')->get();
         return view('users.create', compact('opds'));
     }
 
@@ -91,13 +77,15 @@ class AdminUserController extends Controller
             'email'    => $request->email,
             'phone_number'   => $request->phone_number,
             'password' => $request->password, // auto hash oleh model
+            'role'     => 'admin',
+            'status'   => 'active',
         ]);
 
         return redirect()->route('login-admin');
     }
     public function show(User $user)
     {
-        return view('admin.users.show', compact('user'));
+        return view('users.edit', compact('user'));
     }
 
     // form edit
@@ -144,17 +132,14 @@ class AdminUserController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            // 'name'   => 'required',
             'phone_number'   => 'required',
             'password' => 'required'
         ], [
-            // 'name.required' => 'Nomor harus diisi',
             'phone_number.required' => 'Nomor harus diisi',
             'password.required' => 'Password harus diisi'
         ]);
 
         $credentials = [
-            // 'name' => $request->name,
             'phone_number' => $request->phone_number,
             'password' => $request->password,
             'role' => 'admin'
@@ -167,37 +152,20 @@ class AdminUserController extends Controller
             return redirect()->intended('/app/dashboard-admin');
         }
 
-        // Cari user di database
-        $user = User::where(
-            'phone_number',
-            $request->phone_number
-        )->first();
+        $user = User::where('phone_number', $request->phone_number)->first();
 
-        // Jika user ada tetapi bukan admin
-        if (
-            $user != null
-            &&
-            $user->role != 'admin'
-        )
-        {
+        if ($user != null && $user->role != 'admin') {
             return back()
                 ->withInput()
                 ->withErrors([
-
-                    'login' =>
-                    'Bukan admin!!!'
-
+                    'login' => 'Bukan admin!!!'
                 ]);
         }
 
-        // Login gagal biasa
         return back()
             ->withInput()
             ->withErrors([
-
-                'login' =>
-                'Nomor atau password salah!!!'
-
+                'login' => 'Nomor atau password salah!!!'
             ]);        
     }
 

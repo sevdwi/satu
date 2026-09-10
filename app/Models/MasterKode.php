@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MasterKode extends Model
 {
-    // use HasFactory;
-
     public $timestamps = false; 
 
     protected $table = 'master_kodes';
@@ -36,17 +34,18 @@ class MasterKode extends Model
     */
 
     // Parent
-    // public function parent()
-    // {
-    //     return $this->belongsTo(MasterKode::class, 'parent_id');
-    // }
     public function parent()
     {
-        // Menghubungkan kolom parent_id ke kolom id di tabel yang sama
-        return $this->belongsTo(MasterKode::class, 'parent_id', 'is_parent');
+        return $this->belongsTo(MasterKode::class, 'parent_id', 'id');
     }
 
     // Children
+    public function children()
+    {
+        return $this->hasMany(MasterKode::class, 'parent_id');
+    }
+
+    // Arsip yang memakai kode ini
     public function arsips()
     {
         return $this->hasMany(Arsip::class, 'master_kode_id');

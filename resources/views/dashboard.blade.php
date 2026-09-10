@@ -172,7 +172,7 @@
     <div class="stat-item">
       <div class="stat-icon green"><i class="bi bi-ladder"></i></div>
       <div>
-        <div class="stat-num"> Tahap -  {{ $periodes->tahap}}</div>
+        <div class="stat-num"> Tahap -  {{ $periodes->tahap ?? '-' }}</div>
         <div class="stat-label">Periode</div>
       </div>
     </div>

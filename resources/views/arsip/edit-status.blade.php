@@ -111,7 +111,7 @@ $(document).ready(function () {
         minimumInputLength: 3,
 
         ajax: {
-            url: "{{ route('master_kodes.search') }}", 
+            url: "{{ route('master-kodes.search') }}", 
 
             dataType: 'json',
 

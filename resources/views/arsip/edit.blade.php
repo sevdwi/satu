@@ -65,8 +65,8 @@ use Carbon\Carbon;
         <input type="hidden" name="id" value="{{$id}}">
         <input type="hidden" name="opd_induk_id" value="{{ auth()->user()->opd_induk_id }}">
         <input type="hidden" name="opd_id" value="{{ auth()->user()->opd_id }}">
-        <input type="hidden" name="periode_id" value="{{ $periodes->id }}">
-        <input type="hidden" name="tahap" value="{{ $periodes->tahap }}">
+        <input type="hidden" name="periode_id" value="{{ $periodes->id ?? '' }}">
+        <input type="hidden" name="tahap" value="{{ $periodes->tahap ?? '' }}">
         <input type="hidden" name="tahun" value="{{ date('Y') }}">
 
 
@@ -89,7 +89,7 @@ use Carbon\Carbon;
 
             <div class="col-md-6 mt-3">
                 <label>Tahap</label>
-                <input type="text" name="tahap" value="{{ $periodes->tahap }} - {{ $periodes->status }}" class="form-control" disabled>
+                <input type="text" name="tahap" value="{{ $periodes->tahap ?? '-' }} - {{ $periodes->status ?? '-' }}" class="form-control" disabled>
             </div>
 
 

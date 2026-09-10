@@ -52,7 +52,7 @@
             Simpan
         </button>
 
-        <a href="{{ route('arsip.index') }}"
+        <a href="{{ route('arsip.home') }}"
            class="btn btn-secondary">
 
             Kembali
@@ -86,7 +86,7 @@ $(document).ready(function () {
         minimumInputLength: 3,
 
         ajax: {
-            url: "{{ route('master-kodes.search') }}", 
+            url: "{{ route('master_kodes.search') }}", 
 
             dataType: 'json',
 

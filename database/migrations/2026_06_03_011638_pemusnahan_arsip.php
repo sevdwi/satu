@@ -10,37 +10,18 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    { 
+    {
         Schema::create('pemusnahan_arsips', function (Blueprint $table) {
             $table->id();
-
-            $table->string('judul');
-            $table->text('deskripsi')->nullable();
-
-            $table->string('file')->nullable();
-            $table->date('tanggal')->nullable();
-
-            // =========================
-            // RELASI BENAR
-            // =========================
-
-            $table->string('master_kode_id')->nullable(); 
-
-            $table->string('created_by')->nullable(); 
-
-            $table->string('opd_id')->nullable();   
-
-            // =========================
-            // FIELD LAIN
-            // ========================= 
-            $table->string('nomor')->nullable();
-
-            $table->string('status')->nullable();
-
-            $table->string('korektor')->nullable(); 
-
+            $table->foreignId('id_arsip')->nullable()->constrained('arsips')->nullOnDelete();
             $table->date('pemusnahan')->nullable();
-
+            $table->string('no_ba')->nullable();
+            $table->string('file_ba')->nullable();
+            $table->foreignId('master_kode_id')->nullable()->constrained('master_kodes')->nullOnDelete();
+            $table->foreignId('opd_id')->nullable()->constrained('opds')->nullOnDelete();
+            $table->string('korektor')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
@@ -51,6 +32,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('pemusnahan_arsips');
-        //
     }
 };

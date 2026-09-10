@@ -12,20 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RakArsipController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function dashbord()
-    {
-        // $data = Rak_arsip::with([
-        //     'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
-        // ])->latest()->get(); 
-        $data = Rak_Arsip::all();
-        return view('rak_arsip.index', compact('data'
-        ));
-        //
-    }
-
     public function index()
     {
         // Ambil data user yang sedang login beserta id OPD-nya
@@ -33,15 +19,12 @@ class RakArsipController extends Controller
 
         // Pastikan nama kolom 'opd_id' sesuai di tabel users
         $userOpdId = $user->opd_induk_id; 
-
-        // dd($userOpdId); 
         
         $data = Rak_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
             'opd_induk:id,instansi,kode_instansi'
         ])
-        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_id' ini ada di tabel rak_arsips
-        // ->latest()
+        ->where('opd_induk_id', $userOpdId)
         ->get(); 
 
         return view('rak_arsip.index', compact('data'
@@ -56,14 +39,17 @@ class RakArsipController extends Controller
         $data = Rak_Arsip::with([
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
         ])
-        ->where('nomor_rak', 'like', "%{$q}%")
-        ->orWhere('opd_id', 'like', "%{$q}%")
-        ->orWhereHas('opd', function ($query) use ($q) {
-            $query->where('instansi', 'like', "%{$q}%")
-                  ->orWhere('singkatan_instansi', 'like', "%{$q}%")
-                  ->orWhere('unit_kerja', 'like', "%{$q}%")
-                  ->orWhere('singkatan_uk', 'like', "%{$q}%");
+        ->where(function ($query) use ($q) {
+            $query->where('nomor_rak', 'like', "%{$q}%")
+                  ->orWhere('opd_id', 'like', "%{$q}%")
+                  ->orWhereHas('opd', function ($sub) use ($q) {
+                      $sub->where('instansi', 'like', "%{$q}%")
+                          ->orWhere('singkatan_instansi', 'like', "%{$q}%")
+                          ->orWhere('unit_kerja', 'like', "%{$q}%")
+                          ->orWhere('singkatan_uk', 'like', "%{$q}%");
+                  });
         })
+        ->where('opd_induk_id', auth()->user()->opd_induk_id)
         ->limit(20)
         ->get();
 
@@ -75,13 +61,7 @@ class RakArsipController extends Controller
      */
     public function create()
     {
-        $user = auth()->user()>opd_induk_id;
-        
-        // ambil id user untuk kode sementara
-        // $userid = auth()->id();
-        // dd($userid);
-
-        $userOpdId = $user->opd_induk_id; 
+        $userOpdId = auth()->user()->opd_induk_id;
 
         $opds = Opd::where('opd_induk_id', $userOpdId)->get();
 
@@ -97,7 +77,7 @@ class RakArsipController extends Controller
     public function store(Request $request)
     {  
         try { 
-            $data = Rak_Arsip::create([
+            Rak_Arsip::create([
                 'nomor_rak' => $request->nomor_rak, 
                 'opd_id' => $request->opd_id, 
                 'opd_induk_id' => $request->opd_induk_id, 
@@ -105,16 +85,9 @@ class RakArsipController extends Controller
             return redirect()->route('rak_arsip.index')
                 ->with('success', 'Data berhasil ditambahkan!');  
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            return redirect()->route('rak_arsip.index')
+                ->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         } 
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Rak_arsip $rak_arsip)
-    {
-        //
     }
 
     /**
@@ -124,7 +97,9 @@ class RakArsipController extends Controller
     { 
         $data = Rak_Arsip::with([ 
             'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi'
-        ])->findOrFail($id);
+        ])
+        ->where('opd_induk_id', auth()->user()->opd_induk_id)
+        ->findOrFail($id);
 
         $opds = Opd::all(); 
 
@@ -139,7 +114,8 @@ class RakArsipController extends Controller
      */
     public function update(Request $request, $id)
     { 
-        $arsip = Rak_Arsip::findOrFail($id); 
+        $arsip = Rak_Arsip::where('opd_induk_id', auth()->user()->opd_induk_id)
+            ->findOrFail($id); 
         $arsip->update([ 
                 'nomor_rak' => $request->nomor_rak, 
                 'opd_id' => $request->opd_id, 
@@ -154,19 +130,17 @@ class RakArsipController extends Controller
      */
     public function destroy($id)
     {
-
         try {
-            // Find data by ID, will return 404 error if not found
-            $rak = Rak_Arsip::findOrFail($id);
+            $rak = Rak_Arsip::where('opd_induk_id', auth()->user()->opd_induk_id)
+                ->findOrFail($id);
             
-            // Delete data from database
             $rak->delete();
     
             return redirect()->route('rak_arsip.index')
                 ->with('success', 'Data berhasil dihapus!');  
         } catch (\Throwable $e) {
-            // Display error message if delete process fails
-            dd($e->getMessage());
+            return redirect()->route('rak_arsip.index')
+                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
 
     }

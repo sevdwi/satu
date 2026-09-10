@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 { 
+    /**
+     * Run the migrations.
+     *
+     * Model MasterKode mematikan timestamps ($timestamps = false), jadi
+     * kolom created_at/updated_at sengaja tidak disertakan (sebelumnya ada
+     * di skema tapi selalu NULL — lihat AUDIT-KODE-SATU.md Bagian 9.2).
+     */
     public function up(): void
     {
         Schema::create('master_kodes', function (Blueprint $table) {
@@ -25,12 +32,16 @@ return new class extends Migration
 
             $table->string('nama');
 
-            $table->text('keterangan')->nullable();
+            $table->integer('aktif')->nullable();
+            $table->integer('inaktif')->nullable();
 
-            $table->timestamps();
+            $table->text('keterangan')->nullable();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('master_kodes');

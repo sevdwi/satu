@@ -18,8 +18,10 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('opds')
                 ->nullOnDelete();
-            });
-        //
+            $table->foreignId('opd_induk_id')
+                ->nullable()
+                ->constrained('opd_induks');
+        });
     }
 
     /**
@@ -28,6 +30,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('rak_arsips');
-        //
     }
 };

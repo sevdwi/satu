@@ -6,6 +6,7 @@
     <meta name="description" content="Sistem Informasi Kearsipan Terpadu" />
     <meta name="author" content="Diskominfo" />
     <title>SATU (Sistem Informasi Kearsipan Terpadu)</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/arsip2.png') }}" type="image/png">
