@@ -60,7 +60,7 @@
     <div class="d-flex justify-content-between mb-3">
         <h3>Data periode tahap Opd <span><h5>Jika belum ada silahkan buat periode dahulu</h5></span></h3>
 
-        @if($periodeBelum>0)
+        @if($periodeBelum==0)
         <a href="{{ route('periode.create') }}" class="btn btn-primary">
             Buat <br> Periode
         </a> 

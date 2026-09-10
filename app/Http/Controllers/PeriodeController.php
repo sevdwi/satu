@@ -25,7 +25,7 @@ class PeriodeController extends Controller
         $periodes = $data_filter->latest('id')->get();   
         
         // cek jika belum ada data periode
-        $periodeBelum =  Periode::where('opd_id',$user->opd_id) ->whereNull('id')->count();
+        $periodeBelum =  Periode::where('opd_id',$user->opd_id)->count();
                 
 
         return view('periode.index', compact('periodes','periodeBelum'));
