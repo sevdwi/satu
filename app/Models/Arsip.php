@@ -14,6 +14,7 @@ class Arsip extends Model
         'file',
         'tahun',
         'periode_id',
+        'tahap',
         'tanggal',
         'tanggal_musnah',
         'master_kode_id',

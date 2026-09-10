@@ -10,7 +10,8 @@ Route::prefix('arsip')->name('arsip.')->group(function () {
     // Route::get('/', [ArsipController::class, 'index'])->name('index');
 
     Route::get('/data', [ArsipController::class, 'index'])->name('home');
-    Route::get('/manuver', [ArsipController::class, 'manuver'])->name('manuver');
+    Route::get('/data/tahap/{periode?}', [ArsipController::class, 'index_tahap'])->name('home-tahap');
+    Route::get('/manuver/{periode?}', [ArsipController::class, 'manuver'])->name('manuver');
     Route::get('/musnah', [ArsipController::class, 'musnah'])->name('musnah');
     Route::get('/permanen', [ArsipController::class, 'permanen'])->name('permanen');
 

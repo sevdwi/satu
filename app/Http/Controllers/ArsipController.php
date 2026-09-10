@@ -84,7 +84,6 @@ class ArsipController extends Controller
     } 
     // public function index($periode=null)
     public function index()
-
     {
         // Jika URL tidak ada parameter, gunakan tahun-bulan saat ini sebagai default
         // if (!$periode) { $periode = date('Y-m'); }
@@ -95,8 +94,7 @@ class ArsipController extends Controller
         // dd(session('periodes')); 
 
         // Ambil data user yang sedang login beserta id OPD-nya
-        // $user = auth()->user(); 
-        $user = auth()->user(); // load('opd'); 
+        $user = auth()->user();  
         
         // ambil id user untuk kode sementara
         $userid = auth()->id();
@@ -132,11 +130,60 @@ class ArsipController extends Controller
         return view('arsip.index', compact('data','userid','arsipBelumDefinitif'
         ));
     }
-
-    public function manuver()
+    public function index_tahap($periode = null)
     {
+        // Jika URL tidak ada parameter, gunakan tahun-bulan saat ini sebagai default
+        if (!$periode) { $periode = date('Y-m'); }
+        // 1. Simpan ke session
+        session(['periodes' => $periode]);
+
+        // 2. Cek apakah data berhasil disimpan
+        // dd(session('periodes')); 
+
         // Ambil data user yang sedang login beserta id OPD-nya
-        // $user = auth()->user(); 
+        $user = auth()->user();  
+        
+        // ambil id user untuk kode sementara
+        $userid = auth()->id();
+        // dd($userid);
+
+        // Pastikan nama kolom 'opd_id' sesuai di tabel users
+        $userOpdId = $user->opd_induk_id; 
+               
+        $data_filter = Arsip::with([
+            'opd:id,unit_kerja,singkatan_uk,instansi,singkatan_instansi',
+            'masterKode:id,kode,nama',
+            'user:id,name,email',
+            'dus_arsip:id,nomor_dus',
+            'rak_arsip:id,nomor_rak',
+            'periode:id,tahun,tahap,status'
+        ])
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('tahap', session('periodes'));
+        // Cek kondisi Unit Kerja user
+        // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
+        if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
+            $data_filter->where('opd_id', $user->opd_id); 
+        }
+            // Eksekusi data
+        $data = $data_filter->latest()->get(); 
+        // ->latest()->get(); 
+
+        // Hitung jumlah arsip yang belum memiliki nomor definitif
+        $arsipBelumDefinitif = Arsip::where('opd_induk_id',$userOpdId)
+        ->whereNull('nomor')
+        ->count();
+
+
+        return view('arsip.index-tahap', compact('data','userid','arsipBelumDefinitif'
+        ));
+    }
+
+
+    public function manuver($periode = null)
+    {
+        session(['periodes' => $periode]);
+        // Ambil data user yang sedang login beserta id OPD-nya
         $user = auth()->user(); // load('user'); 
         
         // ambil id user untuk kode sementara
@@ -153,7 +200,8 @@ class ArsipController extends Controller
             'dus_arsip:id,nomor_dus',
             'rak_arsip:id,nomor_rak'
         ])
-        ->where('opd_induk_id', $userOpdId); // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('opd_induk_id', $userOpdId) // Pastikan nama kolom 'opd_induk_id' ini ada di tabel arsips
+        ->where('tahap', session('periodes'));
         // Cek kondisi Unit Kerja user
         // Jika BUKAN sekretariat, batasi arsip hanya untuk bidang milik user tersebut
         if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
@@ -459,7 +507,8 @@ class ArsipController extends Controller
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
                 'tahun' => $request->tahun,
-                'periode' => $request->periode,
+                'periode_id' => $request->periode_id,
+                'tahap' => $request->tahap,
                 'tanggal' => $request->tanggal,
                 'tanggal_musnah' => $tanggalMusnah,
                 'master_kode_id' => $request->master_kode_id,
@@ -660,7 +709,7 @@ class ArsipController extends Controller
 
         // 1. Ambil hanya input yang ada di dalam form Blade yang disubmit
         $dataToUpdate = $request->only([
-            'judul', 'deskripsi','tahun','periode_id', 'tanggal','tanggal_musnah', 'master_kode_id', 
+            'judul', 'deskripsi','tahun','periode_id','tahap','tanggal','tanggal_musnah', 'master_kode_id', 
             'opd_id', 'opd_induk_id', 'aktif','inaktif', 'nomor', 
             'status', 'pemusnahan', 'file', 'dus_arsip_id', 'rak_arsip_id'
         ]);

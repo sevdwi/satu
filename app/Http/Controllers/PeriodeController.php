@@ -22,10 +22,13 @@ class PeriodeController extends Controller
         if ($user->opd && strtolower($user->opd->unit_kerja) !== 'sekretariat') {
             $data_filter->where('opd_id', $user->opd_id); 
         }        
-        $periodes = $data_filter->latest('id')->get();    
+        $periodes = $data_filter->latest('id')->get();   
+        
+        // cek jika belum ada data periode
+        $periodeBelum =  Periode::where('opd_id',$user->opd_id) ->whereNull('id')->count();
+                
 
-    
-        return view('periode.index', compact('periodes'));
+        return view('periode.index', compact('periodes','periodeBelum'));
     }
 
     public function create()
@@ -65,6 +68,7 @@ class PeriodeController extends Controller
 
     public function edit($opd_id)
     {
+
         // $periodes = Periode::findOrFail($opd_id);
         $data_periode = Periode::with([
             'opd:id,unit_kerja,instansi'
@@ -74,6 +78,7 @@ class PeriodeController extends Controller
         ->first(); // Mengambil satu data terbaru sebagai objek tunggal;
         // dd($data_periode);
             // Jaga-jaga jika data periode untuk OPD tersebut belum ada sama sekali
+        
         if (!$data_periode) {
             abort(404, 'Data periode untuk OPD ini belum dibuat.');
         }
