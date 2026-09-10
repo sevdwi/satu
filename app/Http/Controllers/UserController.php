@@ -7,6 +7,8 @@ use App\Models\Opd;
 use App\Models\Opd_Induk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+
 
 class UserController extends Controller
 {
@@ -121,15 +123,38 @@ class UserController extends Controller
     // proses login
     public function login(Request $request)
     {
+
         $request->validate([
             // 'name'   => 'required',
             'phone_number'   => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            // 'g-recaptcha-response' => 'required',
         ], [
             // 'name.required' => 'Nomor harus diisi',
             'phone_number.required' => 'Nomor harus diisi',
-            'password.required' => 'Password harus diisi'
+            'password.required' => 'Password harus diisi',
+            // 'g-recaptcha-response.required' => 'Silakan centang "Saya bukan robot".',
         ]);
+
+        // CAPTCHA tidak valid
+        // if (!($result['success'] ?? false)) {
+        //     return back()
+        //         ->withInput($request->only('phone_number'))
+        //         ->withErrors([
+        //             'g-recaptcha-response' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.',
+        //         ]);
+        // }
+        // // Verifikasi reCAPTCHA ke Google
+        // $response = Http::asForm()->post(
+        //     'https://www.google.com/recaptcha/api/siteverify',
+        //     [
+        //         'secret' => config('services.recaptcha.secret_key'),
+        //         'response' => $request->input('g-recaptcha-response'),
+        //         'remoteip' => $request->ip(),
+        //     ]
+        // );
+
+        // $result = $response->json(); 
 
         $credentials = [
             // 'name' => $request->name,
@@ -139,12 +164,30 @@ class UserController extends Controller
         // dd($credentials);
         // dd($request->remember);
 
-        if (Auth::guard('web')->attempt($credentials)) {
 
+        // Cukup gunakan Auth::attempt standar (otomatis menggunakan guard 'web' dan tabel 'users')
+        if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/app/dashboard');
+            // Ambil data hak akses/role dari user yang berhasil login
+            $role = Auth::user()->role; // <-- GANTI 'role' SESUAI NAMA KOLOM DI DATABASE ANDA
+
+            // Arahkan ke dashboard masing-masing sesuai perannya
+            if ($role === 'admin') {
+                return redirect()->intended('/app/dashboard-admin'); 
+            } 
+            
+            if ($role === 'pengolah') {
+                return redirect()->intended('/app/dashboard'); // Sesuaikan URL-nya
+            }   
+            // Jika rolenya tidak dikenali, lempar ke halaman default
+            return redirect()->intended('/');
         }
+
+        // Jika email/password salah
+        // return back()->withErrors([
+        //     'email' => 'Email atau password yang Anda masukkan salah.',
+        // ])->onlyInput('email');
 
         return back()
             ->withInput()

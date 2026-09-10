@@ -18,10 +18,7 @@
     <div class="nav-actions" id="navActions">
       <a href="{{route('login')}}" class="btn-nav-login">
         <i class="bi bi-person"></i> Login
-      </a>
-      <a href="{{route('login-admin')}}" class="btn-nav-admin">
-        <i class="bi bi-shield-lock"></i> Login Admin
-      </a>
+      </a> 
     </div>
  
     <button class="nav-mobile-toggle" id="mobileToggle">
@@ -84,64 +81,134 @@
     <!-- Form -->
     <div class="card-form">
         {{-- Ganti action dengan route Laravel --}}
-        <form action="/login" method="POST" id="loginForm">
-        @csrf
-  
-          <!-- Nomor HP -->
-          <div class="form-group">
-            <label class="form-label-custom">
-              <i class="bi bi-telephone"></i> Nomor HP
-            </label>
-            <div class="input-wrap">
-              <i class="bi bi-telephone i-icon"></i>
-              <input type="number" name="phone_number"
-                    class="form-input"
-                    placeholder="08xxxxxxxxxx" required />
-            </div>
-          </div>
-  
-          <!-- Password -->
-          <div class="form-group">
-            <label class="form-label-custom">
-              <i class="bi bi-lock"></i> Password
-            </label>
-            <div class="input-wrap">
-              <i class="bi bi-lock i-icon"></i>
-              <input type="password" name="password" id="passwordInput"
-                    class="form-input has-toggle"
-                    placeholder="Masukkan password" required />
-              <button type="button" class="toggle-pw-btn" id="togglePw" title="Tampilkan password">
-                <i class="bi bi-eye" id="toggleIcon"></i>
-              </button>
-            </div>
-          </div>
-  
-          <hr class="form-divider" />
-  
-          <!-- Submit -->
-          <button type="submit" class="btn-submit">
-            <i class="bi bi-box-arrow-in-right"></i> Masuk
-          </button>
-  
-        </form>
- 
-      {{-- Error block — tampilkan jika ada error dari Laravel --}}
-      @if ($errors->any())
-        <div class="error-box">
-          <i class="bi bi-exclamation-circle-fill"></i>
-          <span>{{ $errors->first() }}</span>
-        </div>
-      @endif
+        {{-- Google reCAPTCHA --}}  
+        <!-- Load API Google reCAPTCHA -->
+        <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
 
- 
-      <!-- Back to Home -->
-      <a href="#" class="back-link">
-        <i class="bi bi-arrow-left"></i> Kembali ke Halaman Utama
-      </a>
- 
-    </div>
-  </div>
-</div>
+        <style>
+            /* Sembunyikan badge bawaan Google yang melayang di pojok kanan bawah */
+            .grecaptcha-badge {
+                visibility: hidden !important;
+            }
+
+            /* Styling untuk teks info di bawah tombol login */
+            .recaptcha-info {
+                margin-top: 12px;
+                text-align: center;
+                font-size: 11px;
+                color: #777;
+            }
+
+            .recaptcha-info a {
+                color: #555;
+                text-decoration: none;
+            }
+
+            .recaptcha-info a:hover {
+                text-decoration: underline;
+            }
+        </style>
+
+        <form action="/login" method="POST" id="loginForm">
+            @csrf
+
+            <!-- Nomor HP -->
+            <div class="form-group">
+                <label class="form-label-custom">
+                    <i class="bi bi-telephone"></i> Nomor HP
+                </label>
+
+                <div class="input-wrap">
+                    <i class="bi bi-telephone i-icon"></i>
+                    <input type="number"
+                           name="phone_number"
+                           class="form-input"
+                           placeholder="08xxxxxxxxxx"
+                           value="{{ old('phone_number') }}"
+                           required>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label class="form-label-custom">
+                    <i class="bi bi-lock"></i> Password
+                </label>
+
+                <div class="input-wrap">
+                    <i class="bi bi-lock i-icon"></i>
+                    <input type="password"
+                           name="password"
+                           id="passwordInput"
+                           class="form-input has-toggle"
+                           placeholder="Masukkan password"
+                           required>
+
+                    <button type="button"
+                            class="toggle-pw-btn"
+                            id="togglePw"
+                            title="Tampilkan password">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input hidden untuk menyimpan token reCAPTCHA -->
+            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
+            @error('g-recaptcha-response')
+                <div class="text-danger mt-2">
+                    {{ $message }}
+                </div>
+            @enderror
+
+            <hr class="form-divider">
+
+            <!-- Tombol Submit -->
+            <button type="submit" class="btn-submit" id="loginButton">
+                <i class="bi bi-box-arrow-in-right"></i> Masuk
+            </button>
+            
+            <!-- Teks Pemberitahuan reCAPTCHA (Wajib karena badge disembunyikan) -->
+            <div class="recaptcha-info">
+                <span>Protected by reCAPTCHA</span>
+                <a href="https://policies.google.com/privacy" target="_blank">Privacy</a>
+                -
+                <a href="https://policies.google.com/terms" target="_blank">Terms</a>
+            </div>
+        </form>
+
+        <script>
+        grecaptcha.ready(function () {
+            const form = document.getElementById('loginForm');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Hentikan proses submit bawaan form sementara
+
+                const button = document.getElementById('loginButton');
+                button.disabled = true; // Nonaktifkan tombol agar user tidak klik 2 kali
+
+                // Generate token reCAPTCHA
+                grecaptcha.execute(
+                    '{{ config('services.recaptcha.site_key') }}',
+                    { action: 'login' }
+                ).then(function (token) {
+                    
+                    // Masukkan token ke input hidden
+                    document.getElementById('g-recaptcha-response').value = token;
+
+                    // Lanjutkan submit form secara manual ke server
+                    form.submit();
+
+                }).catch(function (error) {
+                    console.error('reCAPTCHA error:', error);
+                    button.disabled = false; // Aktifkan tombol kembali jika gagal
+                    alert('Verifikasi keamanan gagal. Silakan coba lagi.');
+                });
+            });
+        });
+        </script>
+
         <!-- batas bawah card -->
     </div>
  

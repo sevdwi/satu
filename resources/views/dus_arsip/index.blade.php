@@ -75,6 +75,7 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>Qrcode</th>
                 <th>OPD</th>
                 <th>Nomor RAK</th>
                 <th>Nomor DUS</th>
@@ -88,6 +89,14 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>
+                            @if($item->qrcode)
+                                <!-- Menampilkan gambar berdasarkan path di storage -->
+                                <img src="{{ asset('storage/' . $item->qrcode) }}" alt="QR Code" width="50" height="50" class="img-thumbnail">
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td>
                         {{ $item->opd_induk->kode_instansi ?? '-' }} - {{ $item->opd->unit_kerja ?? '-' }}
                         </td> 
                         <td>
@@ -95,8 +104,19 @@
                         </td> 
                         <td>
                             {{ $item->nomor_dus ?? '-' }}
-                        </td> 
+                        </td>  
                         <td>
+                            <button type="button" 
+                                    data-url="{{ route('dus_arsip.gen_qr', $item->id) }}" 
+                                    title="Generate QR"
+                                    class="btn btn-primary btn-sm btn-show-qr"> 
+                                <i class="fa fa-qrcode"></i> 
+                            </button>
+                            </a> 
+                            <a href="{{ route('dus_arsip.show', $item->id) }}" title="Detil Berkas"
+                               class="btn btn-success btn-sm"> 
+                                <i class="fa fa-eye"></i> 
+                            </a> 
                             <a href="{{ route('dus_arsip.edit', $item->id) }}" title="Ubah Data"
                                class="btn btn-warning btn-sm"> 
                                 <i class="fa fa-edit"></i> 
@@ -132,11 +152,79 @@
         </tbody>
 
     </table> 
+    <!-- Modal QR Code -->
+    <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qrModalLabel">QR Code Dus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center" id="qrModalBody">
+                    <!-- Animasi loading saat JS sedang mengambil data -->
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Memuat QR Code...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const qrModalElement = document.getElementById('qrModal');
 
+    // Event listener bawaan Bootstrap saat modal benar-benar tertutup
+    qrModalElement.addEventListener('hidden.bs.modal', function () {
+        location.reload(); // Refresh halaman secara otomatis
+    });
+});
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Ambil semua tombol dengan class btn-show-qr
+        const qrButtons = document.querySelectorAll('.btn-show-qr');
+        
+        // 2. Inisialisasi Modal Bootstrap
+        const qrModalElement = document.getElementById('qrModal');
+        const qrModal = new bootstrap.Modal(qrModalElement);
+        const qrModalBody = document.getElementById('qrModalBody');
+
+        // 3. Looping ke setiap tombol
+        qrButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Ambil URL dari atribut data-url
+                const url = this.getAttribute('data-url');
+
+                // Tampilkan modal dengan status loading
+                qrModalBody.innerHTML = `
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Memuat QR Code...</p>
+                `;
+                qrModal.show();
+
+                // Lakukan HTTP Request ke backend (Laravel)
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Gagal memuat data');
+                        return response.json(); // Ubah ke JSON
+                    })
+                    .then(data => {
+                        // Ambil isi HTML dari respons JSON
+                        qrModalBody.innerHTML = data.html;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        qrModalBody.innerHTML = '<div class="alert alert-danger">Gagal memuat QR Code.</div>';
+                    });
+            });
+        });
+    });
+    </script>
 <script>
     $(document).ready(function () {
         $('#dusarsipTable').DataTable({

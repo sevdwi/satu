@@ -13,9 +13,11 @@ Route::prefix('dus_arsip')->name('dus_arsip.')->group(function () {
 
     // Rute utama (Halaman Utama, Simpan, Tambah, Edit, Update, dan Hapus)
     Route::get('/', [DusArsipController::class, 'index'])->name('index');
+    Route::get('/generate_qr/{id}', [DusArsipController::class, 'generate_qr'])->name('gen_qr');
     Route::post('/', [DusArsipController::class, 'store'])->name('store');
     Route::get('/create', [DusArsipController::class, 'create'])->name('create');
     Route::get('/{id}/edit', [DusArsipController::class, 'edit'])->name('edit');
+    Route::get('/{id}/show', [DusArsipController::class, 'show'])->name('show');
     Route::post('/{id}', [DusArsipController::class, 'update'])->name('update');
     
     // WAJIB: Tambahkan rute DELETE ini untuk memperbaiki error MethodNotAllowed sebelumnya

@@ -7,8 +7,11 @@ use App\Models\Rak_Arsip;
 use App\Models\Opd;
 use App\Models\Opd_Induk;
 use App\Models\User;
+use App\Models\Arsip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use SimpleSoftwareIO\QrCode\Facades\QrCode; 
+use Illuminate\Support\Facades\Storage;
 
 
 class DusArsipController extends Controller
@@ -16,6 +19,42 @@ class DusArsipController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function qr_list_berkas($id){
+        $dus = Dus_Arsip::findOrFail($id);
+        $data = Arsip::where('dus_arsip_id',$id);
+        return view('dus_arsip.qr_list_berkas', compact('data','dus'
+        ));
+
+    }
+    public function generate_qr($id)
+    {
+        // 1. Ambil data dus berdasarkan ID
+        $dus = Dus_Arsip::findOrFail($id);
+
+        // 2. Tentukan isi/konten dari QR Code
+        // (Bisa berupa URL, teks, atau kode unik dus) 
+        $isiQrCode = 'https://satu.arsip.cilacapkab.go.id/dus_arsip/' . $id; 
+        $fileName = 'qr-dus-' . $dus->nomor_dus . '-' . time() . '.svg';
+
+        // 3. Generate QR Code menjadi format SVG/HTML
+        $qr = QrCode::size(200)->margin(1)->generate($isiQrCode);
+        // Simpan file tersebut ke folder: storage/app/public/qr-codes/
+        Storage::disk('public')->put('qr-codes/' . $fileName, $qr);
+        
+        // Simpan path filenya ke database
+        $dus->qrcode = 'qr-codes/' . $fileName;
+        $dus->save();
+
+        // 4. Return hasilnya dengan format HTML agar bisa ditangkap oleh Modal JS kita
+        return response()->json([
+            'html' => '
+                <div class="text-center">
+                    ' . $qr . '
+                    <h6 class="mt-3 text-dark fw-bold">' . $dus->nama_dus . '</h6>
+                </div>
+            '
+        ]);
+    }
     public function index()
     {
         // Ambil data user yang sedang login beserta id OPD-nya

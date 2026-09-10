@@ -16,7 +16,8 @@ class Dus_Arsip extends Model
         'nomor_dus',
         'rak_arsip_id',
         'opd_id', 
-        'opd_induk_id'
+        'opd_induk_id',
+        'qrcode'
     ];
 
     /*

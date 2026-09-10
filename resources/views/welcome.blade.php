@@ -18,10 +18,7 @@
     <div class="nav-actions" id="navActions">
       <a href="{{route('login')}}" class="btn-nav-login">
         <i class="bi bi-person"></i> Login
-      </a>
-      <a href="{{route('login-admin')}}" class="btn-nav-admin">
-        <i class="bi bi-shield-lock"></i> Login Admin
-      </a>
+      </a> 
     </div>
  
     <button class="nav-mobile-toggle" id="mobileToggle">

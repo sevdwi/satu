@@ -14,10 +14,13 @@ use App\Http\Controllers\MasterKodeController;
 use App\Http\Controllers\MasterKodeImportController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\ArsipController; 
+use App\Http\Controllers\DusArsipController;
 
 
 
 Route::get('/', [DepanController::class, 'welcome'])->name('welcome');
+
+Route::get('/dus_arsip/{id}', [DusArsipController::class, 'qr_list_berkas'])->name('qr_list');
 
 //auth admin 
 Route::get('/administrator', [AdminUserController::class,'loginForm'])->name('login-admin');
