@@ -190,7 +190,7 @@
 
                 // Generate token reCAPTCHA
                 grecaptcha.execute(
-                    '{{ config('services.recaptcha.site_key') }}',
+                    '6LcepWsrAAAAACyuyQURxFBA1qY-NXeFo6aGJ7-6',
                     { action: 'login' }
                 ).then(function (token) {
                     

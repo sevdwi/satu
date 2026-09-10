@@ -33,7 +33,7 @@ class DusArsipController extends Controller
 
         // 2. Tentukan isi/konten dari QR Code
         // (Bisa berupa URL, teks, atau kode unik dus) 
-        $isiQrCode = 'https://satu.arsip.cilacapkab.go.id/dus_arsip/' . $id; 
+        $isiQrCode = 'https://satu.arpus.cilacapkab.go.id/dus_arsip/' . $id; 
         $fileName = 'qr-dus-' . $dus->nomor_dus . '-' . time() . '.svg';
 
         // 3. Generate QR Code menjadi format SVG/HTML
