@@ -90,7 +90,7 @@
     <div class="nav-account">
       <div class="account-avatar"><i class="bi bi-people-fill me-2" style="color: #6495ED;"></i></div>
       <div>
-        <div class="account-name">{{ auth()->guard('web')->user()->name }}</div>
+        <div class="account-name">{{ auth()->user()->name }}</div>
         <div class="account-role">Akun yang digunakan</div>
       </div>
       <i class="bi bi-chevron-down" style="font-size:.6rem;color:var(--muted);margin-left:.2rem;"></i>

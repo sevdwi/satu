@@ -179,34 +179,57 @@
         </form>
 
         <script>
-        grecaptcha.ready(function () {
+        // Catatan: server (UserController::login) TIDAK memvalidasi
+        // g-recaptcha-response sama sekali — token ini murni informatif.
+        // Sebelumnya, kalau grecaptcha gagal load/execute (site key belum
+        // di-whitelist untuk domain yang dipakai, koneksi ke Google
+        // diblokir firewall/ad-blocker, dll), form INI TERKUNCI TOTAL:
+        // event.preventDefault() sudah terlanjur jalan lalu promise-nya
+        // gagal, jadi submit tidak pernah terjadi — user cuma lihat
+        // "tidak bisa login" tanpa request pernah sampai ke server (makanya
+        // tidak ada apa pun di laravel.log). Sekarang: kalau recaptcha
+        // gagal dengan cara apa pun, form tetap dikirim sebagai fallback.
+        (function () {
             const form = document.getElementById('loginForm');
+            const button = document.getElementById('loginButton');
 
-            form.addEventListener('submit', function (event) {
-                event.preventDefault(); // Hentikan proses submit bawaan form sementara
+            function submitWithoutRecaptcha() {
+                if (button) button.disabled = false;
+                form.submit();
+            }
 
-                const button = document.getElementById('loginButton');
-                button.disabled = true; // Nonaktifkan tombol agar user tidak klik 2 kali
+            if (typeof grecaptcha === 'undefined') {
+                // Script reCAPTCHA gagal dimuat sama sekali — biarkan
+                // form submit normal (native), jangan pasang handler apa pun.
+                console.warn('reCAPTCHA tidak termuat, lanjut tanpa verifikasi.');
+                return;
+            }
 
-                // Generate token reCAPTCHA
-                grecaptcha.execute(
-                    '6LcepWsrAAAAACyuyQURxFBA1qY-NXeFo6aGJ7-6',
-                    { action: 'login' }
-                ).then(function (token) {
-                    
-                    // Masukkan token ke input hidden
-                    document.getElementById('g-recaptcha-response').value = token;
+            grecaptcha.ready(function () {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault(); // Hentikan proses submit bawaan form sementara
 
-                    // Lanjutkan submit form secara manual ke server
-                    form.submit();
+                    if (button) button.disabled = true; // Nonaktifkan tombol agar user tidak klik 2 kali
 
-                }).catch(function (error) {
-                    console.error('reCAPTCHA error:', error);
-                    button.disabled = false; // Aktifkan tombol kembali jika gagal
-                    alert('Verifikasi keamanan gagal. Silakan coba lagi.');
+                    // Generate token reCAPTCHA
+                    grecaptcha.execute(
+                        '6LcepWsrAAAAACyuyQURxFBA1qY-NXeFo6aGJ7-6',
+                        { action: 'login' }
+                    ).then(function (token) {
+
+                        // Masukkan token ke input hidden
+                        document.getElementById('g-recaptcha-response').value = token;
+
+                        // Lanjutkan submit form secara manual ke server
+                        form.submit();
+
+                    }).catch(function (error) {
+                        console.error('reCAPTCHA error, lanjut submit tanpa token:', error);
+                        submitWithoutRecaptcha();
+                    });
                 });
             });
-        });
+        })();
         </script>
 
         <!-- batas bawah card -->

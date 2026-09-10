@@ -15,7 +15,7 @@ class AdminUserController extends Controller
     // list semua admin
     public function index()
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::user();
 
         $data = Arsip::with([
             'opd_induk:id,instansi'
@@ -145,7 +145,9 @@ class AdminUserController extends Controller
             'role' => 'admin'
         ];
 
-        if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
+        // Guard tunggal ('web') — pembatasan admin cukup lewat filter
+        // 'role' => 'admin' di $credentials, tidak perlu guard terpisah.
+        if (Auth::attempt($credentials, $request->remember)) {
 
             $request->session()->regenerate();
 
@@ -172,7 +174,7 @@ class AdminUserController extends Controller
     // logout
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
