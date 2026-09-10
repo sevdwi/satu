@@ -38,15 +38,15 @@ return [
     */
 
     'guards' => [
+        // Cuma 1 guard untuk semua role (admin/staff/pengolah/customer/
+        // sekretariat) karena semuanya baca tabel `users` yang sama — guard
+        // 'admin' terpisah sebelumnya cuma duplikat konsep role, dan malah
+        // bikin AdminMiddleware (role-check biasa) jadi tidak pernah kepakai.
+        // Pembatasan akses admin sekarang lewat middleware 'admin' (App\Http\Middleware\AdminMiddleware).
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
-
     ],
 
     /*
@@ -71,11 +71,6 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
-
 
         // 'users' => [
         //     'driver' => 'database',

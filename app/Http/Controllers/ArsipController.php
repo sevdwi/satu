@@ -22,12 +22,19 @@ use Maatwebsite\Excel\Facades\Excel;
 class ArsipController extends Controller
 {
     /**
-     * Redirect target arsip.home/arsip_admin.home-admin sesuai guard yang aktif.
-     * Dipakai oleh method yang dipakai bersama admin & user (destroy, uploads_post).
+     * Redirect target arsip.home/arsip_admin.home-admin sesuai role user
+     * yang login. Dipakai oleh method yang dipakai bersama admin & user
+     * (destroy, uploads_post) — sebelumnya dicek lewat guard('admin'),
+     * sekarang cukup 1 guard ('web') jadi dicek lewat role saja.
      */
     private function homeRouteAktif()
     {
-        return auth()->guard('admin')->check() ? 'arsip_admin.home-admin' : 'arsip.home';
+        return $this->isAdmin() ? 'arsip_admin.home-admin' : 'arsip.home';
+    }
+
+    private function isAdmin(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
     }
 
     public function dashbord(){
@@ -160,7 +167,7 @@ class ArsipController extends Controller
 
     public function index_admin()
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::user();
 
         $opd_induk = Opd_Induk::orderBy('instansi')->get();
 
@@ -184,7 +191,7 @@ class ArsipController extends Controller
 
     public function musnah_admin()
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::user();
 
         $opd_induk = Opd_Induk::orderBy('instansi')->get();
 
@@ -197,7 +204,7 @@ class ArsipController extends Controller
 
     public function permanen_admin()
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::user();
 
         $opd_induk = Opd_Induk::orderBy('instansi')->get();
 
@@ -214,7 +221,7 @@ class ArsipController extends Controller
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:51200', // +-50Mb
         ]);
 
-        if (auth()->guard('admin')->check()) {
+        if ($this->isAdmin()) {
             $arsip = Arsip::findOrFail($request->id);
         } else {
             $arsip = Arsip::milikUser()->findOrFail($request->id);
@@ -491,7 +498,7 @@ class ArsipController extends Controller
     public function destroy(string $id)
     {
         try {
-            if (auth()->guard('admin')->check()) {
+            if ($this->isAdmin()) {
                 $arsip = Arsip::findOrFail($id);
             } else {
                 $arsip = Arsip::milikUser()->findOrFail($id);

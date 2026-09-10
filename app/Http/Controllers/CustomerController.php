@@ -14,7 +14,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $user = Auth::guard('web')->user();
+        $user = Auth::user();
         $userid = $user->id;
         $userOpdId = $user->opd_induk_id;
 

@@ -22,17 +22,20 @@ Route::get('/', [DepanController::class, 'welcome'])->name('welcome');
 
 Route::get('/dus_arsip/{id}', [DusArsipController::class, 'qr_list_berkas'])->name('qr_list');
 
-//auth admin 
+//auth admin
 Route::get('/administrator', [AdminUserController::class,'loginForm'])->name('login-admin');
 Route::post('admin/login', [AdminUserController::class,'login']);
 Route::post('admin/logout', [AdminUserController::class,'logout'])->name('logout-admin');
 
 Route::get('/app/dashboard-admin', [AdminUserController::class,'index'])
-    // dd(session()->all());
-    // dd(auth()->user());
-->middleware('auth:admin')->name('dashboard-admin');
+    ->middleware(['auth', 'admin'])->name('dashboard-admin');
 
-Route::middleware(['auth:admin'])->prefix('app')->group(function () {
+// Satu guard ('web') untuk semua role. Akses khusus admin dibatasi lewat
+// middleware 'admin' (App\Http\Middleware\AdminMiddleware, cek role di
+// tabel users), BUKAN lewat guard terpisah — sebelumnya ada guard 'admin'
+// sendiri yang ternyata baca tabel & model yang sama persis dengan guard
+// 'web', jadi cuma duplikasi konsep role lewat mekanisme guard.
+Route::middleware(['auth', 'admin'])->prefix('app')->group(function () {
     foreach (glob(__DIR__.'/modules-admin/*.php') as $routeFile) {
         require $routeFile;
     }
@@ -43,9 +46,9 @@ Route::get('/pengolah', [UserController::class,'loginForm'])->name('login');
 Route::post('/login', [UserController::class,'login']); 
 Route::post('/logout', [UserController::class,'logout'])->name('logout'); 
 
-Route::get('/app/dashboard', [CustomerController::class,'index'])->middleware('auth:web')->name('dashboard');
+Route::get('/app/dashboard', [CustomerController::class,'index'])->middleware('auth')->name('dashboard');
 
-Route::middleware(['auth:web'])->prefix('app')->group(function () {
+Route::middleware(['auth'])->prefix('app')->group(function () {
     foreach (glob(__DIR__.'/modules-user/*.php') as $routeFile) {
         require $routeFile;
     }
